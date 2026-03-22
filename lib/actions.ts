@@ -141,9 +141,9 @@ export async function registerUser(formData: FormData) {
     password: formData.get("password"),
   })
 
-  if (!parsed.success) {
-    throw new Error(parsed.error.errors[0].message)
-  }
+ if (!parsed.success) {
+  throw new Error(parsed.error.issues[0].message)  // ← .issues not .errors
+}
 
   const { name, email, password } = parsed.data
 
@@ -228,7 +228,7 @@ export async function changePassword(formData: FormData) {
   })
 
   if (!parsed.success) {
-    throw new Error(parsed.error.errors[0].message)
+    throw new Error(parsed.error.issues[0].message)
   }
 
   const { currentPassword, newPassword } = parsed.data
