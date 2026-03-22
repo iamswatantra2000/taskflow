@@ -1,28 +1,32 @@
-// middleware.ts  ← root of project, NOT inside app/
-import { auth } from "./lib/auth";
+// middleware.ts
+import { auth } from "@/lib/auth"
 import { NextResponse } from "next/server"
 
 export default auth((req) => {
-  const isLoggedIn = !!req.auth
-  const isAuthPage = req.nextUrl.pathname.startsWith("/login") ||
-                     req.nextUrl.pathname.startsWith("/register")
-  const isDashboard = req.nextUrl.pathname.startsWith("/dashboard") ||
-                      req.nextUrl.pathname === "/"
+  const isLoggedIn  = !!req.auth
+  const path        = req.nextUrl.pathname
 
-  // Not logged in + trying to access protected page → redirect to login
+  const isAuthPage  = path.startsWith("/login") || path.startsWith("/register")
+  const isDashboard = path.startsWith("/my-tasks") || path.startsWith("/projects") || path.startsWith("/activity") || path.startsWith("/settings")
+
+  // Protected routes — must be logged in
   if (!isLoggedIn && isDashboard) {
     return NextResponse.redirect(new URL("/login", req.url))
   }
 
-  // Already logged in + visiting auth pages → redirect to dashboard
+  // Already logged in — skip auth pages
   if (isLoggedIn && isAuthPage) {
-    return NextResponse.redirect(new URL("/", req.url))
+    return NextResponse.redirect(new URL("/dashboard", req.url))
+  }
+
+  // Logged in users go to /dashboard not /
+  if (isLoggedIn && path === "/") {
+    return NextResponse.redirect(new URL("/dashboard", req.url))
   }
 
   return NextResponse.next()
 })
 
-// Tell Next.js which routes this middleware should run on
 export const config = {
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 }

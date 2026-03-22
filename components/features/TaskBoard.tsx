@@ -1,0 +1,361 @@
+// components/features/TaskBoard.tsx
+"use client"
+
+import { useState, useEffect } from "react"  // ← add useEffect
+import {
+  DndContext,
+  DragOverlay,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragStartEvent,
+  DragOverEvent,
+  DragEndEvent,
+  closestCorners,
+  useDroppable,
+} from "@dnd-kit/core"
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { DeleteTaskButton } from "./DeleteTaskButton"
+import { TaskDetailDialog } from "./TaskDetailDialog"
+import { updateTaskStatus } from "@/lib/actions"
+import { toast } from "sonner"
+import type { FilterState } from "./BoardFilters"
+
+type Task = {
+  id: string
+  title: string
+  description: string | null
+  status: string
+  priority: string
+  assigneeId: string | null
+}
+
+type Column = {
+  id: string
+  label: string
+  tasks: Task[]
+  dot: string
+}
+
+type Props = {
+  columns: Column[]
+  userName: string
+  filters: FilterState
+}
+
+const priorityConfig = {
+  HIGH:   { label: "High",   class: "bg-red-950 text-red-400 border-red-900"             },
+  URGENT: { label: "Urgent", class: "bg-red-950 text-red-400 border-red-900"             },
+  MEDIUM: { label: "Medium", class: "bg-amber-950 text-amber-400 border-amber-900"       },
+  LOW:    { label: "Low",    class: "bg-emerald-950 text-emerald-400 border-emerald-900" },
+}
+
+function getInitials(name: string) {
+  return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
+}
+
+// ——— Single draggable task card ———
+function TaskCard({
+  task,
+  userName,
+  onSelect,
+}: {
+  task: Task
+  userName: string
+  onSelect: (task: Task) => void
+}) {
+  const priority = priorityConfig[task.priority as keyof typeof priorityConfig]
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: task.id, data: { task } })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.4 : 1,
+  }
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`group bg-[#161616] border border-[#222] rounded-[8px] p-3 hover:border-[#333] hover:bg-[#1a1a1a] transition-all
+        ${task.status === "IN_PROGRESS" ? "border-l-2 border-l-indigo-500" : ""}
+        ${task.status === "DONE" ? "opacity-50" : ""}
+      `}
+    >
+      <div className="flex items-start gap-2 mb-2">
+        <div
+          {...attributes}
+          {...listeners}
+          className="flex-shrink-0 mt-0.5 cursor-grab active:cursor-grabbing text-[#444] hover:text-[#666] transition-colors"
+        >
+          {/** biome-ignore lint/a11y/noSvgWithoutTitle: drag handle */}
+          <svg width="10" height="14" viewBox="0 0 10 14" fill="none">
+            <circle cx="2"  cy="2"  r="1.2" fill="currentColor"/>
+            <circle cx="8"  cy="2"  r="1.2" fill="currentColor"/>
+            <circle cx="2"  cy="7"  r="1.2" fill="currentColor"/>
+            <circle cx="8"  cy="7"  r="1.2" fill="currentColor"/>
+            <circle cx="2"  cy="12" r="1.2" fill="currentColor"/>
+            <circle cx="8"  cy="12" r="1.2" fill="currentColor"/>
+          </svg>
+        </div>
+
+        {/** biome-ignore lint/a11y/useKeyWithClickEvents: intentional */}
+        <p
+          onClick={() => onSelect(task)}
+          className="flex-1 text-[12px] text-[#ccc] leading-[1.45] cursor-pointer hover:text-white transition-colors"
+        >
+          {task.title}
+        </p>
+
+        <DeleteTaskButton taskId={task.id} />
+      </div>
+
+      <div className="flex items-center justify-between pl-4">
+        <span className={`text-[10px] font-medium px-[7px] py-[2px] rounded-[5px] border ${priority.class}`}>
+          {priority.label}
+        </span>
+        {task.assigneeId && (
+          <Avatar className="h-[18px] w-[18px]">
+            <AvatarFallback className="text-[8px] bg-gradient-to-br from-indigo-500 to-violet-600 text-white border-0">
+              {getInitials(userName)}
+            </AvatarFallback>
+          </Avatar>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// ——— Overlay card shown while dragging ———
+function DragOverlayCard({ task }: { task: Task }) {
+  const priority = priorityConfig[task.priority as keyof typeof priorityConfig]
+  return (
+    <div className="bg-[#1e1e1e] border border-indigo-500 rounded-[8px] p-3 w-[220px] rotate-1 shadow-2xl">
+      <div className="flex items-start gap-2 mb-2">
+        {/** biome-ignore lint/a11y/noSvgWithoutTitle: drag handle */}
+        <svg width="10" height="14" viewBox="0 0 10 14" fill="none" className="flex-shrink-0 mt-0.5 text-[#555]">
+          <circle cx="2"  cy="2"  r="1.2" fill="currentColor"/>
+          <circle cx="8"  cy="2"  r="1.2" fill="currentColor"/>
+          <circle cx="2"  cy="7"  r="1.2" fill="currentColor"/>
+          <circle cx="8"  cy="7"  r="1.2" fill="currentColor"/>
+          <circle cx="2"  cy="12" r="1.2" fill="currentColor"/>
+          <circle cx="8"  cy="12" r="1.2" fill="currentColor"/>
+        </svg>
+        <p className="text-[12px] text-[#ccc] leading-[1.45] flex-1">{task.title}</p>
+      </div>
+      <div className="pl-4">
+        <span className={`text-[10px] font-medium px-[7px] py-[2px] rounded-[5px] border ${priority.class}`}>
+          {priority.label}
+        </span>
+      </div>
+    </div>
+  )
+}
+
+// ——— Droppable column wrapper ———
+function DroppableColumn({
+  col,
+  children,
+}: {
+  col: Column
+  children: React.ReactNode
+}) {
+  const { setNodeRef, isOver } = useDroppable({ id: col.id })
+  return (
+    <div
+      ref={setNodeRef}
+      id={col.id}
+      className={`bg-[#111] border rounded-[10px] p-3 flex flex-col gap-2 min-h-[200px] transition-colors ${
+        isOver ? "border-indigo-500/50 bg-indigo-950/20" : "border-[#1a1a1a]"
+      }`}
+    >
+      {children}
+    </div>
+  )
+}
+
+// ——— Main board ———
+export function TaskBoard({ columns, userName, filters }: Props) {
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null)
+  const [activeTask, setActiveTask]     = useState<Task | null>(null)
+  const [boardColumns, setBoardColumns] = useState<Column[]>(columns)
+
+  // ← KEY FIX: sync local state when server sends fresh data
+  useEffect(() => {
+    setBoardColumns(columns)
+  }, [columns])
+
+  const filteredColumns = boardColumns.map((col) => ({
+    ...col,
+    tasks: col.tasks.filter((task) => {
+      const matchesPriority =
+        filters.priority.length === 0 ||
+        filters.priority.includes(task.priority)
+
+      const matchesSearch =
+        !filters.search ||
+        task.title.toLowerCase().includes(filters.search.toLowerCase())
+
+      return matchesPriority && matchesSearch
+    }),
+  }))
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 5 },
+    })
+  )
+
+  function findColumnOfTask(taskId: string) {
+    return boardColumns.find((col) => col.tasks.some((t) => t.id === taskId))
+  }
+
+  function handleDragStart(event: DragStartEvent) {
+    const task = event.active.data.current?.task as Task
+    setActiveTask(task)
+  }
+
+  function handleDragOver(event: DragOverEvent) {
+    const { active, over } = event
+    if (!over) return
+
+    const activeId = active.id as string
+    const overId   = over.id as string
+
+    const activeColumn = findColumnOfTask(activeId)
+    const overColumn   =
+      boardColumns.find((c) => c.id === overId) ?? findColumnOfTask(overId)
+
+    if (!activeColumn || !overColumn) return
+    if (activeColumn.id === overColumn.id) return
+
+    setBoardColumns((prev) => {
+      const movingTask = prev
+        .find((c) => c.id === activeColumn.id)!
+        .tasks.find((t) => t.id === activeId)!
+
+      return prev.map((col) => {
+        if (col.id === activeColumn.id) {
+          return { ...col, tasks: col.tasks.filter((t) => t.id !== activeId) }
+        }
+        if (col.id === overColumn.id) {
+          return {
+            ...col,
+            tasks: [...col.tasks, { ...movingTask, status: overColumn.id }],
+          }
+        }
+        return col
+      })
+    })
+  }
+
+  async function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event
+    setActiveTask(null)
+    if (!over) return
+
+    const activeId = active.id as string
+    const overId   = over.id as string
+
+    const finalColumn =
+      boardColumns.find((c) => c.id === overId) ?? findColumnOfTask(overId)
+
+    if (!finalColumn) return
+
+    const originalColumn = columns.find((c) =>
+      c.tasks.some((t) => t.id === activeId)
+    )
+    if (originalColumn?.id !== finalColumn.id) {
+      toast.success(`Moved to ${finalColumn.label}`, {
+        description: "Status updated successfully.",
+      })
+    }
+
+    await updateTaskStatus(activeId, finalColumn.id)
+  }
+
+  return (
+    <>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCorners}
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
+        onDragEnd={handleDragEnd}
+      >
+        <div className="grid grid-cols-4 gap-3">
+          {filteredColumns.map((col) => (
+            <SortableContext
+              key={col.id}
+              id={col.id}
+              items={col.tasks.map((t) => t.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              <DroppableColumn col={col}>
+
+                <div className="flex items-center justify-between mb-1">
+                  <div className="flex items-center gap-1.5">
+                    <div className={`w-[7px] h-[7px] rounded-full ${col.dot}`} />
+                    <span className="text-[11px] font-medium text-[#666]">
+                      {col.label}
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-[#444] bg-[#1a1a1a] rounded-full px-2 py-0.5">
+                    {col.tasks.length}
+                  </span>
+                </div>
+
+                {col.tasks.map((task) => (
+                  <TaskCard
+                    key={task.id}
+                    task={task}
+                    userName={userName}
+                    onSelect={setSelectedTask}
+                  />
+                ))}
+
+                {col.tasks.length === 0 && (
+                  <div className="flex-1 flex items-center justify-center py-8 border border-dashed border-[#1f1f1f] rounded-[8px]">
+                    <p className="text-[11px] text-[#333]">
+                      {filters.priority.length > 0 || filters.search
+                        ? "No matching tasks"
+                        : "Drop here"
+                      }
+                    </p>
+                  </div>
+                )}
+
+              </DroppableColumn>
+            </SortableContext>
+          ))}
+        </div>
+
+        <DragOverlay>
+          {activeTask && <DragOverlayCard task={activeTask} />}
+        </DragOverlay>
+      </DndContext>
+
+      {selectedTask && (
+        <TaskDetailDialog
+          task={selectedTask}
+          open={!!selectedTask}
+          onClose={() => setSelectedTask(null)}
+        />
+      )}
+    </>
+  )
+}
