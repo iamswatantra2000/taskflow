@@ -14,7 +14,12 @@ if (!connectionString) {
 
 console.log("DB connecting to:", connectionString) // temporary — remove after fix
 
-const pool = new Pool({ connectionString })
+const pool = new Pool({
+  connectionString,
+  ssl: process.env.NODE_ENV === "production"
+    ? { rejectUnauthorized: false }  // ← required for Supabase
+    : false,
+})
 
 export const db = drizzle(pool, { schema })
 export * from "./schema"
