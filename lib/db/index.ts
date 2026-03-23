@@ -3,9 +3,15 @@ import { drizzle } from "drizzle-orm/node-postgres"
 import { Pool } from "pg"
 import * as schema from "./schema"
 
+const isProduction = process.env.NODE_ENV === "production"
+const isSupabase   = process.env.DATABASE_URL?.includes("supabase.co")
+
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
+  ...(isProduction || isSupabase
+    ? { ssl: { rejectUnauthorized: false } }
+    : {}
+  ),
 })
 
 export const db = drizzle(pool, { schema })
