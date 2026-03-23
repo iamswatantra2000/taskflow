@@ -93,3 +93,25 @@ export const verificationTokens = pgTable("verification_tokens", {
   token:      text("token").notNull().unique(),
   expires:    timestamp("expires").notNull(),
 })
+
+// lib/db/schema.ts — add this at the bottom
+
+export const activityTypeEnum = pgEnum("activity_type", [
+  "TASK_CREATED",
+  "TASK_UPDATED",
+  "TASK_DELETED",
+  "TASK_MOVED",
+  "PROJECT_CREATED",
+  "MEMBER_JOINED",
+])
+
+export const activities = pgTable("activities", {
+  id:          text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  type:        activityTypeEnum("type").notNull(),
+  description: text("description").notNull(),
+  userId:      text("user_id").references(() => users.id, { onDelete: "cascade" }),
+  workspaceId: text("workspace_id").notNull().references(() => workspaces.id, { onDelete: "cascade" }),
+  taskId:      text("task_id"),
+  projectId:   text("project_id"),
+  createdAt:   timestamp("created_at").defaultNow().notNull(),
+})

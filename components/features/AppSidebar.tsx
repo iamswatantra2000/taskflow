@@ -65,21 +65,20 @@ export function AppSidebar({ user, projects }: AppSidebarProps) {
       {/* Nav */}
       <nav className="flex-1 p-2 space-y-0.5 overflow-y-auto overflow-x-hidden">
         {navItems.map(({ href, label, icon: Icon }) => (
-          <Link
-            key={href}
-            href={href}
-            className={cn(
-              "flex items-center gap-2.5 px-2 py-[7px] rounded-[7px] text-[12.5px] transition-all overflow-hidden",
-              pathname === href
-                ? "bg-primary/10 text-primary font-medium"
-                : "text-muted-foreground hover:bg-accent hover:text-foreground"
-            )}
-            title={collapsed ? label : undefined}
-          >
-            <Icon size={15} className="flex-shrink-0" />
-            {!collapsed && <span className="whitespace-nowrap">{label}</span>}
-          </Link>
-        ))}
+  <Link
+    key={href}
+    href={href}
+    className={cn(
+      "flex items-center gap-2.5 px-2 py-[7px] rounded-[7px] text-[12.5px] transition-all overflow-hidden",
+      pathname === href
+        ? "bg-primary/10 text-primary font-medium"
+        : "text-muted-foreground hover:bg-accent hover:text-foreground"
+    )}
+  >
+    <Icon size={15} className="flex-shrink-0" />
+    {!collapsed && <span className="whitespace-nowrap">{label}</span>}
+  </Link>
+))}
 
         {/* Projects section */}
         <div className="pt-3">
