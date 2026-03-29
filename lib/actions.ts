@@ -8,8 +8,7 @@ import { eq, inArray } from "drizzle-orm"
 import { z } from "zod"
 import bcrypt from "bcryptjs"
 import { logActivity, getWorkspaceId } from "@/lib/activity"
-import { GoogleGenerativeAI } from "@google/generative-ai"
-//import Anthropic from "@anthropic-ai/sdk"
+import Anthropic from "@anthropic-ai/sdk"
 
 // ——— Create a task ———
 export async function createTask(formData: FormData) {
@@ -322,14 +321,23 @@ export async function registerUser(formData: FormData) {
 }
 
 
-// ——— AI: Generate subtasks ———
+// ——— AI: Generate subtasks (Anthropic) ———
 export async function generateSubtasks(description: string, projectId: string) {
   const session = await requireAuth()
 
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" })
+  if (!process.env.ANTHROPIC_API_KEY) {
+    throw new Error("AI feature coming soon — Anthropic API key not configured")
+  }
 
-  const prompt = `You are a project management assistant. Break down this feature/task into 3-6 specific, actionable subtasks.
+  const Anthropic = (await import("@anthropic-ai/sdk")).default
+  const client    = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+
+  const message = await client.messages.create({
+    model:      "claude-haiku-4-5-20251001",
+    max_tokens: 1024,
+    messages: [{
+      role:    "user",
+      content: `You are a project management assistant. Break down this feature/task into 3-6 specific, actionable subtasks.
 
 Feature: "${description}"
 
@@ -340,13 +348,14 @@ Respond with ONLY a JSON array, no other text:
     "priority": "LOW" or "MEDIUM" or "HIGH" or "URGENT",
     "description": "brief description of what needs to be done"
   }
-]`
+]`,
+    }],
+  })
 
-  const result   = await model.generateContent(prompt)
-  const response = await result.response
-  const text     = response.text()
+  const content = message.content[0]
+  if (content.type !== "text") throw new Error("Unexpected response type")
 
-  const clean    = text.replace(/```json|```/g, "").trim()
+  const clean    = content.text.replace(/```json|```/g, "").trim()
   const subtasks = JSON.parse(clean) as {
     title:       string
     priority:    string
@@ -386,21 +395,36 @@ Respond with ONLY a JSON array, no other text:
   return created
 }
 
-// ——— AI: Improve task description ———
-export async function improveTaskDescription(title: string, currentDescription: string) {
+// ——— AI: Improve task description (Anthropic) ———
+export async function improveTaskDescription(
+  title: string,
+  currentDescription: string
+) {
   await requireAuth()
 
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
- const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" })
+  if (!process.env.ANTHROPIC_API_KEY) {
+    throw new Error("AI feature coming soon — Anthropic API key not configured")
+  }
 
-  const prompt = `Write a clear, concise task description for a developer.
+  const Anthropic = (await import("@anthropic-ai/sdk")).default
+  const client    = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+
+  const message = await client.messages.create({
+    model:      "claude-haiku-4-5-20251001",
+    max_tokens: 512,
+    messages: [{
+      role:    "user",
+      content: `Write a clear, concise task description for a developer.
 
 Task title: "${title}"
 Current description: "${currentDescription || "none"}"
 
-Write a better description in 2-3 sentences. Be specific and actionable. Respond with ONLY the description text, nothing else.`
+Write a better description in 2-3 sentences. Be specific and actionable. Respond with ONLY the description text, nothing else.`,
+    }],
+  })
 
-  const result   = await model.generateContent(prompt)
-  const response = await result.response
-  return response.text().trim()
+  const content = message.content[0]
+  if (content.type !== "text") throw new Error("Unexpected response type")
+
+  return content.text.trim()
 }
