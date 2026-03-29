@@ -63,6 +63,7 @@ export default async function DashboardPage() {
     userInitials={getInitials(session.user.name ?? "User")}
     projectId={firstProject?.id ?? null}
     stats={stats}
+     projects={userProjects}
     firstName={firstName}
     user={session.user}    // ← add this
   />

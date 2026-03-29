@@ -15,6 +15,7 @@ import {
 	ChevronRight,
 } from "lucide-react";
 import { useState } from "react";
+import { Search } from "lucide-react";
 
 type Project = {
 	id: string;
@@ -96,11 +97,30 @@ export function AppSidebar({ user, projects }: AppSidebarProps) {
 				<div className="pt-3">
 					{!collapsed && (
 						<div className="flex items-center justify-between px-2 mb-1">
+							 {/** biome-ignore lint/a11y/useButtonType: <explanation> */}
+ <button
+    onClick={() => {
+      document.dispatchEvent(
+        new KeyboardEvent("keydown", { key: "k", metaKey: true, bubbles: true })
+      )
+    }}
+    className="w-full flex items-center justify-between px-2 py-[7px] rounded-[7px] text-muted-foreground hover:bg-accent hover:text-foreground transition-colors mb-0.5"
+  >
+    <div className="flex items-center gap-2.5">
+      <Search size={15} className="flex-shrink-0" />
+      <span className="text-[12.5px]">Search</span>
+    </div>
+    <div className="flex items-center gap-1">
+      <kbd className="text-[10px] border border-border rounded px-1 py-0.5">⌘</kbd>
+      <kbd className="text-[10px] border border-border rounded px-1 py-0.5">K</kbd>
+    </div>
+  </button>
 							<span className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
 								Projects
 							</span>
 							<NewProjectDialog />
 						</div>
+						
 					)}
 
 					{/* Real projects from DB */}
