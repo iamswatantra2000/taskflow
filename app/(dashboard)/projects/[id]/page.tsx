@@ -1,9 +1,8 @@
 // app/(dashboard)/projects/[id]/page.tsx
 import { requireAuth } from "@/lib/session"
 import { db, tasks, projects, workspaceMembers } from "@/lib/db"
-import { eq, and, inArray } from "drizzle-orm"
+import { eq, and } from "drizzle-orm"
 import { notFound } from "next/navigation"
-import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { NewTaskDialog } from "@/components/features/NewTaskDialog"
 import { DeleteTaskButton } from "@/components/features/DeleteTaskButton"
@@ -19,22 +18,14 @@ const priorityConfig = {
   LOW:    { label: "Low",    class: "bg-emerald-950 text-emerald-400 border-emerald-900" },
 }
 
-const statusConfig = {
-  TODO:        { label: "Todo",        dot: "bg-[#555]"      },
-  IN_PROGRESS: { label: "In progress", dot: "bg-indigo-500"  },
-  IN_REVIEW:   { label: "In review",   dot: "bg-amber-500"   },
-  DONE:        { label: "Done",        dot: "bg-emerald-500" },
-  CANCELLED:   { label: "Cancelled",   dot: "bg-red-500"     },
-}
-
 export default async function ProjectPage({
   params,
 }: {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }) {
-  const session = await requireAuth()
+  const { id }    = await params   // ← Next.js 16 requires await
+  const session   = await requireAuth()
 
-  // Verify project belongs to user's workspace
   const [membership] = await db
     .select()
     .from(workspaceMembers)
@@ -48,7 +39,7 @@ export default async function ProjectPage({
     .from(projects)
     .where(
       and(
-        eq(projects.id, params.id),
+        eq(projects.id, id),
         eq(projects.workspaceId, membership.workspaceId)
       )
     )
@@ -56,15 +47,15 @@ export default async function ProjectPage({
 
   if (!project) notFound()
 
-  const projectTasks = await db
+  const projectTasks    = await db
     .select()
     .from(tasks)
     .where(eq(tasks.projectId, project.id))
 
-  const todoTasks       = projectTasks.filter((t) => t.status === "TODO")
-  const inProgressTasks = projectTasks.filter((t) => t.status === "IN_PROGRESS")
-  const inReviewTasks   = projectTasks.filter((t) => t.status === "IN_REVIEW")
-  const doneTasks       = projectTasks.filter((t) => t.status === "DONE")
+  const todoTasks        = projectTasks.filter((t) => t.status === "TODO")
+  const inProgressTasks  = projectTasks.filter((t) => t.status === "IN_PROGRESS")
+  const inReviewTasks    = projectTasks.filter((t) => t.status === "IN_REVIEW")
+  const doneTasks        = projectTasks.filter((t) => t.status === "DONE")
 
   const columns = [
     { id: "TODO",        label: "Todo",        tasks: todoTasks,       dot: "bg-[#555]"      },
@@ -80,13 +71,8 @@ export default async function ProjectPage({
       <div className="h-[50px] border-b border-[#1a1a1a] flex items-center justify-between px-5 bg-[#0d0d0d] sticky top-0 z-10">
         <div className="flex items-center gap-2">
           <span className="text-[13px] text-[#555]">Projects /</span>
-          <div
-            className="w-2 h-2 rounded-full"
-            style={{ background: project.color }}
-          />
-          <span className="text-[13px] font-medium text-[#e0e0e0]">
-            {project.name}
-          </span>
+          <div className="w-2 h-2 rounded-full" style={{ background: project.color }} />
+          <span className="text-[13px] font-medium text-[#e0e0e0]">{project.name}</span>
         </div>
         <NewTaskDialog projectId={project.id}>
           <div className="h-7 px-3 text-xs bg-indigo-600 hover:bg-indigo-500 text-white rounded-md cursor-pointer flex items-center font-medium transition-colors">
@@ -100,7 +86,7 @@ export default async function ProjectPage({
         {/* Project header */}
         <div className="flex items-start gap-4">
           <div
-            className="w-10 h-10 rounded-[10px] flex-shrink-0 mt-0.5"
+            className="w-10 h-10 rounded-[10px] flex-shrink-0"
             style={{ background: project.color }}
           />
           <div>
@@ -119,15 +105,12 @@ export default async function ProjectPage({
         {/* Stats */}
         <div className="grid grid-cols-4 gap-3">
           {[
-            { label: "Total",       value: projectTasks.length,   color: "text-[#e0e0e0]"   },
+            { label: "Total",       value: projectTasks.length,    color: "text-[#e0e0e0]"   },
             { label: "In progress", value: inProgressTasks.length, color: "text-indigo-400"  },
             { label: "Completed",   value: doneTasks.length,       color: "text-emerald-400" },
             { label: "Todo",        value: todoTasks.length,       color: "text-amber-400"   },
           ].map((stat) => (
-            <div
-              key={stat.label}
-              className="bg-[#111] border border-[#1f1f1f] rounded-[10px] p-4"
-            >
+            <div key={stat.label} className="bg-[#111] border border-[#1f1f1f] rounded-[10px] p-4">
               <p className="text-[11px] font-medium text-[#555] mb-2">{stat.label}</p>
               <p className={`text-[26px] font-semibold tracking-tight leading-none ${stat.color}`}>
                 {stat.value}
@@ -136,7 +119,7 @@ export default async function ProjectPage({
           ))}
         </div>
 
-        {/* Task board */}
+        {/* Task columns */}
         <div>
           <h2 className="text-[13px] font-medium text-[#d0d0d0] mb-3">Tasks</h2>
           <div className="grid grid-cols-4 gap-3">
@@ -145,6 +128,7 @@ export default async function ProjectPage({
                 key={col.id}
                 className="bg-[#111] border border-[#1a1a1a] rounded-[10px] p-3 flex flex-col gap-2 min-h-[120px]"
               >
+                {/* Column header */}
                 <div className="flex items-center justify-between mb-1">
                   <div className="flex items-center gap-1.5">
                     <div className={`w-[7px] h-[7px] rounded-full ${col.dot}`} />
@@ -155,6 +139,7 @@ export default async function ProjectPage({
                   </span>
                 </div>
 
+                {/* Tasks */}
                 {col.tasks.map((task) => {
                   const priority = priorityConfig[task.priority as keyof typeof priorityConfig]
                   return (
@@ -187,6 +172,7 @@ export default async function ProjectPage({
                   )
                 })}
 
+                {/* Empty state */}
                 {col.tasks.length === 0 && (
                   <div className="flex-1 flex items-center justify-center py-6">
                     <p className="text-[11px] text-[#333]">No tasks</p>
@@ -196,6 +182,7 @@ export default async function ProjectPage({
             ))}
           </div>
         </div>
+
       </div>
     </div>
   )
