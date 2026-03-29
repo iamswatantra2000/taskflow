@@ -66,6 +66,7 @@ export default async function DashboardPage() {
      projects={userProjects}
     firstName={firstName}
     user={session.user}    // ← add this
+    workspaceId={membership?.workspaceId ?? ""}
   />
   )
 }
