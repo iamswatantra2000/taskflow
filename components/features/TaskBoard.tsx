@@ -1,7 +1,7 @@
 // components/features/TaskBoard.tsx
 "use client"
 
-import { useState, useEffect } from "react"  // ← add useEffect
+import { useState, useEffect } from "react"
 import {
   DndContext,
   DragOverlay,
@@ -23,30 +23,34 @@ import { CSS } from "@dnd-kit/utilities"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { DeleteTaskButton } from "./DeleteTaskButton"
 import { TaskDetailDialog } from "./TaskDetailDialog"
+import { TaskProjectMenu } from "./TaskProjectMenu"
 import { updateTaskStatus } from "@/lib/actions"
 import { toast } from "sonner"
 import type { FilterState } from "./BoardFilters"
 
 type Task = {
-  id: string
-  title: string
+  id:          string
+  title:       string
   description: string | null
-  status: string
-  priority: string
-  assigneeId: string | null
+  status:      string
+  priority:    string
+  assigneeId:  string | null
+  projectId:   string
 }
 
 type Column = {
-  id: string
+  id:    string
   label: string
   tasks: Task[]
-  dot: string
+  dot:   string
 }
 
 type Props = {
-  columns: Column[]
-  userName: string
-  filters: FilterState
+  columns:     Column[]
+  userName:    string
+  filters:     FilterState
+  workspaceId: string
+  projects:    { id: string; name: string; color: string }[]
 }
 
 const priorityConfig = {
@@ -65,10 +69,12 @@ function TaskCard({
   task,
   userName,
   onSelect,
+  projects,
 }: {
-  task: Task
+  task:     Task
   userName: string
   onSelect: (task: Task) => void
+  projects: { id: string; name: string; color: string }[]
 }) {
   const priority = priorityConfig[task.priority as keyof typeof priorityConfig]
 
@@ -96,7 +102,10 @@ function TaskCard({
         ${task.status === "DONE" ? "opacity-50" : ""}
       `}
     >
+      {/* Top row — drag handle + title + project menu + delete */}
       <div className="flex items-start gap-2 mb-2">
+
+        {/* Drag handle */}
         <div
           {...attributes}
           {...listeners}
@@ -113,6 +122,7 @@ function TaskCard({
           </svg>
         </div>
 
+        {/* Title */}
         {/** biome-ignore lint/a11y/useKeyWithClickEvents: intentional */}
         <p
           onClick={() => onSelect(task)}
@@ -121,9 +131,18 @@ function TaskCard({
           {task.title}
         </p>
 
+        {/* Project menu — three dots */}
+        <TaskProjectMenu
+          taskId={task.id}
+          currentProjectId={task.projectId}
+          projects={projects}
+        />
+
+        {/* Delete */}
         <DeleteTaskButton taskId={task.id} />
       </div>
 
+      {/* Bottom row — priority + avatar */}
       <div className="flex items-center justify-between pl-4">
         <span className={`text-[10px] font-medium px-[7px] py-[2px] rounded-[5px] border ${priority.class}`}>
           {priority.label}
@@ -171,7 +190,7 @@ function DroppableColumn({
   col,
   children,
 }: {
-  col: Column
+  col:      Column
   children: React.ReactNode
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: col.id })
@@ -189,16 +208,17 @@ function DroppableColumn({
 }
 
 // ——— Main board ———
-export function TaskBoard({ columns, userName, filters }: Props) {
+export function TaskBoard({ columns, userName, filters, workspaceId, projects }: Props) {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [activeTask, setActiveTask]     = useState<Task | null>(null)
   const [boardColumns, setBoardColumns] = useState<Column[]>(columns)
 
-  // ← KEY FIX: sync local state when server sends fresh data
+  // Sync local state when server sends fresh data
   useEffect(() => {
     setBoardColumns(columns)
   }, [columns])
 
+  // Apply filters
   const filteredColumns = boardColumns.map((col) => ({
     ...col,
     tasks: col.tasks.filter((task) => {
@@ -307,6 +327,7 @@ export function TaskBoard({ columns, userName, filters }: Props) {
             >
               <DroppableColumn col={col}>
 
+                {/* Column header */}
                 <div className="flex items-center justify-between mb-1">
                   <div className="flex items-center gap-1.5">
                     <div className={`w-[7px] h-[7px] rounded-full ${col.dot}`} />
@@ -319,15 +340,18 @@ export function TaskBoard({ columns, userName, filters }: Props) {
                   </span>
                 </div>
 
+                {/* Task cards */}
                 {col.tasks.map((task) => (
                   <TaskCard
                     key={task.id}
                     task={task}
                     userName={userName}
                     onSelect={setSelectedTask}
+                    projects={projects}
                   />
                 ))}
 
+                {/* Empty state */}
                 {col.tasks.length === 0 && (
                   <div className="flex-1 flex items-center justify-center py-8 border border-dashed border-[#1f1f1f] rounded-[8px]">
                     <p className="text-[11px] text-[#333]">

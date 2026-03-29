@@ -3,6 +3,7 @@ import { requireAuth } from "@/lib/session"
 import { AppSidebar } from "@/components/features/AppSidebar"
 import { db, projects, workspaceMembers } from "@/lib/db"
 import { eq } from "drizzle-orm"
+import { CommandPalette } from "@/components/features/CommandPalette"
 
 export default async function DashboardLayout({
   children,
@@ -11,7 +12,6 @@ export default async function DashboardLayout({
 }) {
   const session = await requireAuth()
 
-  // Fetch user's projects for sidebar
   const [membership] = await db
     .select()
     .from(workspaceMembers)
@@ -25,13 +25,14 @@ export default async function DashboardLayout({
         .where(eq(projects.workspaceId, membership.workspaceId))
     : []
 
-
   return (
     <div className="flex h-screen overflow-hidden bg-background">
       <AppSidebar user={session.user} projects={userProjects} />
       <div className="flex-1 flex flex-col overflow-hidden">
         {children}
       </div>
+      {/* Command palette available on ALL dashboard pages */}
+      <CommandPalette projects={userProjects} />
     </div>
   )
 }

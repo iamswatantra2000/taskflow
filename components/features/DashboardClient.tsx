@@ -8,8 +8,9 @@ import { TaskBoardWrapper } from "./TaskBoardWrapper";
 import { NewTaskDialog } from "./NewTaskDialog";
 import { SignOutButton } from "./SignOutButton";
 import { ProfileDropdown } from "./ProfileDropdown";
-import { CommandPalette } from "./CommandPalette";
-import { AITaskDialog } from "./AITaskDialog";
+//import { AITaskDialog } from "./AITaskDialog";
+import { Sparkles } from "lucide-react"
+import { toast } from "sonner"
 
 type Task = {
 	id: string;
@@ -18,6 +19,7 @@ type Task = {
 	status: string;
 	priority: string;
 	assigneeId: string | null;
+   projectId:   string 
 };
 
 type Column = {
@@ -42,12 +44,14 @@ type Props = {
 	stats: { label: string; value: number; sub: string; valueColor: string }[];
 	firstName: string;
 	user: { name?: string | null; email?: string | null };
+   workspaceId:  string 
 };
 
 export function DashboardClient({
 	columns,
 	userName,
 	userInitials,
+  workspaceId,   
 	projectId,
 	projects,
 	stats,
@@ -104,7 +108,16 @@ export function DashboardClient({
 								</div>
 							</NewTaskDialog>
 
-							<AITaskDialog projectId={projectId} />
+							<button
+  type="button"
+  onClick={() => toast("AI task generator coming soon! 🤖", {
+    description: "We're adding Anthropic API credits. Stay tuned!",
+  })}
+  className="h-7 px-3 text-xs bg-violet-600/20 hover:bg-violet-600/30 text-violet-400 border border-violet-900 rounded-md cursor-pointer flex items-center gap-1.5 font-medium transition-colors"
+>
+  <Sparkles size={12} />
+  AI tasks
+</button>
 						</>
 					)}
 
@@ -151,15 +164,12 @@ export function DashboardClient({
 						</h2>
 					</div>
 					<TaskBoardWrapper
-						columns={columns}
-						userName={userName}
-						filters={filters}
-					/>
+            columns={columns}
+            userName={userName}
+            filters={filters}
+            projects={projects} workspaceId={workspaceId}	/>
 				</div>
 			</div>
-
-			{/* Command palette — renders as portal, always at end */}
-			<CommandPalette projects={projects} />
 		</div>
 	);
 }

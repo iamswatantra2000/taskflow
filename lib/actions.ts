@@ -453,3 +453,16 @@ export async function updateWorkspaceName(formData: FormData) {
   revalidatePath("/settings")
   revalidatePath("/")
 }
+
+// ——— Move task to different project ———
+export async function moveTaskToProject(taskId: string, projectId: string) {
+  await requireAuth()
+
+  await db
+    .update(tasks)
+    .set({ projectId })
+    .where(eq(tasks.id, taskId))
+
+  revalidatePath("/")
+  revalidatePath("/projects/[id]")
+}

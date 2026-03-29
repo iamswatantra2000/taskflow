@@ -27,25 +27,45 @@ const TaskBoard = dynamic(
 )
 
 type Column = {
-  id: string
+  id:    string
   label: string
   tasks: {
-    id: string
-    title: string
+    id:          string
+    title:       string
     description: string | null
-    status: string
-    priority: string
-    assigneeId: string | null
+    status:      string
+    priority:    string
+    assigneeId:  string | null
+    projectId:   string   // ← add this
   }[]
   dot: string
 }
 
 type Props = {
-  columns: Column[]
-  userName: string
-  filters: FilterState
+  columns:     Column[]
+  userName:    string
+  filters:     FilterState
+  workspaceId: string
+  projects:    { id: string; name: string; color: string }[]
 }
 
-export function TaskBoardWrapper({ columns, userName, filters }: Props) {
-  return <TaskBoard columns={columns} userName={userName} filters={filters} />
+export function TaskBoardWrapper({
+  columns,
+  userName,
+  filters,
+  workspaceId,
+  projects,
+}: Props) {
+  const boardKey = columns.map((c) => `${c.id}:${c.tasks.length}`).join(",")
+
+  return (
+    <TaskBoard
+      key={boardKey}
+      columns={columns}
+      userName={userName}
+      filters={filters}
+      workspaceId={workspaceId}
+      projects={projects}
+    />
+  )
 }
