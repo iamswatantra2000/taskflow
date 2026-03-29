@@ -428,3 +428,28 @@ Write a better description in 2-3 sentences. Be specific and actionable. Respond
 
   return content.text.trim()
 }
+
+// ——— Update workspace name ———
+export async function updateWorkspaceName(formData: FormData) {
+  const session = await requireAuth()
+  const name    = formData.get("name") as string
+
+  if (!name?.trim()) throw new Error("Workspace name is required")
+  if (name.trim().length < 2) throw new Error("Name must be at least 2 characters")
+
+  const [membership] = await db
+    .select()
+    .from(workspaceMembers)
+    .where(eq(workspaceMembers.userId, session.user.id!))
+    .limit(1)
+
+  if (!membership) throw new Error("No workspace found")
+
+  await db
+    .update(workspaces)
+    .set({ name: name.trim() })
+    .where(eq(workspaces.id, membership.workspaceId))
+
+  revalidatePath("/settings")
+  revalidatePath("/")
+}
