@@ -9,6 +9,8 @@ import { z } from "zod"
 import bcrypt from "bcryptjs"
 import { logActivity, getWorkspaceId } from "@/lib/activity"
 
+import Anthropic from "@anthropic-ai/sdk"
+
 // ——— Create a task ———
 export async function createTask(formData: FormData) {
   const session = await requireAuth()
@@ -324,11 +326,13 @@ export async function registerUser(formData: FormData) {
 export async function generateSubtasks(description: string, projectId: string) {
   const session = await requireAuth()
 
-  const Anthropic = (await import("@anthropic-ai/sdk")).default
-  const client    = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+  // Use static import instead of dynamic
+  const client = new Anthropic({
+    apiKey: process.env.ANTHROPIC_API_KEY,
+  })
 
   const message = await client.messages.create({
-    model:      "claude-sonnet-4-5-20251001",
+    model:      "claude-haiku-4-5-20251001",  // faster + cheaper for this use case
     max_tokens: 1024,
     messages: [{
       role:    "user",
@@ -341,24 +345,22 @@ Respond with ONLY a JSON array, no other text:
   {
     "title": "specific task title",
     "priority": "LOW" | "MEDIUM" | "HIGH" | "URGENT",
-    "description": "brief description of what needs to be done"
+    "description": "brief description"
   }
 ]`
     }],
   })
 
   const content = message.content[0]
-  if (content.type !== "text") throw new Error("Unexpected response type")
+  if (content.type !== "text") throw new Error("Unexpected response")
 
-  // Parse the JSON response
-  const clean   = content.text.replace(/```json|```/g, "").trim()
+  const clean    = content.text.replace(/```json|```/g, "").trim()
   const subtasks = JSON.parse(clean) as {
     title:       string
     priority:    string
     description: string
   }[]
 
-  // Get workspace membership
   const [membership] = await db
     .select()
     .from(workspaceMembers)
@@ -367,7 +369,6 @@ Respond with ONLY a JSON array, no other text:
 
   if (!membership) throw new Error("No workspace found")
 
-  // Create all subtasks in DB
   const created = await db.insert(tasks).values(
     subtasks.map((t) => ({
       title:       t.title.trim(),
@@ -379,7 +380,6 @@ Respond with ONLY a JSON array, no other text:
     }))
   ).returning()
 
-  // Log activity
   await logActivity({
     type:        "TASK_CREATED",
     description: `used AI to generate ${created.length} tasks from "${description}"`,
@@ -398,15 +398,16 @@ Respond with ONLY a JSON array, no other text:
 export async function improveTaskDescription(title: string, currentDescription: string) {
   await requireAuth()
 
-  const Anthropic = (await import("@anthropic-ai/sdk")).default
-  const client    = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+  const client = new Anthropic({
+    apiKey: process.env.ANTHROPIC_API_KEY,
+  })
 
   const message = await client.messages.create({
-    model:      "claude-sonnet-4-5-20251001",
+    model:      "claude-haiku-4-5-20251001",
     max_tokens: 512,
     messages: [{
       role:    "user",
-      content: `You are a project management assistant. Write a clear, concise task description for a developer.
+      content: `Write a clear, concise task description for a developer.
 
 Task title: "${title}"
 Current description: "${currentDescription || "none"}"
@@ -416,7 +417,7 @@ Write a better description in 2-3 sentences. Be specific and actionable. Respond
   })
 
   const content = message.content[0]
-  if (content.type !== "text") throw new Error("Unexpected response type")
+  if (content.type !== "text") throw new Error("Unexpected response")
 
   return content.text.trim()
 }
