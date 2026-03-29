@@ -3,6 +3,8 @@
 
 import { useState } from "react"
 import { updateTask } from "@/lib/actions"
+import { improveTaskDescription } from "@/lib/actions"
+import { Sparkles, Loader2 } from "lucide-react"
 import {
   Dialog, DialogContent,
   DialogHeader, DialogTitle
@@ -30,6 +32,7 @@ export function TaskDetailDialog({ task, open, onClose }: Props) {
   const [priority, setPriority]     = useState(task.priority)
   const [loading, setLoading]       = useState(false)
   const [saved, setSaved]           = useState(false)
+const [improving, setImproving] = useState(false)
 
 // Replace the handleSave function only:
 async function handleSave() {
@@ -49,6 +52,20 @@ async function handleSave() {
     setLoading(false)
   }
 }
+
+async function handleImproveDescription() {
+  setImproving(true)
+  try {
+    const improved = await improveTaskDescription(title, description)
+    setDescription(improved)
+    toast.success("Description improved by AI!")
+  } catch {
+    toast.error("Failed to improve description")
+  } finally {
+    setImproving(false)
+  }
+}
+
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -106,16 +123,29 @@ async function handleSave() {
 
           {/* Description */}
           <div className="space-y-1.5">
-            {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
-            <label className="text-[12px] font-medium text-[#888]">Description</label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={4}
-              placeholder="Add a description..."
-              className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-[#e0e0e0] placeholder-[#444] outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors resize-none"
-            />
-          </div>
+  <div className="flex items-center justify-between">
+    {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
+    <label className="text-[12px] font-medium text-[#888]">Description</label>
+    <button
+      type="button"
+      onClick={handleImproveDescription}
+      disabled={improving || !title}
+      className="flex items-center gap-1.5 text-[11px] text-violet-400 hover:text-violet-300 disabled:opacity-50 transition-colors"
+    >
+      {improving
+        ? <><Loader2 size={10} className="animate-spin" /> Improving...</>
+        : <><Sparkles size={10} /> Improve with AI</>
+      }
+    </button>
+  </div>
+  <textarea
+    value={description}
+    onChange={(e) => setDescription(e.target.value)}
+    rows={4}
+    placeholder="Add a description..."
+    className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-[#e0e0e0] placeholder-[#444] outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors resize-none"
+  />
+</div>
 
           {/* Actions */}
           <div className="flex items-center justify-between pt-1">

@@ -318,3 +318,105 @@ export async function registerUser(formData: FormData) {
 
   return { success: true, email, password }
 }
+
+
+// ——— AI: Generate subtasks ———
+export async function generateSubtasks(description: string, projectId: string) {
+  const session = await requireAuth()
+
+  const Anthropic = (await import("@anthropic-ai/sdk")).default
+  const client    = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+
+  const message = await client.messages.create({
+    model:      "claude-sonnet-4-5-20251001",
+    max_tokens: 1024,
+    messages: [{
+      role:    "user",
+      content: `You are a project management assistant. Break down this feature/task into 3-6 specific, actionable subtasks.
+
+Feature: "${description}"
+
+Respond with ONLY a JSON array, no other text:
+[
+  {
+    "title": "specific task title",
+    "priority": "LOW" | "MEDIUM" | "HIGH" | "URGENT",
+    "description": "brief description of what needs to be done"
+  }
+]`
+    }],
+  })
+
+  const content = message.content[0]
+  if (content.type !== "text") throw new Error("Unexpected response type")
+
+  // Parse the JSON response
+  const clean   = content.text.replace(/```json|```/g, "").trim()
+  const subtasks = JSON.parse(clean) as {
+    title:       string
+    priority:    string
+    description: string
+  }[]
+
+  // Get workspace membership
+  const [membership] = await db
+    .select()
+    .from(workspaceMembers)
+    .where(eq(workspaceMembers.userId, session.user.id!))
+    .limit(1)
+
+  if (!membership) throw new Error("No workspace found")
+
+  // Create all subtasks in DB
+  const created = await db.insert(tasks).values(
+    subtasks.map((t) => ({
+      title:       t.title.trim(),
+      description: t.description?.trim() || null,
+      priority:    t.priority as "LOW" | "MEDIUM" | "HIGH" | "URGENT",
+      status:      "TODO" as const,
+      projectId,
+      assigneeId:  session.user.id ?? null,
+    }))
+  ).returning()
+
+  // Log activity
+  await logActivity({
+    type:        "TASK_CREATED",
+    description: `used AI to generate ${created.length} tasks from "${description}"`,
+    userId:      session.user.id!,
+    workspaceId: membership.workspaceId,
+    projectId,
+  })
+
+  revalidatePath("/")
+  revalidatePath("/activity")
+
+  return created
+}
+
+// ——— AI: Improve task description ———
+export async function improveTaskDescription(title: string, currentDescription: string) {
+  await requireAuth()
+
+  const Anthropic = (await import("@anthropic-ai/sdk")).default
+  const client    = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+
+  const message = await client.messages.create({
+    model:      "claude-sonnet-4-5-20251001",
+    max_tokens: 512,
+    messages: [{
+      role:    "user",
+      content: `You are a project management assistant. Write a clear, concise task description for a developer.
+
+Task title: "${title}"
+Current description: "${currentDescription || "none"}"
+
+Write a better description in 2-3 sentences. Be specific and actionable. Respond with ONLY the description text, nothing else.`
+    }],
+  })
+
+  const content = message.content[0]
+  if (content.type !== "text") throw new Error("Unexpected response type")
+
+  return content.text.trim()
+}
