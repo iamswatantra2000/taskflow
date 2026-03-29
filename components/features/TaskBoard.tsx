@@ -13,6 +13,7 @@ import {
   DragEndEvent,
   closestCorners,
   useDroppable,
+  
 } from "@dnd-kit/core"
 import {
   SortableContext,
@@ -27,7 +28,7 @@ import { TaskProjectMenu } from "./TaskProjectMenu"
 import { updateTaskStatus } from "@/lib/actions"
 import { toast } from "sonner"
 import type { FilterState } from "./BoardFilters"
-
+import { fireConfetti } from "@/lib/confetti"
 type Task = {
   id:          string
   title:       string
@@ -303,6 +304,11 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects }:
       toast.success(`Moved to ${finalColumn.label}`, {
         description: "Status updated successfully.",
       })
+
+      // 🎉 Fire confetti when moved to Done!
+    if (finalColumn.id === "DONE") {
+      fireConfetti()
+    }
     }
 
     await updateTaskStatus(activeId, finalColumn.id)
