@@ -327,7 +327,7 @@ export async function generateSubtasks(description: string, projectId: string) {
   const session = await requireAuth()
 
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" })
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" })
 
   const prompt = `You are a project management assistant. Break down this feature/task into 3-6 specific, actionable subtasks.
 
@@ -391,7 +391,7 @@ export async function improveTaskDescription(title: string, currentDescription: 
   await requireAuth()
 
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" })
+ const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" })
 
   const prompt = `Write a clear, concise task description for a developer.
 
