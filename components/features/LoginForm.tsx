@@ -63,7 +63,7 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-[13px] font-medium py-2 rounded-[8px] transition-colors mt-2"
+        className="w-full h-9 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-[13px] font-semibold border border-indigo-700/80 rounded-[8px] shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none transition-all duration-100 mt-2"
       >
         {loading ? "Signing in..." : "Sign in"}
       </button>

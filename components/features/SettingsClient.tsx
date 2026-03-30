@@ -151,7 +151,7 @@ function ProfileTab({ user }: { user: Props["user"] }) {
             type="button"
             onClick={handleSaveName}
             disabled={savingName || name.trim() === user.name}
-            className="flex items-center gap-2 px-4 py-2 text-[12px] font-medium bg-primary hover:bg-primary/90 disabled:opacity-50 text-primary-foreground rounded-[8px] transition-colors"
+            className="flex items-center gap-2 h-8 px-4 text-[12px] font-semibold bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed text-white border border-indigo-700/80 rounded-[8px] shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none transition-all duration-100"
           >
             {savingName
               ? <><Loader2 size={12} className="animate-spin" /> Saving...</>
@@ -196,7 +196,7 @@ function ProfileTab({ user }: { user: Props["user"] }) {
             type="button"
             onClick={handleChangePassword}
             disabled={savingPw || !currentPw || !newPw || newPw !== confirmPw}
-            className="flex items-center gap-2 px-4 py-2 text-[12px] font-medium bg-primary hover:bg-primary/90 disabled:opacity-50 text-primary-foreground rounded-[8px] transition-colors"
+            className="flex items-center gap-2 h-8 px-4 text-[12px] font-semibold bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed text-white border border-indigo-700/80 rounded-[8px] shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none transition-all duration-100"
           >
             {savingPw
               ? <><Loader2 size={12} className="animate-spin" /> Changing...</>
@@ -217,7 +217,7 @@ function ProfileTab({ user }: { user: Props["user"] }) {
         </p>
         <button
           type="button"
-          className="px-4 py-2 text-[12px] font-medium border border-red-900 text-red-400 hover:bg-red-950 rounded-[8px] transition-colors"
+          className="h-8 px-4 text-[12px] font-medium border border-red-900/60 text-red-400 hover:bg-red-950/30 rounded-[8px] shadow-[0_3px_0_0_rgba(69,10,10,0.7)] active:translate-y-[3px] active:shadow-none transition-all duration-100"
           onClick={() => toast.error("Please contact support to delete your account")}
         >
           Delete account
@@ -299,7 +299,7 @@ function WorkspaceTab({
             type="button"
             onClick={handleSave}
             disabled={saving || name.trim() === workspace.name}
-            className="flex items-center gap-2 px-4 py-2 text-[12px] font-medium bg-primary hover:bg-primary/90 disabled:opacity-50 text-primary-foreground rounded-[8px] transition-colors"
+            className="flex items-center gap-2 h-8 px-4 text-[12px] font-semibold bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed text-white border border-indigo-700/80 rounded-[8px] shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none transition-all duration-100"
           >
             {saving
               ? <><Loader2 size={12} className="animate-spin" /> Saving...</>
@@ -320,8 +320,8 @@ function WorkspaceTab({
           </h3>
           <button
             type="button"
-            className="text-[12px] text-muted-foreground border border-border px-3 py-1.5 rounded-[7px] hover:bg-accent transition-colors opacity-50 cursor-not-allowed"
-            onClick={() => toast("Team invitations coming in Week 6!")}
+            className="h-7 px-3 text-[12px] font-medium text-[#555] border border-white/8 rounded-[7px] shadow-[0_2px_0_0_rgba(0,0,0,0.4)] opacity-50 cursor-not-allowed transition-all duration-100"
+            onClick={() => toast("Team invitations coming soon!")}
           >
             + Invite member
           </button>

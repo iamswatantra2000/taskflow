@@ -155,7 +155,7 @@ export function TaskDetailDialog({ task, open, onClose }: Props) {
                 type="button"
                 onClick={handleImproveDescription}
                 disabled={improving || !title}
-                className="flex items-center gap-1.5 text-[11px] text-violet-400 hover:text-violet-300 disabled:opacity-50 transition-colors"
+                className="flex items-center gap-1.5 h-6 px-2.5 text-[11px] font-medium text-violet-400 bg-violet-950/40 hover:bg-violet-950/60 border border-violet-800/50 rounded-[7px] shadow-[0_2px_0_0_rgba(76,29,149,0.5)] active:translate-y-[2px] active:shadow-none disabled:opacity-40 transition-all duration-100"
               >
                 {improving
                   ? <><Loader2 size={10} className="animate-spin" /> Improving...</>
@@ -181,7 +181,7 @@ export function TaskDetailDialog({ task, open, onClose }: Props) {
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-[12px] font-medium text-[#666] hover:text-[#999] transition-colors"
+                className="h-8 px-3.5 text-[12px] font-medium text-[#555] hover:text-[#888] bg-[#111] hover:bg-[#161616] border border-white/10 hover:border-white/15 rounded-[8px] shadow-[0_3px_0_0_rgba(0,0,0,0.5)] active:translate-y-[3px] active:shadow-none transition-all duration-100"
               >
                 Close
               </button>
@@ -189,7 +189,7 @@ export function TaskDetailDialog({ task, open, onClose }: Props) {
                 type="button"
                 onClick={handleSave}
                 disabled={loading}
-                className="px-4 py-2 text-[12px] font-medium bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-[8px] transition-colors"
+                className="h-8 px-3.5 text-[12px] font-semibold bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white border border-indigo-700/80 rounded-[8px] shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none transition-all duration-100"
               >
                 {loading ? "Saving..." : "Save changes"}
               </button>

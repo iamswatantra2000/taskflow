@@ -89,7 +89,7 @@ async function handleSubmit(e: React.FormEvent) {
 			<button
 				type="submit"
 				disabled={loading || !name.trim()}
-				className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-[12px] font-medium py-1.5 rounded-[7px] transition-colors"
+				className="w-full h-8 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white text-[12px] font-semibold border border-indigo-700/80 rounded-[8px] shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none transition-all duration-100"
 			>
 				{loading ? "Saving..." : "Save name"}
 			</button>
@@ -183,7 +183,7 @@ function ChangePasswordForm({ onDone }: { onDone: () => void }) {
 			<button
 				type="submit"
 				disabled={loading || next !== confirm || !current || !next}
-				className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-[12px] font-medium py-1.5 rounded-[7px] transition-colors"
+				className="w-full h-8 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white text-[12px] font-semibold border border-indigo-700/80 rounded-[8px] shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none transition-all duration-100"
 			>
 				{loading ? "Saving..." : "Change password"}
 			</button>
