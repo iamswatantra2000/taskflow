@@ -12,60 +12,65 @@ import {
 import { toast } from "sonner"
 
 type Task = {
-  id: string
-  title: string
+  id:          string
+  title:       string
   description: string | null
-  status: string
-  priority: string
+  status:      string
+  priority:    string
+  dueDate:     Date | null  // ← add
 }
 
 type Props = {
-  task: Task
-  open: boolean
+  task:    Task
+  open:    boolean
   onClose: () => void
 }
 
 export function TaskDetailDialog({ task, open, onClose }: Props) {
-  const [title, setTitle]           = useState(task.title)
+  const [title, setTitle]             = useState(task.title)
   const [description, setDescription] = useState(task.description ?? "")
-  const [status, setStatus]         = useState(task.status)
-  const [priority, setPriority]     = useState(task.priority)
-  const [loading, setLoading]       = useState(false)
-  const [saved, setSaved]           = useState(false)
-const [improving, setImproving] = useState(false)
+  const [status, setStatus]           = useState(task.status)
+  const [priority, setPriority]       = useState(task.priority)
+  const [loading, setLoading]         = useState(false)
+  const [saved, setSaved]             = useState(false)
+  const [improving, setImproving]     = useState(false)
+  const [dueDate, setDueDate]         = useState(
+    task.dueDate
+      ? new Date(task.dueDate).toISOString().split("T")[0]
+      : ""
+  )
 
-// Replace the handleSave function only:
-async function handleSave() {
-  setLoading(true)
-  try {
-    const formData = new FormData()
-    formData.set("title", title)
-    formData.set("description", description)
-    formData.set("status", status)
-    formData.set("priority", priority)
-    await updateTask(task.id, formData)
-    toast.success("Task updated")
-    onClose()
-  } catch {
-    toast.error("Failed to update task")
-  } finally {
-    setLoading(false)
+  async function handleSave() {
+    setLoading(true)
+    try {
+      const formData = new FormData()
+      formData.set("title",       title)
+      formData.set("description", description)
+      formData.set("status",      status)
+      formData.set("priority",    priority)
+      if (dueDate) formData.set("dueDate", dueDate)
+      await updateTask(task.id, formData)
+      toast.success("Task updated")
+      onClose()
+    } catch {
+      toast.error("Failed to update task")
+    } finally {
+      setLoading(false)
+    }
   }
-}
 
-async function handleImproveDescription() {
-  setImproving(true)
-  try {
-    const improved = await improveTaskDescription(title, description)
-    setDescription(improved)
-    toast.success("Description improved by AI!")
-  } catch {
-    toast.error("Failed to improve description")
-  } finally {
-    setImproving(false)
+  async function handleImproveDescription() {
+    setImproving(true)
+    try {
+      const improved = await improveTaskDescription(title, description)
+      setDescription(improved)
+      toast.success("Description improved by AI!")
+    } catch {
+      toast.error("Failed to improve description")
+    } finally {
+      setImproving(false)
+    }
   }
-}
-
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -121,31 +126,51 @@ async function handleImproveDescription() {
             </div>
           </div>
 
+          {/* Due date — full width */}
+          <div className="space-y-1.5">
+            {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
+            <label className="text-[12px] font-medium text-[#888]">
+              Due date <span className="text-[#555]">(optional)</span>
+            </label>
+            <input
+              type="date"
+              value={dueDate}
+              onChange={(e) => setDueDate(e.target.value)}
+              className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-[#e0e0e0] outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors [color-scheme:dark]"
+            />
+            {/* Show overdue warning */}
+            {dueDate && new Date(dueDate) < new Date() && status !== "DONE" && (
+              <p className="text-[11px] text-red-400">
+                ⚠ This task is overdue
+              </p>
+            )}
+          </div>
+
           {/* Description */}
           <div className="space-y-1.5">
-  <div className="flex items-center justify-between">
-    {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
-    <label className="text-[12px] font-medium text-[#888]">Description</label>
-    <button
-      type="button"
-      onClick={handleImproveDescription}
-      disabled={improving || !title}
-      className="flex items-center gap-1.5 text-[11px] text-violet-400 hover:text-violet-300 disabled:opacity-50 transition-colors"
-    >
-      {improving
-        ? <><Loader2 size={10} className="animate-spin" /> Improving...</>
-        : <><Sparkles size={10} /> Improve with AI</>
-      }
-    </button>
-  </div>
-  <textarea
-    value={description}
-    onChange={(e) => setDescription(e.target.value)}
-    rows={4}
-    placeholder="Add a description..."
-    className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-[#e0e0e0] placeholder-[#444] outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors resize-none"
-  />
-</div>
+            <div className="flex items-center justify-between">
+              {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
+              <label className="text-[12px] font-medium text-[#888]">Description</label>
+              <button
+                type="button"
+                onClick={handleImproveDescription}
+                disabled={improving || !title}
+                className="flex items-center gap-1.5 text-[11px] text-violet-400 hover:text-violet-300 disabled:opacity-50 transition-colors"
+              >
+                {improving
+                  ? <><Loader2 size={10} className="animate-spin" /> Improving...</>
+                  : <><Sparkles size={10} /> Improve with AI</>
+                }
+              </button>
+            </div>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={4}
+              placeholder="Add a description..."
+              className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-[#e0e0e0] placeholder-[#444] outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors resize-none"
+            />
+          </div>
 
           {/* Actions */}
           <div className="flex items-center justify-between pt-1">
@@ -153,15 +178,15 @@ async function handleImproveDescription() {
               Saved!
             </p>
             <div className="flex items-center gap-2">
-              {/** biome-ignore lint/a11y/useButtonType: <explanation> */}
               <button
+                type="button"
                 onClick={onClose}
                 className="px-4 py-2 text-[12px] font-medium text-[#666] hover:text-[#999] transition-colors"
               >
                 Close
               </button>
-              {/** biome-ignore lint/a11y/useButtonType: <explanation> */}
               <button
+                type="button"
                 onClick={handleSave}
                 disabled={loading}
                 className="px-4 py-2 text-[12px] font-medium bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-[8px] transition-colors"

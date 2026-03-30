@@ -37,6 +37,7 @@ type Task = {
   priority:    string
   assigneeId:  string | null
   projectId:   string
+  dueDate:     Date | null 
 }
 
 type Column = {
@@ -144,18 +145,31 @@ function TaskCard({
       </div>
 
       {/* Bottom row — priority + avatar */}
-      <div className="flex items-center justify-between pl-4">
-        <span className={`text-[10px] font-medium px-[7px] py-[2px] rounded-[5px] border ${priority.class}`}>
-          {priority.label}
-        </span>
-        {task.assigneeId && (
-          <Avatar className="h-[18px] w-[18px]">
-            <AvatarFallback className="text-[8px] bg-gradient-to-br from-indigo-500 to-violet-600 text-white border-0">
-              {getInitials(userName)}
-            </AvatarFallback>
-          </Avatar>
-        )}
-      </div>
+      {/* Bottom row — priority + due date + avatar */}
+<div className="flex items-center justify-between pl-4">
+  <span className={`text-[10px] font-medium px-[7px] py-[2px] rounded-[5px] border ${priority.class}`}>
+    {priority.label}
+  </span>
+
+  {/* Due date */}
+  {task.dueDate && (
+    <span className={`text-[10px] ${
+      new Date(task.dueDate) < new Date() && task.status !== "DONE"
+        ? "text-red-400"
+        : "text-[#555]"
+    }`}>
+      {new Date(task.dueDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+    </span>
+  )}
+
+  {task.assigneeId && (
+    <Avatar className="h-[18px] w-[18px]">
+      <AvatarFallback className="text-[8px] bg-gradient-to-br from-indigo-500 to-violet-600 text-white border-0">
+        {getInitials(userName)}
+      </AvatarFallback>
+    </Avatar>
+  )}
+</div>
     </div>
   )
 }
