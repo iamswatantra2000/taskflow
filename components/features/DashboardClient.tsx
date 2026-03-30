@@ -129,7 +129,7 @@ export function DashboardClient({
 			</div>
 
 			{/* Mobile action bar — icon-only controls, hidden on desktop */}
-			<div className="flex md:hidden items-center justify-between gap-2 px-3 py-2 border-b border-border bg-background sticky top-[50px] z-10">
+			<div className="flex md:hidden items-center justify-between gap-2 px-3 py-2 border-b border-border bg-card sticky top-[50px] z-10 shadow-sm">
 				<BoardFilters onFilterChange={setFilters} compact />
 				{projectId && (
 					<NewTaskDialog projectId={projectId}>
