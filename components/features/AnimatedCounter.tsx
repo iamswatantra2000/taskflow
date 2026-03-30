@@ -29,11 +29,11 @@ export function AnimatedCounter({ value, duration = 1500, delay = 200 }: Props) 
         setDisplay(Math.round(eased * value))
 
         if (progress < 1) {
-          frameRef.current = requestAnimationFrame(animate)
+          frameRef.current = window.requestAnimationFrame(animate)
         }
       }
 
-      frameRef.current = requestAnimationFrame(animate)
+      frameRef.current = window.requestAnimationFrame(animate)
     }, delay)
 
     return () => {
