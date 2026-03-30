@@ -110,6 +110,7 @@ function TaskCard({
         <div
           {...attributes}
           {...listeners}
+          style={{ touchAction: "none" }}
           className="flex-shrink-0 mt-0.5 cursor-grab active:cursor-grabbing text-muted-foreground/40 hover:text-muted-foreground transition-colors"
         >
           {/** biome-ignore lint/a11y/noSvgWithoutTitle: drag handle */}

@@ -64,10 +64,10 @@ export function DashboardClient({
 	});
 
 	return (
-		<div className="flex-1 overflow-auto">
+		<div className="flex-1 flex flex-col min-h-0">
 
 			{/* Topbar */}
-			<div className="h-[50px] border-b border-border flex items-center justify-between pl-14 pr-4 md:px-5 flex-shrink-0 bg-background sticky top-0 z-10">
+			<div className="h-[50px] border-b border-border flex items-center justify-between pl-14 pr-4 md:px-5 flex-shrink-0 bg-background z-10">
 				<div className="flex items-center gap-2 min-w-0">
 					<span className="text-[13px] text-muted-foreground hidden sm:inline">Workspace /</span>
 					<span className="text-[13px] font-medium text-foreground truncate">
@@ -129,7 +129,7 @@ export function DashboardClient({
 			</div>
 
 			{/* Mobile action bar — icon-only controls, hidden on desktop */}
-			<div className="flex md:hidden items-center justify-between gap-2 px-3 py-2 border-b border-border bg-card sticky top-[50px] z-10 shadow-sm">
+			<div className="flex md:hidden items-center justify-between gap-2 px-3 py-2 border-b border-border bg-card flex-shrink-0 z-10 shadow-sm">
 				<BoardFilters onFilterChange={setFilters} compact />
 				{projectId && (
 					<NewTaskDialog projectId={projectId}>
@@ -141,6 +141,7 @@ export function DashboardClient({
 				)}
 			</div>
 
+			<div className="flex-1 overflow-auto">
 			<div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
 				{/* Welcome */}
 				<div>
@@ -189,6 +190,7 @@ export function DashboardClient({
 						workspaceId={workspaceId}
 					/>
 				</div>
+			</div>
 			</div>
 		</div>
 	);
