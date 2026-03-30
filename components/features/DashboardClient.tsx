@@ -142,7 +142,7 @@ export function DashboardClient({
 				{/* Stats */}
 
 				<div className="grid grid-cols-4 gap-3">
-					{stats.map((stat) => (
+					{stats.map((stat,index) => (
 						<div
 							key={stat.label}
 							className="bg-card border border-border rounded-[10px] p-4 hover:border-border/80 transition-colors"
@@ -153,7 +153,8 @@ export function DashboardClient({
 							<p
 								className={`text-[26px] font-semibold tracking-tight leading-none ${stat.valueColor}`}
 							>
-								<AnimatedCounter value={stat.value} />
+								<AnimatedCounter value={stat.value}  duration={1500}
+          delay={index * 150}  />
 							</p>
 							<p className="text-[11px] text-muted-foreground/60 mt-1.5">
 								{stat.sub}
