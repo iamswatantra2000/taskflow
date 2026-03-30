@@ -63,6 +63,7 @@ export const tasks = pgTable("tasks", {
   assigneeId:  text("assignee_id").references(() => users.id),
   createdAt:   timestamp("created_at").defaultNow().notNull(),
   updatedAt:   timestamp("updated_at").defaultNow().notNull(),
+  
 })
 
 // ——— NextAuth tables ———

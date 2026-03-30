@@ -13,6 +13,7 @@ import Anthropic from "@anthropic-ai/sdk"
 // ——— Create a task ———
 export async function createTask(formData: FormData) {
   const session = await requireAuth()
+  const dueDate = formData.get("dueDate") as string
 
   const title     = formData.get("title") as string
   const priority  = formData.get("priority") as string
@@ -45,6 +46,7 @@ export async function createTask(formData: FormData) {
     status:     status   as "TODO" | "IN_PROGRESS" | "IN_REVIEW" | "DONE",
     projectId,
     assigneeId: session.user.id ?? null,
+      dueDate:    dueDate ? new Date(dueDate) : null,
   }).returning()
 
   // Log activity
