@@ -13,7 +13,6 @@ import {
   DragEndEvent,
   closestCorners,
   useDroppable,
-  
 } from "@dnd-kit/core"
 import {
   SortableContext,
@@ -29,6 +28,7 @@ import { updateTaskStatus } from "@/lib/actions"
 import { toast } from "sonner"
 import type { FilterState } from "./BoardFilters"
 import { fireConfetti } from "@/lib/confetti"
+
 type Task = {
   id:          string
   title:       string
@@ -37,7 +37,7 @@ type Task = {
   priority:    string
   assigneeId:  string | null
   projectId:   string
-  dueDate:     Date | null 
+  dueDate:     Date | null
 }
 
 type Column = {
@@ -99,7 +99,7 @@ function TaskCard({
     <div
       ref={setNodeRef}
       style={style}
-      className={`group bg-[#161616] border border-[#222] rounded-[8px] p-3 hover:border-[#333] hover:bg-[#1a1a1a] transition-all
+      className={`group bg-card border border-border rounded-[8px] p-3 hover:border-border/80 hover:bg-accent/50 transition-all
         ${task.status === "IN_PROGRESS" ? "border-l-2 border-l-indigo-500" : ""}
         ${task.status === "DONE" ? "opacity-50" : ""}
       `}
@@ -111,7 +111,7 @@ function TaskCard({
         <div
           {...attributes}
           {...listeners}
-          className="flex-shrink-0 mt-0.5 cursor-grab active:cursor-grabbing text-[#444] hover:text-[#666] transition-colors"
+          className="flex-shrink-0 mt-0.5 cursor-grab active:cursor-grabbing text-muted-foreground/40 hover:text-muted-foreground transition-colors"
         >
           {/** biome-ignore lint/a11y/noSvgWithoutTitle: drag handle */}
           <svg width="10" height="14" viewBox="0 0 10 14" fill="none">
@@ -128,7 +128,7 @@ function TaskCard({
         {/** biome-ignore lint/a11y/useKeyWithClickEvents: intentional */}
         <p
           onClick={() => onSelect(task)}
-          className="flex-1 text-[12px] text-[#ccc] leading-[1.45] cursor-pointer hover:text-white transition-colors"
+          className="flex-1 text-[12px] text-foreground/80 leading-[1.45] cursor-pointer hover:text-foreground transition-colors"
         >
           {task.title}
         </p>
@@ -144,32 +144,31 @@ function TaskCard({
         <DeleteTaskButton taskId={task.id} />
       </div>
 
-      {/* Bottom row — priority + avatar */}
       {/* Bottom row — priority + due date + avatar */}
-<div className="flex items-center justify-between pl-4">
-  <span className={`text-[10px] font-medium px-[7px] py-[2px] rounded-[5px] border ${priority.class}`}>
-    {priority.label}
-  </span>
+      <div className="flex items-center justify-between pl-4">
+        <span className={`text-[10px] font-medium px-[7px] py-[2px] rounded-[5px] border ${priority.class}`}>
+          {priority.label}
+        </span>
 
-  {/* Due date */}
-  {task.dueDate && (
-    <span className={`text-[10px] ${
-      new Date(task.dueDate) < new Date() && task.status !== "DONE"
-        ? "text-red-400"
-        : "text-[#555]"
-    }`}>
-      {new Date(task.dueDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-    </span>
-  )}
+        {/* Due date */}
+        {task.dueDate && (
+          <span className={`text-[10px] ${
+            new Date(task.dueDate) < new Date() && task.status !== "DONE"
+              ? "text-red-400"
+              : "text-muted-foreground"
+          }`}>
+            {new Date(task.dueDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+          </span>
+        )}
 
-  {task.assigneeId && (
-    <Avatar className="h-[18px] w-[18px]">
-      <AvatarFallback className="text-[8px] bg-gradient-to-br from-indigo-500 to-violet-600 text-white border-0">
-        {getInitials(userName)}
-      </AvatarFallback>
-    </Avatar>
-  )}
-</div>
+        {task.assigneeId && (
+          <Avatar className="h-[18px] w-[18px]">
+            <AvatarFallback className="text-[8px] bg-gradient-to-br from-indigo-500 to-violet-600 text-white border-0">
+              {getInitials(userName)}
+            </AvatarFallback>
+          </Avatar>
+        )}
+      </div>
     </div>
   )
 }
@@ -178,10 +177,10 @@ function TaskCard({
 function DragOverlayCard({ task }: { task: Task }) {
   const priority = priorityConfig[task.priority as keyof typeof priorityConfig]
   return (
-    <div className="bg-[#1e1e1e] border border-indigo-500 rounded-[8px] p-3 w-[220px] rotate-1 shadow-2xl">
+    <div className="bg-card border border-indigo-500 rounded-[8px] p-3 w-[220px] rotate-1 shadow-2xl">
       <div className="flex items-start gap-2 mb-2">
         {/** biome-ignore lint/a11y/noSvgWithoutTitle: drag handle */}
-        <svg width="10" height="14" viewBox="0 0 10 14" fill="none" className="flex-shrink-0 mt-0.5 text-[#555]">
+        <svg width="10" height="14" viewBox="0 0 10 14" fill="none" className="flex-shrink-0 mt-0.5 text-muted-foreground">
           <circle cx="2"  cy="2"  r="1.2" fill="currentColor"/>
           <circle cx="8"  cy="2"  r="1.2" fill="currentColor"/>
           <circle cx="2"  cy="7"  r="1.2" fill="currentColor"/>
@@ -189,7 +188,7 @@ function DragOverlayCard({ task }: { task: Task }) {
           <circle cx="2"  cy="12" r="1.2" fill="currentColor"/>
           <circle cx="8"  cy="12" r="1.2" fill="currentColor"/>
         </svg>
-        <p className="text-[12px] text-[#ccc] leading-[1.45] flex-1">{task.title}</p>
+        <p className="text-[12px] text-foreground leading-[1.45] flex-1">{task.title}</p>
       </div>
       <div className="pl-4">
         <span className={`text-[10px] font-medium px-[7px] py-[2px] rounded-[5px] border ${priority.class}`}>
@@ -213,8 +212,8 @@ function DroppableColumn({
     <div
       ref={setNodeRef}
       id={col.id}
-      className={`bg-[#111] border rounded-[10px] p-3 flex flex-col gap-2 min-h-[200px] transition-colors ${
-        isOver ? "border-indigo-500/50 bg-indigo-950/20" : "border-[#1a1a1a]"
+      className={`bg-card border rounded-[10px] p-3 flex flex-col gap-2 min-h-[200px] transition-colors ${
+        isOver ? "border-indigo-500/50 bg-indigo-950/20" : "border-border"
       }`}
     >
       {children}
@@ -228,12 +227,10 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects }:
   const [activeTask, setActiveTask]     = useState<Task | null>(null)
   const [boardColumns, setBoardColumns] = useState<Column[]>(columns)
 
-  // Sync local state when server sends fresh data
   useEffect(() => {
     setBoardColumns(columns)
   }, [columns])
 
-  // Apply filters
   const filteredColumns = boardColumns.map((col) => ({
     ...col,
     tasks: col.tasks.filter((task) => {
@@ -314,15 +311,15 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects }:
     const originalColumn = columns.find((c) =>
       c.tasks.some((t) => t.id === activeId)
     )
+
     if (originalColumn?.id !== finalColumn.id) {
       toast.success(`Moved to ${finalColumn.label}`, {
         description: "Status updated successfully.",
       })
 
-      // 🎉 Fire confetti when moved to Done!
-    if (finalColumn.id === "DONE") {
-      fireConfetti()
-    }
+      if (finalColumn.id === "DONE") {
+        fireConfetti()
+      }
     }
 
     await updateTaskStatus(activeId, finalColumn.id)
@@ -351,11 +348,11 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects }:
                 <div className="flex items-center justify-between mb-1">
                   <div className="flex items-center gap-1.5">
                     <div className={`w-[7px] h-[7px] rounded-full ${col.dot}`} />
-                    <span className="text-[11px] font-medium text-[#666]">
+                    <span className="text-[11px] font-medium text-muted-foreground">
                       {col.label}
                     </span>
                   </div>
-                  <span className="text-[10px] text-[#444] bg-[#1a1a1a] rounded-full px-2 py-0.5">
+                  <span className="text-[10px] text-muted-foreground/50 bg-muted rounded-full px-2 py-0.5">
                     {col.tasks.length}
                   </span>
                 </div>
@@ -373,8 +370,8 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects }:
 
                 {/* Empty state */}
                 {col.tasks.length === 0 && (
-                  <div className="flex-1 flex items-center justify-center py-8 border border-dashed border-[#1f1f1f] rounded-[8px]">
-                    <p className="text-[11px] text-[#333]">
+                  <div className="flex-1 flex items-center justify-center py-8 border border-dashed border-border rounded-[8px]">
+                    <p className="text-[11px] text-muted-foreground/30">
                       {filters.priority.length > 0 || filters.search
                         ? "No matching tasks"
                         : "Drop here"
