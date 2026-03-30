@@ -20,6 +20,7 @@ type Task = {
 	priority: string;
 	assigneeId: string | null;
    projectId:   string 
+    dueDate:     Date | null
 };
 
 type Column = {
@@ -167,7 +168,8 @@ export function DashboardClient({
             columns={columns}
             userName={userName}
             filters={filters}
-            projects={projects} workspaceId={workspaceId}	/>
+            projects={projects} workspaceId={workspaceId}	
+            />
 				</div>
 			</div>
 		</div>
