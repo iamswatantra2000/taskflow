@@ -8,9 +8,10 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { NewProjectDialog } from "./NewProjectDialog"
 import {
   LayoutDashboard, CheckSquare, Clock,
-  Settings, ChevronLeft, ChevronRight, Search,
+  Settings, ChevronLeft, ChevronRight, Search,BarChart2
 } from "lucide-react"
 import { useState } from "react"
+
 
 type Project = {
   id:    string
@@ -27,6 +28,7 @@ const navItems = [
   { href: "/",         label: "Dashboard", icon: LayoutDashboard },
   { href: "/my-tasks", label: "My tasks",  icon: CheckSquare     },
   { href: "/activity", label: "Activity",  icon: Clock           },
+  { href: "/analytics",  label: "Analytics", icon: BarChart2       },
 ]
 
 function getInitials(name: string) {
