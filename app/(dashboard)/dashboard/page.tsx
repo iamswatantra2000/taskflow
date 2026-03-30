@@ -56,12 +56,12 @@ export default async function DashboardPage() {
     { id: "DONE",        label: "Done",        tasks: doneTasks,       dot: "bg-emerald-500" },
   ]
 
-  const stats = [
-    { label: "Total tasks", value: allTasks.length,        sub: "across all projects", valueColor: "text-[#e0e0e0]"   },
-    { label: "In progress", value: inProgressTasks.length, sub: "currently active",    valueColor: "text-indigo-400"  },
-    { label: "Completed",   value: doneTasks.length,       sub: "great work!",         valueColor: "text-emerald-400" },
-    { label: "Todo",        value: todoTasks.length,       sub: "up next",             valueColor: "text-amber-400"   },
-  ]
+ const stats = [
+  { label: "Total tasks", value: allTasks.length,        sub: "across all projects", valueColor: "text-[#e0e0e0]"   },
+  { label: "In progress", value: inProgressTasks.length, sub: "currently active",    valueColor: "text-indigo-400"  },
+  { label: "Completed",   value: doneTasks.length,       sub: "great work!",         valueColor: "text-emerald-400" },
+  { label: "Todo",        value: todoTasks.length,       sub: "up next",             valueColor: "text-amber-400"   },
+]
 
   return (
     <DashboardClient

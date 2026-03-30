@@ -4,12 +4,12 @@
 import { useEffect, useState, useRef } from "react"
 
 type Props = {
-  value:    number
+  value:     number
   duration?: number
 }
 
 export function AnimatedCounter({ value, duration = 1000 }: Props) {
-  const [display, setDisplay] = useState(0)
+  const [display, setDisplay]  = useState(0)
   const startTime              = useRef<number | null>(null)
   const frameRef               = useRef<number | null>(null)
 
