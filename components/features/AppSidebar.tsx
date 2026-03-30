@@ -9,9 +9,10 @@ import { NewProjectDialog } from "./NewProjectDialog"
 import {
   LayoutDashboard, CheckSquare, Clock,
   Settings, ChevronLeft, ChevronRight,
-  Search, BarChart2, Menu, X
+  Search, BarChart2, Menu, X, LogOut
 } from "lucide-react"
 import { useState } from "react"
+import { signOut } from "next-auth/react"
 
 type Project = {
   id:    string
@@ -190,6 +191,16 @@ export function AppSidebar({ user, projects }: AppSidebarProps) {
             </div>
           )}
         </div>
+
+        {/* Sign out — mobile only (desktop uses topbar ProfileDropdown) */}
+        <button
+          type="button"
+          onClick={() => signOut({ callbackUrl: "/login" })}
+          className="md:hidden w-full flex items-center gap-2.5 px-2 py-[7px] rounded-[7px] text-[12.5px] text-muted-foreground hover:bg-red-950/40 hover:text-red-400 transition-all"
+        >
+          <LogOut size={15} className="flex-shrink-0" />
+          <span className="whitespace-nowrap">Sign out</span>
+        </button>
       </div>
     </>
   )
