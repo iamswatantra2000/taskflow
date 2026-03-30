@@ -104,10 +104,8 @@ function TaskCard({
         ${task.status === "DONE" ? "opacity-50" : ""}
       `}
     >
-      {/* Top row — drag handle + title + project menu + delete */}
+      {/* Top row */}
       <div className="flex items-start gap-2 mb-2">
-
-        {/* Drag handle */}
         <div
           {...attributes}
           {...listeners}
@@ -124,7 +122,6 @@ function TaskCard({
           </svg>
         </div>
 
-        {/* Title */}
         {/** biome-ignore lint/a11y/useKeyWithClickEvents: intentional */}
         <p
           onClick={() => onSelect(task)}
@@ -133,24 +130,21 @@ function TaskCard({
           {task.title}
         </p>
 
-        {/* Project menu — three dots */}
         <TaskProjectMenu
           taskId={task.id}
           currentProjectId={task.projectId}
           projects={projects}
         />
 
-        {/* Delete */}
         <DeleteTaskButton taskId={task.id} />
       </div>
 
-      {/* Bottom row — priority + due date + avatar */}
+      {/* Bottom row */}
       <div className="flex items-center justify-between pl-4">
         <span className={`text-[10px] font-medium px-[7px] py-[2px] rounded-[5px] border ${priority.class}`}>
           {priority.label}
         </span>
 
-        {/* Due date */}
         {task.dueDate && (
           <span className={`text-[10px] ${
             new Date(task.dueDate) < new Date() && task.status !== "DONE"
@@ -230,6 +224,19 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects }:
   useEffect(() => {
     setBoardColumns(columns)
   }, [columns])
+
+  // ← moved outside filteredColumns
+  const allDone   = boardColumns.every((col) =>
+    col.id !== "DONE" ? col.tasks.length === 0 : true
+  )
+  const totalTasks = boardColumns.reduce((sum, col) => sum + col.tasks.length, 0)
+
+  // Fire confetti when all caught up
+  useEffect(() => {
+    if (allDone && totalTasks > 0) {
+      fireConfetti()
+    }
+  }, [allDone, totalTasks])
 
   const filteredColumns = boardColumns.map((col) => ({
     ...col,
@@ -316,7 +323,6 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects }:
       toast.success(`Moved to ${finalColumn.label}`, {
         description: "Status updated successfully.",
       })
-
       if (finalColumn.id === "DONE") {
         fireConfetti()
       }
@@ -334,56 +340,75 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects }:
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
-        <div className="grid grid-cols-4 gap-3">
-          {filteredColumns.map((col) => (
-            <SortableContext
-              key={col.id}
-              id={col.id}
-              items={col.tasks.map((t) => t.id)}
-              strategy={verticalListSortingStrategy}
-            >
-              <DroppableColumn col={col}>
+        {/* 🎉 All caught up state */}
+        {totalTasks > 0 && allDone ? (
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="text-6xl mb-4 animate-bounce">🎉</div>
+            <h3 className="text-[18px] font-semibold text-foreground mb-2">
+              You are all caught up!
+            </h3>
+            <p className="text-[13px] text-muted-foreground max-w-sm">
+              All tasks are done. Time to celebrate — or create new ones!
+            </p>
+            <div className="flex items-center gap-2 mt-4">
+              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-[12px] text-emerald-400 font-medium">
+                All tasks completed
+              </span>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-4 gap-3">
+            {filteredColumns.map((col) => (
+              <SortableContext
+                key={col.id}
+                id={col.id}
+                items={col.tasks.map((t) => t.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                <DroppableColumn col={col}>
 
-                {/* Column header */}
-                <div className="flex items-center justify-between mb-1">
-                  <div className="flex items-center gap-1.5">
-                    <div className={`w-[7px] h-[7px] rounded-full ${col.dot}`} />
-                    <span className="text-[11px] font-medium text-muted-foreground">
-                      {col.label}
+                  {/* Column header */}
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center gap-1.5">
+                      <div className={`w-[7px] h-[7px] rounded-full ${col.dot}`} />
+                      <span className="text-[11px] font-medium text-muted-foreground">
+                        {col.label}
+                      </span>
+                    </div>
+                    <span className="text-[10px] text-muted-foreground/50 bg-muted rounded-full px-2 py-0.5">
+                      {col.tasks.length}
                     </span>
                   </div>
-                  <span className="text-[10px] text-muted-foreground/50 bg-muted rounded-full px-2 py-0.5">
-                    {col.tasks.length}
-                  </span>
-                </div>
 
-                {/* Task cards */}
-                {col.tasks.map((task) => (
-                  <TaskCard
-                    key={task.id}
-                    task={task}
-                    userName={userName}
-                    onSelect={setSelectedTask}
-                    projects={projects}
-                  />
-                ))}
+                  {/* Task cards */}
+                  {col.tasks.map((task) => (
+                    <TaskCard
+                      key={task.id}
+                      task={task}
+                      userName={userName}
+                      onSelect={setSelectedTask}
+                      projects={projects}
+                    />
+                  ))}
 
-                {/* Empty state */}
-                {col.tasks.length === 0 && (
-                  <div className="flex-1 flex items-center justify-center py-8 border border-dashed border-border rounded-[8px]">
-                    <p className="text-[11px] text-muted-foreground/30">
-                      {filters.priority.length > 0 || filters.search
-                        ? "No matching tasks"
-                        : "Drop here"
-                      }
-                    </p>
-                  </div>
-                )}
+                  {/* Empty state */}
+                  {col.tasks.length === 0 && (
+                    <div className="flex-1 flex items-center justify-center py-8 border border-dashed border-border rounded-[8px]">
+                      <p className="text-[11px] text-muted-foreground/30">
+                        {filters.priority.length > 0 || filters.search
+                          ? "No matching tasks"
+                          : "Drop here"
+                        }
+                      </p>
+                    </div>
+                  )}
 
-              </DroppableColumn>
-            </SortableContext>
-          ))}
-        </div>
+                </DroppableColumn>
+              </SortableContext>
+            ))}
+          </div>
+        )}
 
         <DragOverlay>
           {activeTask && <DragOverlayCard task={activeTask} />}

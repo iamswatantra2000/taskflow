@@ -9,6 +9,7 @@ import { NewTaskDialog } from "./NewTaskDialog"
 import { SignOutButton } from "./SignOutButton"
 import { ProfileDropdown } from "./ProfileDropdown"
 import { toast } from "sonner"
+import { AnimatedCounter } from "./AnimatedCounter"
 
 type Task = {
   id:          string
@@ -140,8 +141,8 @@ export function DashboardClient({
                 {stat.label}
               </p>
               <p className={`text-[26px] font-semibold tracking-tight leading-none ${stat.valueColor}`}>
-                {stat.value}
-              </p>
+  <AnimatedCounter value={stat.value} />
+</p>
               <p className="text-[11px] text-muted-foreground/60 mt-1.5">{stat.sub}</p>
             </div>
           ))}
