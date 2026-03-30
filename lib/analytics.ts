@@ -1,6 +1,6 @@
 // lib/analytics.ts
 import { db, tasks, projects, workspaceMembers } from "@/lib/db"
-import { eq, and, gte, lte } from "drizzle-orm"
+import { eq } from "drizzle-orm"
 
 export async function getAnalyticsData(userId: string) {
   // Get workspace
@@ -14,69 +14,13 @@ export async function getAnalyticsData(userId: string) {
 
   const workspaceId = membership.workspaceId
 
-  // Get all projects in workspace
+  // Get all projects
   const allProjects = await db
     .select()
     .from(projects)
     .where(eq(projects.workspaceId, workspaceId))
 
-  // Get all tasks across all projects
-  const allTasks = await db
-    .select({
-      id:        tasks.id,
-      status:    tasks.status,
-      priority:  tasks.priority,
-      projectId: tasks.projectId,
-      createdAt: tasks.createdAt,
-      updatedAt: tasks.updatedAt,
-    })
-    .from(tasks)
-    .where(
-      eq(
-        tasks.projectId,
-        // tasks from any project in this workspace
-        db
-          .select({ id: projects.id })
-          .from(projects)
-          .where(eq(projects.workspaceId, workspaceId))
-          .limit(1)
-          .as("sub")
-          .id
-      )
-    )
-
-  // Get tasks for each project separately
-  const tasksByProject = await Promise.all(
-    allProjects.map(async (project) => {
-      const projectTasks = await db
-        .select()
-        .from(tasks)
-        .where(eq(tasks.projectId, project.id))
-
-      return {
-        projectId:   project.id,
-        projectName: project.name,
-        color:       project.color,
-        total:       projectTasks.length,
-        todo:        projectTasks.filter((t) => t.status === "TODO").length,
-        inProgress:  projectTasks.filter((t) => t.status === "IN_PROGRESS").length,
-        inReview:    projectTasks.filter((t) => t.status === "IN_REVIEW").length,
-        done:        projectTasks.filter((t) => t.status === "DONE").length,
-      }
-    })
-  )
-
-  // Flatten all tasks
-  const flatTasks = tasksByProject.reduce<{
-    id:        string
-    status:    string
-    priority:  string
-    projectId: string
-    createdAt: Date
-    updatedAt: Date
-  }[]>((acc, p) => acc, [])
-
-  // Get all tasks directly
+  // Get all tasks for each project
   const allTasksDirect = await db
     .select({
       id:        tasks.id,
@@ -106,7 +50,7 @@ export async function getAnalyticsData(userId: string) {
     { name: "Urgent", value: allTasksDirect.filter((t) => t.priority === "URGENT").length, fill: "#dc2626" },
   ]
 
-  // Velocity — tasks created per day for last 7 days
+  // Velocity — last 7 days
   const last7Days = Array.from({ length: 7 }, (_, i) => {
     const date = new Date()
     date.setDate(date.getDate() - (6 - i))
@@ -119,13 +63,13 @@ export async function getAnalyticsData(userId: string) {
     nextDay.setDate(nextDay.getDate() + 1)
 
     const created = allTasksDirect.filter((t) => {
-      const created = new Date(t.createdAt)
-      return created >= day && created < nextDay
+      const createdAt = new Date(t.createdAt)
+      return createdAt >= day && createdAt < nextDay
     }).length
 
     const completed = allTasksDirect.filter((t) => {
-      const updated = new Date(t.updatedAt)
-      return t.status === "DONE" && updated >= day && updated < nextDay
+      const updatedAt = new Date(t.updatedAt)
+      return t.status === "DONE" && updatedAt >= day && updatedAt < nextDay
     }).length
 
     return {
@@ -135,13 +79,24 @@ export async function getAnalyticsData(userId: string) {
     }
   })
 
-  // Summary stats
+  // Tasks per project
+  const tasksByProject = allProjects.map((project) => {
+    const projectTasks = allTasksDirect.filter((t) => t.projectId === project.id)
+    return {
+      projectName: project.name,
+      color:       project.color,
+      total:       projectTasks.length,
+      done:        projectTasks.filter((t) => t.status === "DONE").length,
+      inProgress:  projectTasks.filter((t) => t.status === "IN_PROGRESS").length,
+    }
+  })
+
+  // Summary
   const totalTasks      = allTasksDirect.length
   const completedTasks  = allTasksDirect.filter((t) => t.status === "DONE").length
   const completionRate  = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
   const inProgressCount = allTasksDirect.filter((t) => t.status === "IN_PROGRESS").length
 
-  // Most active project
   const mostActiveProject = tasksByProject.reduce(
     (max, p) => (p.total > (max?.total ?? 0) ? p : max),
     tasksByProject[0]
