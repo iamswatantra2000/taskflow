@@ -104,7 +104,7 @@ export function DashboardClient({
 					{projectId && (
 						<>
 							<NewTaskDialog projectId={projectId}>
-								<div className="h-7 px-3 text-xs bg-indigo-600 hover:bg-indigo-500 text-white rounded-md cursor-pointer flex items-center font-medium transition-colors">
+								<div className="h-7 px-3 text-[12px] bg-indigo-600 hover:bg-indigo-500 text-white rounded-[8px] border border-indigo-700/80 shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none cursor-pointer flex items-center font-semibold transition-all duration-100 whitespace-nowrap">
 									+ New task
 								</div>
 							</NewTaskDialog>
@@ -116,7 +116,7 @@ export function DashboardClient({
 										description: "We're adding Anthropic API credits. Stay tuned!",
 									})
 								}
-								className="h-7 px-3 text-xs bg-violet-600/20 hover:bg-violet-600/30 text-violet-400 border border-violet-900 rounded-md cursor-pointer flex items-center gap-1.5 font-medium transition-colors"
+								className="h-7 px-3 text-[12px] bg-violet-950/60 hover:bg-violet-950/80 text-violet-400 border border-violet-800/60 shadow-[0_3px_0_0_rgba(76,29,149,0.5)] active:translate-y-[3px] active:shadow-none rounded-[8px] cursor-pointer flex items-center gap-1.5 font-medium transition-all duration-100 whitespace-nowrap"
 							>
 								<Sparkles size={12} />
 								AI tasks
@@ -133,9 +133,8 @@ export function DashboardClient({
 				<BoardFilters onFilterChange={setFilters} compact />
 				{projectId && (
 					<NewTaskDialog projectId={projectId}>
-						<div className="h-8 px-3 text-[12px] bg-indigo-600 hover:bg-indigo-500 text-white rounded-[7px] cursor-pointer flex items-center gap-1.5 font-medium transition-colors flex-shrink-0">
-							<span className="text-[16px] leading-none font-light">+</span>
-							New task
+						<div className="h-8 px-3 text-[12px] bg-indigo-600 hover:bg-indigo-500 text-white rounded-[8px] border border-indigo-700/80 shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none cursor-pointer flex items-center gap-1.5 font-semibold transition-all duration-100 flex-shrink-0 whitespace-nowrap">
+							+ New task
 						</div>
 					</NewTaskDialog>
 				)}

@@ -160,7 +160,7 @@ export function OnboardingTour() {
                 <button
                   type="button"
                   onClick={prev}
-                  className="h-8 px-3.5 text-[12px] font-medium text-[#555] border border-white/8 hover:border-white/15 hover:text-white rounded-[9px] transition-all"
+                  className="h-8 px-3.5 text-[12px] font-medium text-[#555] hover:text-white bg-[#111] hover:bg-[#161616] border border-white/8 hover:border-white/15 rounded-[8px] shadow-[0_3px_0_0_rgba(0,0,0,0.5)] active:translate-y-[3px] active:shadow-none transition-all duration-100"
                 >
                   Back
                 </button>
@@ -168,7 +168,7 @@ export function OnboardingTour() {
               <button
                 type="button"
                 onClick={next}
-                className="flex items-center gap-1.5 h-8 px-4 bg-indigo-600 hover:bg-indigo-500 text-white text-[12.5px] font-medium rounded-[9px] transition-all shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30"
+                className="flex items-center gap-1.5 h-8 px-4 bg-indigo-600 hover:bg-indigo-500 text-white text-[12.5px] font-semibold rounded-[8px] border border-indigo-700/80 shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none transition-all duration-100"
               >
                 {isLast ? "Get started" : "Next"}
                 {!isLast && <ChevronRight size={13} />}

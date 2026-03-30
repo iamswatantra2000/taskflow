@@ -34,13 +34,13 @@ function Navbar() {
         <div className="flex items-center gap-2 sm:gap-3">
           <Link
             href="/login"
-            className="hidden sm:block text-[13px] text-[#555] hover:text-white transition-colors"
+            className="hidden sm:block text-[12.5px] text-[#555] hover:text-white transition-colors"
           >
             Sign in
           </Link>
           <Link
             href="/register"
-            className="h-8 px-4 text-[12.5px] font-medium bg-indigo-600 hover:bg-indigo-500 text-white rounded-[8px] transition-all hover:shadow-lg hover:shadow-indigo-500/20 flex items-center"
+            className="h-8 px-4 text-[12.5px] font-semibold bg-indigo-600 hover:bg-indigo-500 text-white rounded-[8px] border border-indigo-700/80 shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none transition-all duration-100 flex items-center whitespace-nowrap"
           >
             Get started
           </Link>
@@ -94,14 +94,14 @@ function Hero() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
             href="/register"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-11 px-7 text-[14px] font-semibold bg-indigo-600 hover:bg-indigo-500 text-white rounded-[10px] transition-all shadow-2xl shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-px active:translate-y-0"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-10 px-6 text-[13.5px] font-semibold bg-indigo-600 hover:bg-indigo-500 text-white rounded-[9px] border border-indigo-700/80 shadow-[0_4px_0_0_#3730a3] active:translate-y-[4px] active:shadow-none transition-all duration-100 whitespace-nowrap"
           >
             Start for free
-            <ArrowRight size={15} />
+            <ArrowRight size={14} />
           </Link>
           <Link
             href="/login"
-            className="w-full sm:w-auto inline-flex items-center justify-center h-11 px-7 text-[14px] font-medium border border-white/10 hover:border-white/20 text-[#999] hover:text-white rounded-[10px] transition-all hover:bg-white/[0.03]"
+            className="w-full sm:w-auto inline-flex items-center justify-center h-10 px-6 text-[13.5px] font-medium border border-white/10 hover:border-white/18 text-[#888] hover:text-white rounded-[9px] bg-white/[0.03] hover:bg-white/[0.05] shadow-[0_4px_0_0_rgba(0,0,0,0.4)] active:translate-y-[4px] active:shadow-none transition-all duration-100 whitespace-nowrap"
           >
             Sign in
           </Link>
@@ -535,10 +535,10 @@ function Pricing() {
 
               <Link
                 href={plan.href}
-                className={`w-full h-9 flex items-center justify-center text-[13px] font-medium rounded-[9px] transition-all ${
+                className={`w-full h-8 flex items-center justify-center text-[12.5px] font-semibold rounded-[8px] border transition-all duration-100 active:translate-y-[3px] active:shadow-none whitespace-nowrap ${
                   plan.popular
-                    ? "bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/20"
-                    : "border border-white/10 hover:border-white/20 text-[#888] hover:text-white"
+                    ? "bg-indigo-600 hover:bg-indigo-500 text-white border-indigo-700/80 shadow-[0_3px_0_0_#3730a3]"
+                    : "bg-[#111] hover:bg-[#161616] text-[#888] hover:text-white border-white/10 hover:border-white/18 shadow-[0_3px_0_0_rgba(0,0,0,0.55)]"
                 }`}
               >
                 {plan.cta}
@@ -581,10 +581,10 @@ function CTABanner() {
             </p>
             <Link
               href="/register"
-              className="inline-flex items-center gap-2 h-11 px-7 text-[14px] font-semibold bg-indigo-600 hover:bg-indigo-500 text-white rounded-[10px] transition-all shadow-2xl shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-px"
+              className="inline-flex items-center gap-2 h-10 px-6 text-[13.5px] font-semibold bg-indigo-600 hover:bg-indigo-500 text-white rounded-[9px] border border-indigo-700/80 shadow-[0_4px_0_0_#3730a3] active:translate-y-[4px] active:shadow-none transition-all duration-100 whitespace-nowrap"
             >
-              Get started for free
-              <ArrowRight size={15} />
+              Get started free
+              <ArrowRight size={14} />
             </Link>
             <p className="mt-4 text-[11.5px] text-[#333]">No credit card required · Cancel anytime</p>
           </div>

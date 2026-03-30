@@ -141,14 +141,14 @@ export function NewTaskDialog({ projectId, children }: Props) {
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="px-4 py-2 text-[12px] font-medium text-[#666] hover:text-[#999] transition-colors"
+              className="h-8 px-3.5 text-[12px] font-medium text-[#555] hover:text-[#888] bg-[#111] hover:bg-[#161616] border border-white/8 hover:border-white/15 rounded-[8px] shadow-[0_3px_0_0_rgba(0,0,0,0.5)] active:translate-y-[3px] active:shadow-none transition-all duration-100"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 text-[12px] font-medium bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-[8px] transition-colors"
+              className="h-8 px-3.5 text-[12px] font-semibold bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white border border-indigo-700/80 rounded-[8px] shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none transition-all duration-100"
             >
               {loading ? "Creating..." : "Create task"}
             </button>
