@@ -48,14 +48,14 @@ const myTasks = await db
     <div className="flex-1 overflow-auto">
 
       {/* Topbar */}
-      <div className="h-[50px] border-b border-[#1a1a1a] flex items-center px-5 bg-[#0d0d0d]">
+      <div className="h-[50px] border-b border-[#1a1a1a] flex items-center pl-14 pr-5 md:px-5 bg-[#0d0d0d]">
         <div className="flex items-center gap-2">
-          <span className="text-[13px] text-[#555]">Workspace /</span>
+          <span className="text-[13px] text-[#555] hidden sm:inline">Workspace /</span>
           <span className="text-[13px] font-medium text-[#e0e0e0]">My tasks</span>
         </div>
       </div>
 
-      <div className="p-6 space-y-6">
+      <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
 
         {/* Header */}
         <div>
@@ -87,7 +87,7 @@ const myTasks = await db
                   return (
                     <div
                       key={task.id}
-                      className="group flex items-center gap-4 bg-[#111] border border-[#1a1a1a] rounded-[8px] px-4 py-3 hover:border-[#2a2a2a] transition-colors"
+                      className="group flex items-center gap-2 sm:gap-4 bg-[#111] border border-[#1a1a1a] rounded-[8px] px-3 sm:px-4 py-3 hover:border-[#2a2a2a] transition-colors"
                     >
                       {/* Color dot from project */}
                       <div
@@ -110,7 +110,7 @@ const myTasks = await db
 
                       {/* Due date */}
                       {task.dueDate && (
-                        <span className="text-[11px] text-[#444]">
+                        <span className="text-[11px] text-[#444] hidden sm:block">
                           {new Date(task.dueDate).toLocaleDateString()}
                         </span>
                       )}

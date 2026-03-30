@@ -9,9 +9,9 @@ import {
 function Navbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#0a0a0a]/80 backdrop-blur-md">
-      <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-[7px] bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
+          <div className="w-7 h-7 rounded-[7px] bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center flex-shrink-0">
             <span className="text-white text-[11px] font-bold">T</span>
           </div>
           <span className="text-[14px] font-semibold text-white">TaskFlow</span>
@@ -29,7 +29,7 @@ function Navbar() {
           ))}
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <Link
             href="/login"
             className="text-[13px] text-[#888] hover:text-white transition-colors"
@@ -38,7 +38,7 @@ function Navbar() {
           </Link>
           <Link
             href="/register"
-            className="h-8 px-4 text-[13px] font-medium bg-indigo-600 hover:bg-indigo-500 text-white rounded-[8px] transition-colors flex items-center"
+            className="h-8 px-3 sm:px-4 text-[12px] sm:text-[13px] font-medium bg-indigo-600 hover:bg-indigo-500 text-white rounded-[8px] transition-colors flex items-center"
           >
             Get started
           </Link>
@@ -51,7 +51,7 @@ function Navbar() {
 // ——— Hero ———
 function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center px-6 overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 overflow-hidden">
 
       {/* Background glow effects */}
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none" />
@@ -68,7 +68,7 @@ function Hero() {
         </div>
 
         {/* Headline */}
-        <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight leading-[1.08] mb-6">
+        <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-white tracking-tight leading-[1.08] mb-6">
           Where teams{" "}
           <span className="bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
             ship faster
@@ -226,7 +226,7 @@ function Features() {
   ]
 
   return (
-    <section id="features" className="py-24 px-6">
+    <section id="features" className="py-16 sm:py-24 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
 
         {/* Section header */}
@@ -234,7 +234,7 @@ function Features() {
           <div className="inline-flex items-center gap-2 border border-white/10 rounded-full px-4 py-1.5 mb-4">
             <span className="text-[12px] text-[#888]">Features</span>
           </div>
-          <h2 className="text-4xl font-bold text-white tracking-tight mb-4">
+          <h2 className="text-2xl sm:text-4xl font-bold text-white tracking-tight mb-4">
             Everything your team needs
           </h2>
           <p className="text-[16px] text-[#666] max-w-md mx-auto">
@@ -288,14 +288,14 @@ function HowItWorks() {
   ]
 
   return (
-    <section id="how-it-works" className="py-24 px-6 border-t border-white/5">
+    <section id="how-it-works" className="py-16 sm:py-24 px-4 sm:px-6 border-t border-white/5">
       <div className="max-w-6xl mx-auto">
 
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 border border-white/10 rounded-full px-4 py-1.5 mb-4">
             <span className="text-[12px] text-[#888]">How it works</span>
           </div>
-          <h2 className="text-4xl font-bold text-white tracking-tight mb-4">
+          <h2 className="text-2xl sm:text-4xl font-bold text-white tracking-tight mb-4">
             Up and running in minutes
           </h2>
           <p className="text-[16px] text-[#666] max-w-md mx-auto">
@@ -303,7 +303,7 @@ function HowItWorks() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           {steps.map((step, index) => (
             <div key={step.number} className="relative">
               {/* Connector line */}
@@ -354,7 +354,7 @@ function Testimonials() {
   ]
 
   return (
-    <section className="py-24 px-6 border-t border-white/5">
+    <section className="py-16 sm:py-24 px-4 sm:px-6 border-t border-white/5">
       <div className="max-w-6xl mx-auto">
 
         <div className="text-center mb-16">
@@ -362,7 +362,7 @@ function Testimonials() {
             <Star size={11} className="text-amber-400 fill-amber-400" />
             <span className="text-[12px] text-[#888]">Loved by teams</span>
           </div>
-          <h2 className="text-4xl font-bold text-white tracking-tight mb-4">
+          <h2 className="text-2xl sm:text-4xl font-bold text-white tracking-tight mb-4">
             Teams that ship use TaskFlow
           </h2>
         </div>
@@ -460,14 +460,14 @@ function Pricing() {
   ]
 
   return (
-    <section id="pricing" className="py-24 px-6 border-t border-white/5">
+    <section id="pricing" className="py-16 sm:py-24 px-4 sm:px-6 border-t border-white/5">
       <div className="max-w-6xl mx-auto">
 
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 border border-white/10 rounded-full px-4 py-1.5 mb-4">
             <span className="text-[12px] text-[#888]">Pricing</span>
           </div>
-          <h2 className="text-4xl font-bold text-white tracking-tight mb-4">
+          <h2 className="text-2xl sm:text-4xl font-bold text-white tracking-tight mb-4">
             Simple, transparent pricing
           </h2>
           <p className="text-[16px] text-[#666] max-w-md mx-auto">
@@ -538,9 +538,9 @@ function Pricing() {
 // ——— CTA Banner ———
 function CTABanner() {
   return (
-    <section className="py-24 px-6 border-t border-white/5">
+    <section className="py-16 sm:py-24 px-4 sm:px-6 border-t border-white/5">
       <div className="max-w-2xl mx-auto text-center">
-        <h2 className="text-4xl font-bold text-white tracking-tight mb-4">
+        <h2 className="text-2xl sm:text-4xl font-bold text-white tracking-tight mb-4">
           Ready to ship faster?
         </h2>
         <p className="text-[16px] text-[#666] mb-8">
@@ -564,12 +564,12 @@ function CTABanner() {
 // ——— Footer ———
 function Footer() {
   return (
-    <footer className="border-t border-white/5 py-12 px-6">
+    <footer className="border-t border-white/5 py-10 sm:py-12 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
-        <div className="grid md:grid-cols-4 gap-8 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-10 sm:mb-12">
 
           {/* Brand */}
-          <div className="md:col-span-1">
+          <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-7 h-7 rounded-[7px] bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
                 <span className="text-white text-[11px] font-bold">T</span>

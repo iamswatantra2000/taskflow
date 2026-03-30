@@ -365,7 +365,7 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects }:
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {filteredColumns.map((col) => (
               <SortableContext
                 key={col.id}

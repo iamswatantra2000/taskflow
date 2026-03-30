@@ -52,7 +52,7 @@ export function CommandPalette({ projects }: Props) {
       />
 
       {/* Palette */}
-      <div className="relative w-full max-w-[560px] mx-4">
+      <div className="relative w-full max-w-[560px] mx-3 sm:mx-4">
         <Command className="bg-[#161616] border border-[#2a2a2a] rounded-[14px] shadow-2xl overflow-hidden">
 
           {/* Search input */}
@@ -70,7 +70,7 @@ export function CommandPalette({ projects }: Props) {
             </kbd>
           </div>
 
-          <Command.List className="max-h-[400px] overflow-y-auto p-2">
+          <Command.List className="max-h-[60vh] sm:max-h-[400px] overflow-y-auto p-2">
 
             <Command.Empty className="text-center text-[13px] text-[#555] py-8">
               No results found
@@ -160,7 +160,7 @@ export function CommandPalette({ projects }: Props) {
           </Command.List>
 
           {/* Footer hints */}
-          <div className="border-t border-[#222] px-4 py-2 flex items-center gap-4">
+          <div className="hidden sm:flex border-t border-[#222] px-4 py-2 items-center gap-4">
             <div className="flex items-center gap-1.5">
               <kbd className="text-[10px] text-[#444] border border-[#2a2a2a] rounded px-1.5 py-0.5">↑</kbd>
               <kbd className="text-[10px] text-[#444] border border-[#2a2a2a] rounded px-1.5 py-0.5">↓</kbd>

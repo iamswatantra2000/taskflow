@@ -8,10 +8,10 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { NewProjectDialog } from "./NewProjectDialog"
 import {
   LayoutDashboard, CheckSquare, Clock,
-  Settings, ChevronLeft, ChevronRight, Search,BarChart2
+  Settings, ChevronLeft, ChevronRight,
+  Search, BarChart2, Menu, X
 } from "lucide-react"
 import { useState } from "react"
-
 
 type Project = {
   id:    string
@@ -25,9 +25,9 @@ type AppSidebarProps = {
 }
 
 const navItems = [
-  { href: "/",         label: "Dashboard", icon: LayoutDashboard },
-  { href: "/my-tasks", label: "My tasks",  icon: CheckSquare     },
-  { href: "/activity", label: "Activity",  icon: Clock           },
+  { href: "/dashboard",  label: "Dashboard", icon: LayoutDashboard },
+  { href: "/my-tasks",   label: "My tasks",  icon: CheckSquare     },
+  { href: "/activity",   label: "Activity",  icon: Clock           },
   { href: "/analytics",  label: "Analytics", icon: BarChart2       },
 ]
 
@@ -36,8 +36,9 @@ function getInitials(name: string) {
 }
 
 export function AppSidebar({ user, projects }: AppSidebarProps) {
-  const pathname                    = usePathname()
-  const [collapsed, setCollapsed]   = useState(false)
+  const pathname                  = usePathname()
+  const [collapsed, setCollapsed] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
 
   function openCommandPalette() {
     document.dispatchEvent(
@@ -45,12 +46,8 @@ export function AppSidebar({ user, projects }: AppSidebarProps) {
     )
   }
 
-  return (
-    <aside className={cn(
-      "relative flex flex-col h-full bg-card border-r border-border transition-all duration-200 flex-shrink-0",
-      collapsed ? "w-[52px]" : "w-[220px]"
-    )}>
-
+  const sidebarContent = (
+    <>
       {/* Logo */}
       <div className="flex items-center justify-between h-[50px] px-3 border-b border-border">
         <div className="flex items-center gap-2.5 overflow-hidden">
@@ -61,23 +58,31 @@ export function AppSidebar({ user, projects }: AppSidebarProps) {
             <span className="text-[13px] font-semibold whitespace-nowrap">TaskFlow</span>
           )}
         </div>
+        {/* Desktop collapse button */}
         <button
           type="button"
           onClick={() => setCollapsed(!collapsed)}
-          className="w-[22px] h-[22px] rounded-[5px] border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors flex-shrink-0"
+          className="hidden md:flex w-[22px] h-[22px] rounded-[5px] border border-border items-center justify-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors flex-shrink-0"
         >
           {collapsed ? <ChevronRight size={11} /> : <ChevronLeft size={11} />}
+        </button>
+        {/* Mobile close button */}
+        <button
+          type="button"
+          onClick={() => setMobileOpen(false)}
+          className="md:hidden w-[22px] h-[22px] rounded-[5px] border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+        >
+          <X size={11} />
         </button>
       </div>
 
       {/* Nav */}
       <nav className="flex-1 p-2 space-y-0.5 overflow-y-auto overflow-x-hidden">
-
-        {/* Nav items */}
         {navItems.map(({ href, label, icon: Icon }) => (
           <Link
             key={href}
             href={href}
+            onClick={() => setMobileOpen(false)}
             className={cn(
               "flex items-center gap-2.5 px-2 py-[7px] rounded-[7px] text-[12.5px] transition-all overflow-hidden",
               pathname === href
@@ -90,7 +95,7 @@ export function AppSidebar({ user, projects }: AppSidebarProps) {
           </Link>
         ))}
 
-        {/* Search / Command palette trigger */}
+        {/* Search */}
         {!collapsed && (
           <button
             type="button"
@@ -108,7 +113,6 @@ export function AppSidebar({ user, projects }: AppSidebarProps) {
           </button>
         )}
 
-        {/* Collapsed search icon */}
         {collapsed && (
           <button
             type="button"
@@ -120,7 +124,7 @@ export function AppSidebar({ user, projects }: AppSidebarProps) {
           </button>
         )}
 
-        {/* Projects section */}
+        {/* Projects */}
         <div className="pt-3">
           {!collapsed && (
             <div className="flex items-center justify-between px-2 mb-1">
@@ -135,6 +139,7 @@ export function AppSidebar({ user, projects }: AppSidebarProps) {
             <Link
               key={project.id}
               href={`/projects/${project.id}`}
+              onClick={() => setMobileOpen(false)}
               className={cn(
                 "flex items-center gap-2.5 px-2 py-[7px] rounded-[7px] text-[12.5px] transition-all overflow-hidden",
                 pathname === `/projects/${project.id}`
@@ -165,8 +170,8 @@ export function AppSidebar({ user, projects }: AppSidebarProps) {
       <div className="p-2 border-t border-border space-y-0.5">
         <Link
           href="/settings"
+          onClick={() => setMobileOpen(false)}
           className="flex items-center gap-2.5 px-2 py-[7px] rounded-[7px] text-[12.5px] text-muted-foreground hover:bg-accent hover:text-foreground transition-all overflow-hidden"
-          title={collapsed ? "Settings" : undefined}
         >
           <Settings size={15} className="flex-shrink-0" />
           {!collapsed && <span className="whitespace-nowrap">Settings</span>}
@@ -186,7 +191,59 @@ export function AppSidebar({ user, projects }: AppSidebarProps) {
           )}
         </div>
       </div>
+    </>
+  )
 
-    </aside>
+  return (
+    <>
+      {/* Mobile hamburger button — shown in topbar */}
+      <button
+        type="button"
+        onClick={() => setMobileOpen(true)}
+        className="md:hidden fixed top-3 left-4 z-50 w-8 h-8 rounded-[7px] border border-border bg-background flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+      >
+        <Menu size={15} />
+      </button>
+
+      {/* Mobile overlay backdrop */}
+      {mobileOpen && (
+        <button
+          type="button"
+          className="md:hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm cursor-default"
+          onClick={() => setMobileOpen(false)}
+          aria-label="Close sidebar"
+        />
+      )}
+
+      {/* Mobile drawer */}
+      <aside className={cn(
+        "fixed inset-y-0 left-0 z-50 flex flex-col h-full bg-card border-r border-border transition-transform duration-300 md:hidden w-[260px]",
+        mobileOpen ? "translate-x-0" : "-translate-x-full"
+      )}>
+        {sidebarContent}
+      </aside>
+
+      {/* Desktop sidebar */}
+      <aside className={cn(
+        "hidden md:flex flex-col h-full bg-card border-r border-border transition-all duration-200 flex-shrink-0",
+        collapsed ? "w-[52px]" : "w-[220px]"
+      )}>
+        {sidebarContent}
+      </aside>
+    </>
   )
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

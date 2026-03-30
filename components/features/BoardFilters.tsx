@@ -63,8 +63,8 @@ export function BoardFilters({ onFilterChange }: Props) {
 					<input
 						value={search}
 						onChange={(e) => handleSearch(e.target.value)}
-						placeholder="Search tasks..."
-						className="w-[180px] bg-[#111] border border-[#2a2a2a] rounded-[7px] px-3 py-1.5 text-[12px] text-[#e0e0e0] placeholder-[#444] outline-none focus:border-indigo-500 transition-colors"
+						placeholder="Search..."
+						className="w-[110px] sm:w-[180px] bg-[#111] border border-[#2a2a2a] rounded-[7px] px-3 py-1.5 text-[12px] text-[#e0e0e0] placeholder-[#444] outline-none focus:border-indigo-500 transition-colors"
 					/>
 					{search && (
 						// biome-ignore lint/a11y/useButtonType: <explanation>

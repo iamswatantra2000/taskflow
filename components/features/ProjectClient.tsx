@@ -76,7 +76,7 @@ function BoardView({ tasks, project }: { tasks: Task[]; project: Project }) {
   ]
 
   return (
-    <div className="grid grid-cols-4 gap-3">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
       {columns.map((col) => {
         const colTasks = tasks.filter((t) => t.status === col.id)
         return (
@@ -476,14 +476,14 @@ export function ProjectClient({ project, tasks, allProjects }: Props) {
     <div className="flex-1 overflow-auto">
 
       {/* Topbar */}
-      <div className="h-[50px] border-b border-[#1a1a1a] flex items-center justify-between px-5 bg-[#0d0d0d] sticky top-0 z-10">
-        <div className="flex items-center gap-2">
-          <span className="text-[13px] text-[#555]">Projects /</span>
-          <div className="w-2 h-2 rounded-full" style={{ background: project.color }} />
-          <span className="text-[13px] font-medium text-[#e0e0e0]">{project.name}</span>
+      <div className="h-[50px] border-b border-[#1a1a1a] flex items-center justify-between pl-14 pr-4 md:px-5 bg-[#0d0d0d] sticky top-0 z-10">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="text-[13px] text-[#555] hidden sm:inline">Projects /</span>
+          <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: project.color }} />
+          <span className="text-[13px] font-medium text-[#e0e0e0] truncate">{project.name}</span>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 flex-shrink-0">
           {/* View switcher */}
           <div className="flex items-center bg-[#161616] border border-[#2a2a2a] rounded-[8px] p-0.5">
             {views.map((v) => (
@@ -492,27 +492,28 @@ export function ProjectClient({ project, tasks, allProjects }: Props) {
                 type="button"
                 onClick={() => setView(v.id as ViewType)}
                 className={cn(
-                  "flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-[12px] font-medium transition-all",
+                  "flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-[6px] text-[12px] font-medium transition-all",
                   view === v.id
                     ? "bg-[#2a2a2a] text-[#e0e0e0]"
                     : "text-[#555] hover:text-[#999]"
                 )}
               >
                 <v.icon size={13} />
-                {v.label}
+                <span className="hidden sm:inline">{v.label}</span>
               </button>
             ))}
           </div>
 
           <NewTaskDialog projectId={project.id}>
-            <div className="h-7 px-3 text-xs bg-indigo-600 hover:bg-indigo-500 text-white rounded-md cursor-pointer flex items-center font-medium transition-colors">
-              + New task
+            <div className="h-7 px-2 sm:px-3 text-xs bg-indigo-600 hover:bg-indigo-500 text-white rounded-md cursor-pointer flex items-center font-medium transition-colors">
+              <span className="hidden sm:inline">+ New task</span>
+              <span className="sm:hidden">+</span>
             </div>
           </NewTaskDialog>
         </div>
       </div>
 
-      <div className="p-6 space-y-6">
+      <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
 
         {/* Project header */}
         <div className="flex items-start gap-4">
@@ -534,7 +535,7 @@ export function ProjectClient({ project, tasks, allProjects }: Props) {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
           {[
             { label: "Total",       value: tasks.length,         color: "text-[#e0e0e0]"   },
             { label: "In progress", value: inProgressTasks.length, color: "text-indigo-400"  },

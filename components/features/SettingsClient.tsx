@@ -502,14 +502,14 @@ export function SettingsClient({ user, workspace, members }: Props) {
     <div className="flex-1 overflow-auto">
 
       {/* Topbar */}
-      <div className="h-[50px] border-b border-border flex items-center px-5 bg-background sticky top-0 z-10">
+      <div className="h-[50px] border-b border-border flex items-center pl-14 pr-5 md:px-5 bg-background sticky top-0 z-10">
         <div className="flex items-center gap-2">
-          <span className="text-[13px] text-muted-foreground">Workspace /</span>
+          <span className="text-[13px] text-muted-foreground hidden sm:inline">Workspace /</span>
           <span className="text-[13px] font-medium">Settings</span>
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto p-6">
+      <div className="max-w-3xl mx-auto p-4 sm:p-6">
 
         {/* Page header */}
         <div className="mb-6">
@@ -520,13 +520,13 @@ export function SettingsClient({ user, workspace, members }: Props) {
         </div>
 
         {/* Tabs */}
-        <div className="flex items-center gap-1 border-b border-border mb-6">
+        <div className="flex items-center gap-1 border-b border-border mb-6 overflow-x-auto">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               type="button"
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2.5 text-[13px] font-medium border-b-2 transition-colors -mb-px ${
+              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 text-[12px] sm:text-[13px] font-medium border-b-2 transition-colors -mb-px whitespace-nowrap flex-shrink-0 ${
                 activeTab === tab.id
                   ? "border-primary text-primary"
                   : "border-transparent text-muted-foreground hover:text-foreground"
