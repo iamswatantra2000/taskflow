@@ -128,13 +128,14 @@ export function DashboardClient({
 				</div>
 			</div>
 
-			{/* Mobile action bar — visible only on mobile, sits below topbar */}
-			<div className="flex md:hidden items-center justify-between gap-2 px-4 py-2 border-b border-border bg-background sticky top-[50px] z-10">
-				<BoardFilters onFilterChange={setFilters} />
+			{/* Mobile action bar — icon-only controls, hidden on desktop */}
+			<div className="flex md:hidden items-center justify-between gap-2 px-3 py-2 border-b border-border bg-background sticky top-[50px] z-10">
+				<BoardFilters onFilterChange={setFilters} compact />
 				{projectId && (
 					<NewTaskDialog projectId={projectId}>
-						<div className="h-7 px-3 text-xs bg-indigo-600 hover:bg-indigo-500 text-white rounded-md cursor-pointer flex items-center font-medium transition-colors flex-shrink-0">
-							+ New task
+						<div className="h-8 px-3 text-[12px] bg-indigo-600 hover:bg-indigo-500 text-white rounded-[7px] cursor-pointer flex items-center gap-1.5 font-medium transition-colors flex-shrink-0">
+							<span className="text-[16px] leading-none font-light">+</span>
+							New task
 						</div>
 					</NewTaskDialog>
 				)}

@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import { SlidersHorizontal, X } from "lucide-react";
+import { SlidersHorizontal, X, Search } from "lucide-react";
 
 export type FilterState = {
 	priority: string[];
@@ -11,12 +11,14 @@ export type FilterState = {
 
 type Props = {
 	onFilterChange: (filters: FilterState) => void;
+	compact?: boolean; // icon-only mode for mobile
 };
 
-export function BoardFilters({ onFilterChange }: Props) {
+export function BoardFilters({ onFilterChange, compact = false }: Props) {
 	const [open, setOpen] = useState(false);
 	const [search, setSearch] = useState("");
 	const [priorities, setPriorities] = useState<string[]>([]);
+	const [searchOpen, setSearchOpen] = useState(false);
 
 	const priorities_list = ["LOW", "MEDIUM", "HIGH", "URGENT"];
 
@@ -50,11 +52,106 @@ export function BoardFilters({ onFilterChange }: Props) {
 	function clearAll() {
 		setPriorities([]);
 		setSearch("");
+		setSearchOpen(false);
 		onFilterChange({ priority: [], search: "" });
 	}
 
 	const activeCount = priorities.length + (search ? 1 : 0);
 
+	// ——— Compact / icon-only mode (mobile action bar) ———
+	if (compact) {
+		return (
+			<div className="relative flex items-center gap-1.5">
+
+				{/* Search icon button */}
+				<button
+					type="button"
+					onClick={() => {
+						setSearchOpen(!searchOpen);
+						if (searchOpen) handleSearch("");
+					}}
+					className={`w-8 h-8 flex items-center justify-center rounded-[7px] border transition-colors ${
+						search
+							? "bg-indigo-950 border-indigo-800 text-indigo-400"
+							: "border-[#2a2a2a] text-[#888] hover:border-[#3a3a3a] hover:text-[#ccc]"
+					}`}
+				>
+					{search ? <X size={13} /> : <Search size={13} />}
+				</button>
+
+				{/* Expandable search input */}
+				{searchOpen && (
+					<input
+						// biome-ignore lint/a11y/noAutofocus: intentional
+						autoFocus
+						value={search}
+						onChange={(e) => handleSearch(e.target.value)}
+						placeholder="Search tasks..."
+						className="w-[140px] bg-[#111] border border-[#2a2a2a] rounded-[7px] px-2.5 py-1.5 text-[12px] text-[#e0e0e0] placeholder-[#444] outline-none focus:border-indigo-500 transition-all"
+					/>
+				)}
+
+				{/* Filter icon button */}
+				<button
+					type="button"
+					onClick={() => setOpen(!open)}
+					className={`w-8 h-8 flex items-center justify-center rounded-[7px] border transition-colors relative ${
+						priorities.length > 0
+							? "bg-indigo-950 border-indigo-800 text-indigo-400"
+							: "border-[#2a2a2a] text-[#888] hover:border-[#3a3a3a] hover:text-[#ccc]"
+					}`}
+				>
+					<SlidersHorizontal size={13} />
+					{priorities.length > 0 && (
+						<span className="absolute -top-1 -right-1 bg-indigo-600 text-white text-[9px] rounded-full w-3.5 h-3.5 flex items-center justify-center leading-none">
+							{priorities.length}
+						</span>
+					)}
+				</button>
+
+				{/* Clear all — only when anything is active */}
+				{activeCount > 0 && (
+					<button
+						type="button"
+						onClick={clearAll}
+						className="w-8 h-8 flex items-center justify-center rounded-[7px] border border-[#2a2a2a] text-[#555] hover:text-red-400 hover:border-red-900 transition-colors"
+					>
+						<X size={13} />
+					</button>
+				)}
+
+				{/* Filter dropdown */}
+				{open && (
+					<div className="absolute top-10 left-0 bg-[#161616] border border-[#2a2a2a] rounded-[10px] p-3 z-50 w-[200px] shadow-xl">
+						<p className="text-[11px] font-medium text-[#555] uppercase tracking-wider mb-2">
+							Priority
+						</p>
+						<div className="space-y-1">
+							{priorities_list.map((p) => (
+								<button
+									key={p}
+									type="button"
+									onClick={() => togglePriority(p)}
+									className={`w-full flex items-center justify-between px-2 py-1.5 rounded-[6px] transition-colors ${
+										priorities.includes(p) ? "bg-[#1e1e2e]" : "hover:bg-[#1f1f1f]"
+									}`}
+								>
+									<span className={`text-[11px] font-medium px-2 py-0.5 rounded-[4px] border ${priorityColors[p]}`}>
+										{priorityLabels[p]}
+									</span>
+									{priorities.includes(p) && (
+										<span className="text-indigo-400 text-[10px]">✓</span>
+									)}
+								</button>
+							))}
+						</div>
+					</div>
+				)}
+			</div>
+		);
+	}
+
+	// ——— Default / full mode (desktop topbar) ———
 	return (
 		<div className="relative">
 			<div className="flex items-center gap-2">
@@ -64,11 +161,11 @@ export function BoardFilters({ onFilterChange }: Props) {
 						value={search}
 						onChange={(e) => handleSearch(e.target.value)}
 						placeholder="Search..."
-						className="w-[110px] sm:w-[180px] bg-[#111] border border-[#2a2a2a] rounded-[7px] px-3 py-1.5 text-[12px] text-[#e0e0e0] placeholder-[#444] outline-none focus:border-indigo-500 transition-colors"
+						className="w-[180px] bg-[#111] border border-[#2a2a2a] rounded-[7px] px-3 py-1.5 text-[12px] text-[#e0e0e0] placeholder-[#444] outline-none focus:border-indigo-500 transition-colors"
 					/>
 					{search && (
-						// biome-ignore lint/a11y/useButtonType: <explanation>
 						<button
+							type="button"
 							onClick={() => handleSearch("")}
 							className="absolute right-2 top-1/2 -translate-y-1/2 text-[#555] hover:text-[#999]"
 						>
@@ -78,8 +175,8 @@ export function BoardFilters({ onFilterChange }: Props) {
 				</div>
 
 				{/* Filter button */}
-				{/** biome-ignore lint/a11y/useButtonType: <explanation> */}
 				<button
+					type="button"
 					onClick={() => setOpen(!open)}
 					className={`flex items-center gap-1.5 h-7 px-3 text-[12px] rounded-[7px] border transition-colors ${
 						activeCount > 0
@@ -98,8 +195,8 @@ export function BoardFilters({ onFilterChange }: Props) {
 
 				{/* Clear all */}
 				{activeCount > 0 && (
-					// biome-ignore lint/a11y/useButtonType: <explanation>
 					<button
+						type="button"
 						onClick={clearAll}
 						className="text-[11px] text-[#555] hover:text-[#999] transition-colors flex items-center gap-1"
 					>
@@ -117,17 +214,15 @@ export function BoardFilters({ onFilterChange }: Props) {
 					</p>
 					<div className="space-y-1">
 						{priorities_list.map((p) => (
-							// biome-ignore lint/a11y/useButtonType: <explanation>
 							<button
 								key={p}
+								type="button"
 								onClick={() => togglePriority(p)}
 								className={`w-full flex items-center justify-between px-2 py-1.5 rounded-[6px] transition-colors ${
 									priorities.includes(p) ? "bg-[#1e1e2e]" : "hover:bg-[#1f1f1f]"
 								}`}
 							>
-								<span
-									className={`text-[11px] font-medium px-2 py-0.5 rounded-[4px] border ${priorityColors[p]}`}
-								>
+								<span className={`text-[11px] font-medium px-2 py-0.5 rounded-[4px] border ${priorityColors[p]}`}>
 									{priorityLabels[p]}
 								</span>
 								{priorities.includes(p) && (
