@@ -217,26 +217,33 @@ function DroppableColumn({
 
 // ——— Main board ———
 export function TaskBoard({ columns, userName, filters, workspaceId, projects }: Props) {
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null)
-  const [activeTask, setActiveTask]     = useState<Task | null>(null)
-  const [boardColumns, setBoardColumns] = useState<Column[]>(columns)
+  const [selectedTask, setSelectedTask]     = useState<Task | null>(null)
+  const [activeTask, setActiveTask]         = useState<Task | null>(null)
+  const [boardColumns, setBoardColumns]     = useState<Column[]>(columns)
+  const [showCelebration, setShowCelebration] = useState(false)  // ← new
 
   useEffect(() => {
     setBoardColumns(columns)
   }, [columns])
 
-  // ← moved outside filteredColumns
-  const allDone   = boardColumns.every((col) =>
-    col.id !== "DONE" ? col.tasks.length === 0 : true
-  )
-  const totalTasks = boardColumns.reduce((sum, col) => sum + col.tasks.length, 0)
-
-  // Fire confetti when all caught up
+  // ← Delayed celebration effect
   useEffect(() => {
+    const allDone    = boardColumns.every((col) =>
+      col.id !== "DONE" ? col.tasks.length === 0 : true
+    )
+    const totalTasks = boardColumns.reduce((sum, col) => sum + col.tasks.length, 0)
+
     if (allDone && totalTasks > 0) {
-      fireConfetti()
+      // Wait 1.5s before showing celebration screen
+      const timer = setTimeout(() => {
+        setShowCelebration(true)
+        fireConfetti()
+      }, 1500)
+      return () => clearTimeout(timer)
+    } else {
+      setShowCelebration(false)
     }
-  }, [allDone, totalTasks])
+  }, [boardColumns])
 
   const filteredColumns = boardColumns.map((col) => ({
     ...col,
@@ -340,8 +347,8 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects }:
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
-        {/* 🎉 All caught up state */}
-        {totalTasks > 0 && allDone ? (
+        {/* 🎉 All caught up state — shows after 1.5s delay */}
+        {showCelebration ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <div className="text-6xl mb-4 animate-bounce">🎉</div>
             <h3 className="text-[18px] font-semibold text-foreground mb-2">
