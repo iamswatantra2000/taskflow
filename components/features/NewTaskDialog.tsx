@@ -53,7 +53,7 @@ export function NewTaskDialog({ projectId, children }: Props) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger>{children}</DialogTrigger>
-      <DialogContent className="bg-[#111] border-[#1f1f1f] text-[#e0e0e0] max-w-md">
+      <DialogContent className="bg-[#111] border-[#1f1f1f] text-[#e0e0e0] sm:max-w-md max-sm:top-auto max-sm:bottom-0 max-sm:left-0 max-sm:right-0 max-sm:translate-x-0 max-sm:translate-y-0 max-sm:w-full max-sm:max-w-full max-sm:rounded-b-none max-sm:rounded-t-2xl max-sm:max-h-[90vh] max-sm:overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-[15px] font-semibold text-[#f0f0f0]">
             New task
