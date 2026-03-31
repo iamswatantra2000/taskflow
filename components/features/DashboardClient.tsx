@@ -2,7 +2,11 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Sparkles, Lock } from "lucide-react";
+import {
+  Search, Sparkles, Lock,
+  ListTodo, Zap, CheckCircle2, Circle,
+  KanbanSquare,
+} from "lucide-react";
 import { BoardFilters, type FilterState } from "./BoardFilters";
 import { TaskBoardWrapper } from "./TaskBoardWrapper";
 import { NewTaskDialog } from "./NewTaskDialog";
@@ -41,15 +45,27 @@ type Props = {
 	userInitials: string;
 	projectId: string | null;
 	projects: Project[];
-	stats: { label: string; value: number; sub: string; valueColor: string }[]
+	stats: { label: string; value: number; sub: string; valueColor: string }[];
 	firstName: string;
 	user: { name?: string | null; email?: string | null };
 	workspaceId: string;
 	plan: string;
 };
 
-// Wraps Pro-only elements: free users see a lock overlay + tooltip on hover.
-// tooltipDir="bottom" places the popup below (use for topbar buttons to avoid clipping).
+// Per-stat visual config — icon, accent bar, icon chip colors
+const STAT_META: Record<string, {
+	icon:      React.ElementType;
+	accentBg:  string;
+	iconBg:    string;
+	iconColor: string;
+}> = {
+	"Total tasks": { icon: ListTodo,     accentBg: "bg-white/[0.12]",      iconBg: "bg-white/[0.06]",       iconColor: "text-[#888]"         },
+	"In progress": { icon: Zap,          accentBg: "bg-indigo-500/50",     iconBg: "bg-indigo-500/[0.12]",  iconColor: "text-indigo-400"     },
+	"Completed":   { icon: CheckCircle2, accentBg: "bg-emerald-500/50",    iconBg: "bg-emerald-500/[0.12]", iconColor: "text-emerald-400"    },
+	"Todo":        { icon: Circle,       accentBg: "bg-amber-500/50",      iconBg: "bg-amber-500/[0.12]",   iconColor: "text-amber-400"      },
+};
+
+// ProGate — locks Pro-only UI for free users
 function ProGate({
 	plan,
 	children,
@@ -63,15 +79,11 @@ function ProGate({
 }) {
 	const isPro = plan === "pro" || plan === "enterprise";
 	if (isPro) return <>{children}</>;
-
 	const isTop = tooltipDir === "top";
-
 	return (
 		<div className="relative group/gate">
 			<div className="pointer-events-none opacity-50 select-none">{children}</div>
-			{/* Invisible click-blocker */}
 			<div className="absolute inset-0 cursor-not-allowed rounded-[inherit]" />
-			{/* Upgrade tooltip */}
 			<div
 				className={`absolute left-1/2 -translate-x-1/2 z-[200] pointer-events-none
 					opacity-0 group-hover/gate:opacity-100 transition-opacity duration-150
@@ -84,7 +96,6 @@ function ProGate({
 						Upgrade →
 					</a>
 				</div>
-				{/* Arrow — points up when tooltip is below, points down when tooltip is above */}
 				<div
 					className={`w-2 h-2 bg-[#1c1c1c] border-white/10 rotate-45 mx-auto
 						${isTop ? "border-r border-b -mt-1" : "border-l border-t -mb-1 order-first"}`}
@@ -92,6 +103,15 @@ function ProGate({
 			</div>
 		</div>
 	);
+}
+
+function formatDate() {
+	return new Date().toLocaleDateString("en-US", {
+		weekday: "long",
+		month:   "long",
+		day:     "numeric",
+		year:    "numeric",
+	});
 }
 
 export function DashboardClient({
@@ -111,40 +131,31 @@ export function DashboardClient({
 		search: "",
 	});
 
+	const totalTasks = columns.reduce((sum, col) => sum + col.tasks.length, 0);
+
 	return (
 		<div className="flex-1 flex flex-col min-h-0">
 
-			{/* Topbar */}
+			{/* ── Topbar ── */}
 			<div className="h-[50px] border-b border-border flex items-center justify-between pl-14 pr-4 md:px-5 flex-shrink-0 bg-background z-10">
 				<div className="flex items-center gap-2 min-w-0">
 					<span className="text-[13px] text-muted-foreground hidden sm:inline">Workspace /</span>
-					<span className="text-[13px] font-semibold text-foreground truncate">
-						Dashboard
-					</span>
+					<span className="text-[13px] font-semibold text-foreground truncate">Dashboard</span>
 				</div>
 
-				{/* Desktop-only right side — on mobile everything moves to sidebar / action bar */}
 				<div className="hidden md:flex items-center gap-3 flex-shrink-0">
 					<SignOutButton />
 
 					<button
 						type="button"
 						onClick={() => {
-							document.dispatchEvent(
-								new KeyboardEvent("keydown", {
-									key: "k",
-									metaKey: true,
-									bubbles: true,
-								}),
-							);
+							document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true, bubbles: true }));
 						}}
 						className="flex items-center gap-2 h-7 px-3 text-[12px] text-muted-foreground border border-border rounded-[7px] hover:border-border/80 hover:text-foreground transition-colors"
 					>
 						<Search size={12} />
 						<span>Search</span>
-						<kbd className="text-[10px] border border-border rounded px-1 ml-1">
-							⌘K
-						</kbd>
+						<kbd className="text-[10px] border border-border rounded px-1 ml-1">⌘K</kbd>
 					</button>
 
 					<BoardFilters onFilterChange={setFilters} />
@@ -178,7 +189,7 @@ export function DashboardClient({
 				</div>
 			</div>
 
-			{/* Mobile action bar — icon-only controls, hidden on desktop */}
+			{/* Mobile action bar */}
 			<div className="flex md:hidden items-center justify-between gap-2 px-3 py-2 border-b border-border bg-card flex-shrink-0 z-10 shadow-sm">
 				<BoardFilters onFilterChange={setFilters} compact />
 				{projectId && (
@@ -190,56 +201,102 @@ export function DashboardClient({
 				)}
 			</div>
 
+			{/* ── Main content ── */}
 			<div className="flex-1 overflow-auto">
-			<div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
-				{/* Welcome */}
-				<div>
-					<h1 className="text-[20px] font-bold text-foreground tracking-tight">
-						Good day, {firstName}
-					</h1>
-					<p className="text-[13px] text-muted-foreground mt-1">
-						Here what happening across your projects.
-					</p>
-				</div>
+				<div className="p-5 sm:p-7 space-y-6 sm:space-y-8">
 
-				{/* Stats */}
-				<div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
-					{stats.map((stat, index) => (
-						<div
-							key={stat.label}
-							className="bg-card border border-border rounded-[10px] p-4 hover:border-border/80 transition-colors"
-						>
-							<p className="text-[11px] font-medium text-muted-foreground mb-2">
-								{stat.label}
+					{/* ── Welcome ── */}
+					<div className="flex items-start justify-between gap-4">
+						<div>
+							<p className="text-[11px] font-semibold text-[#3a3a3a] uppercase tracking-[0.1em] mb-2">
+								{formatDate()}
 							</p>
-							<p
-								className={`text-[26px] font-bold tracking-tight leading-none ${stat.valueColor}`}
-							>
-								<AnimatedCounter value={stat.value} duration={1500} delay={index * 150} />
-							</p>
-							<p className="text-[11px] font-medium text-muted-foreground/60 mt-1.5">
-								{stat.sub}
+							<h1 className="text-[26px] sm:text-[30px] font-bold tracking-tight leading-tight">
+								Good day,{" "}
+								<span className="text-indigo-400">{firstName}</span>
+							</h1>
+							<p className="text-[13px] text-[#555] mt-1.5">
+								Here&apos;s what&apos;s happening across your projects.
 							</p>
 						</div>
-					))}
-				</div>
 
-				{/* Board */}
-				<div>
-					<div className="flex items-center justify-between mb-3">
-						<h2 className="text-[13px] font-semibold text-foreground">
-							Task board
-						</h2>
+						{/* Quick task count bubble — desktop only */}
+						<div className="hidden sm:flex flex-col items-end gap-1 flex-shrink-0 pt-1">
+							<div className="flex items-center gap-2 px-3 py-1.5 rounded-[10px] bg-white/[0.03] border border-white/[0.07]">
+								<KanbanSquare size={13} className="text-[#444]" />
+								<span className="text-[12px] font-semibold text-[#666]">
+									{totalTasks} task{totalTasks !== 1 ? "s" : ""} total
+								</span>
+							</div>
+						</div>
 					</div>
-					<TaskBoardWrapper
-						columns={columns}
-						userName={userName}
-						filters={filters}
-						projects={projects}
-						workspaceId={workspaceId}
-					/>
+
+					{/* ── Stats ── */}
+					<div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+						{stats.map((stat, index) => {
+							const meta = STAT_META[stat.label] ?? STAT_META["Total tasks"];
+							const Icon = meta.icon;
+							return (
+								<div
+									key={stat.label}
+									className="relative bg-[#111] border border-white/[0.07] rounded-[12px] p-4 overflow-hidden
+										hover:border-white/[0.13] hover:-translate-y-[1px] hover:shadow-[0_8px_24px_rgba(0,0,0,0.45)]
+										transition-all duration-150 group"
+								>
+									{/* Top accent bar */}
+									<div className={`absolute top-0 left-0 right-0 h-[2px] ${meta.accentBg} rounded-t-[12px]`} />
+
+									{/* Label + icon */}
+									<div className="flex items-start justify-between mb-4 mt-1">
+										<p className="text-[10.5px] font-semibold text-[#444] uppercase tracking-[0.08em] leading-none">
+											{stat.label}
+										</p>
+										<div className={`w-7 h-7 rounded-[7px] flex items-center justify-center flex-shrink-0 ${meta.iconBg}`}>
+											<Icon size={14} className={meta.iconColor} />
+										</div>
+									</div>
+
+									{/* Value */}
+									<p className={`text-[34px] font-bold tracking-tight leading-none mb-2 ${stat.valueColor}`}>
+										<AnimatedCounter value={stat.value} duration={1200} delay={index * 100} />
+									</p>
+
+									{/* Sub */}
+									<p className="text-[11px] text-[#3a3a3a] font-medium">{stat.sub}</p>
+								</div>
+							);
+						})}
+					</div>
+
+					{/* ── Task board ── */}
+					<div>
+						{/* Section header */}
+						<div className="flex items-center justify-between mb-4">
+							<div className="flex items-center gap-2">
+								<KanbanSquare size={15} className="text-[#444]" />
+								<h2 className="text-[14px] font-semibold text-[#ccc] tracking-tight">
+									Task board
+								</h2>
+							</div>
+							<div className="flex items-center gap-2">
+								{totalTasks > 0 && (
+									<span className="text-[10.5px] font-semibold text-[#444] bg-white/[0.04] border border-white/[0.07] rounded-full px-2.5 py-0.5">
+										{totalTasks} task{totalTasks !== 1 ? "s" : ""}
+									</span>
+								)}
+							</div>
+						</div>
+
+						<TaskBoardWrapper
+							columns={columns}
+							userName={userName}
+							filters={filters}
+							projects={projects}
+							workspaceId={workspaceId}
+						/>
+					</div>
+
 				</div>
-			</div>
 			</div>
 		</div>
 	);

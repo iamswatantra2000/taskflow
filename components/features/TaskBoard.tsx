@@ -21,7 +21,7 @@ import {
   useSortable,
 } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { CalendarDays } from "lucide-react"
+import { CalendarDays, ArrowDownToLine } from "lucide-react"
 import { DeleteTaskButton } from "./DeleteTaskButton"
 import { TaskDetailDialog } from "./TaskDetailDialog"
 import { TaskProjectMenu } from "./TaskProjectMenu"
@@ -73,12 +73,17 @@ function getDateMeta(dueDate: Date, status: string) {
   return { color: "text-[#555]", label: new Date(dueDate).toLocaleDateString("en-US", { month: "short", day: "numeric" }) }
 }
 
-// Per-column color treatment — bg tint + border accent + label color
-const columnStyles: Record<string, { bg: string; borderColor: string; labelColor: string }> = {
-  TODO:        { bg: "bg-card",                borderColor: "border-border",           labelColor: "text-muted-foreground" },
-  IN_PROGRESS: { bg: "bg-indigo-950/[0.18]",   borderColor: "border-indigo-500/25",   labelColor: "text-indigo-400"       },
-  IN_REVIEW:   { bg: "bg-amber-950/[0.15]",    borderColor: "border-amber-500/25",    labelColor: "text-amber-400"        },
-  DONE:        { bg: "bg-emerald-950/[0.12]",  borderColor: "border-emerald-500/20",  labelColor: "text-emerald-400"      },
+// Per-column color treatment
+const columnStyles: Record<string, {
+  bg:          string
+  borderColor: string
+  labelColor:  string
+  countStyle:  string
+}> = {
+  TODO:        { bg: "bg-[#0f0f0f]",           borderColor: "border-white/[0.07]",    labelColor: "text-[#777]",    countStyle: "text-[#3a3a3a] border-white/[0.08] bg-white/[0.03]"           },
+  IN_PROGRESS: { bg: "bg-indigo-950/[0.15]",   borderColor: "border-indigo-500/20",   labelColor: "text-indigo-400", countStyle: "text-indigo-400/60 border-indigo-500/20 bg-indigo-500/[0.07]" },
+  IN_REVIEW:   { bg: "bg-amber-950/[0.12]",    borderColor: "border-amber-500/20",    labelColor: "text-amber-400",  countStyle: "text-amber-400/60 border-amber-500/20 bg-amber-500/[0.07]"   },
+  DONE:        { bg: "bg-emerald-950/[0.10]",  borderColor: "border-emerald-500/15",  labelColor: "text-emerald-400",countStyle: "text-emerald-400/60 border-emerald-500/20 bg-emerald-500/[0.07]" },
 }
 
 // ——— Single draggable task card ———
@@ -408,14 +413,14 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects }:
                 <DroppableColumn col={col}>
 
                   {/* Column header */}
-                  <div className="flex items-center justify-between mb-1">
-                    <div className="flex items-center gap-1.5">
-                      <div className={`w-[7px] h-[7px] rounded-full ${col.dot}`} />
-                      <span className={`text-[11px] font-semibold ${(columnStyles[col.id] ?? columnStyles.TODO).labelColor}`}>
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <div className={`w-2 h-2 rounded-full flex-shrink-0 ${col.dot}`} />
+                      <span className={`text-[12px] font-semibold tracking-tight ${(columnStyles[col.id] ?? columnStyles.TODO).labelColor}`}>
                         {col.label}
                       </span>
                     </div>
-                    <span className="text-[10px] text-muted-foreground/50 bg-muted rounded-full px-2 py-0.5">
+                    <span className={`text-[10px] font-semibold px-2 py-[2px] rounded-full border ${(columnStyles[col.id] ?? columnStyles.TODO).countStyle}`}>
                       {col.tasks.length}
                     </span>
                   </div>
@@ -432,11 +437,14 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects }:
 
                   {/* Empty state */}
                   {col.tasks.length === 0 && (
-                    <div className="flex-1 flex items-center justify-center py-8 border border-dashed border-border rounded-[8px]">
-                      <p className="text-[11px] text-muted-foreground/30">
+                    <div className="flex-1 flex flex-col items-center justify-center py-10 gap-3 border border-dashed border-white/[0.05] rounded-[10px]">
+                      <div className="w-9 h-9 rounded-full border-2 border-dashed border-white/[0.08] flex items-center justify-center">
+                        <ArrowDownToLine size={13} className="text-[#2a2a2a]" />
+                      </div>
+                      <p className="text-[11.5px] font-medium text-[#2d2d2d]">
                         {filters.priority.length > 0 || filters.search
                           ? "No matching tasks"
-                          : "Drop here"
+                          : "Drop tasks here"
                         }
                       </p>
                     </div>
