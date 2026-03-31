@@ -6,6 +6,7 @@ import {
 } from "lucide-react"
 import { OnboardingTour } from "@/components/features/OnboardingTour"
 import { AnimateOnView } from "@/components/ui/AnimateOnView"
+import { NavLinks } from "@/components/ui/NavLinks"
 import { getSession } from "@/lib/session"
 
 // ——— Navbar ———
@@ -24,17 +25,7 @@ async function Navbar() {
           <span className="text-[14px] font-semibold text-white">TaskFlow</span>
         </div>
 
-        <div className="hidden md:flex items-center gap-8">
-          {["Features", "How it works", "Pricing"].map((item) => (
-            <Link
-              key={item}
-              href={`#${item.toLowerCase().replace(" ", "-")}`}
-              className="text-[13px] text-[#555] hover:text-white transition-colors"
-            >
-              {item}
-            </Link>
-          ))}
-        </div>
+        <NavLinks />
 
         <div className="flex items-center gap-2 sm:gap-3">
           {isLoggedIn ? (
