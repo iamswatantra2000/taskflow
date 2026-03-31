@@ -1,14 +1,15 @@
-// components/features/SignOutButton.tsx
 "use client"
 
-import { signOut } from "next-auth/react"
+import { useClerk } from "@clerk/nextjs"
 import { LogOut } from "lucide-react"
 
 export function SignOutButton() {
+  const { signOut } = useClerk()
+
   return (
-    // biome-ignore lint/a11y/useButtonType: <explanation>
-<button
-      onClick={() => signOut({ callbackUrl: "/login" })}
+    <button
+      type="button"
+      onClick={() => signOut({ redirectUrl: "/login" })}
       className="flex items-center gap-1.5 text-[12px] text-[#555] hover:text-[#999] transition-colors"
       title="Sign out"
     >

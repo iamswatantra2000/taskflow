@@ -2,19 +2,17 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
 import { toast } from "sonner"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {
   updateDisplayName,
-  changePassword,
   updateWorkspaceName,
 } from "@/lib/actions"
 import {
   User, Building2, Palette,
   Bell, Sun, Moon, Monitor,
-  Shield, Save, Loader2
+  Save, Loader2
 } from "lucide-react"
 
 type Props = {
@@ -50,14 +48,8 @@ function getInitials(name: string) {
 
 // ——— Profile Tab ———
 function ProfileTab({ user }: { user: Props["user"] }) {
-  const router                    = useRouter()
   const [name, setName]           = useState(user.name)
   const [savingName, setSavingName] = useState(false)
-
-  const [currentPw, setCurrentPw] = useState("")
-  const [newPw, setNewPw]         = useState("")
-  const [confirmPw, setConfirmPw] = useState("")
-  const [savingPw, setSavingPw]   = useState(false)
 
   async function handleSaveName() {
     if (name.trim() === user.name) return
@@ -72,28 +64,6 @@ function ProfileTab({ user }: { user: Props["user"] }) {
       toast.error(err instanceof Error ? err.message : "Failed to update name")
     } finally {
       setSavingName(false)
-    }
-  }
-
-  async function handleChangePassword() {
-    if (newPw !== confirmPw) {
-      toast.error("New passwords do not match")
-      return
-    }
-    setSavingPw(true)
-    try {
-      const fd = new FormData()
-      fd.set("currentPassword", currentPw)
-      fd.set("newPassword", newPw)
-      await changePassword(fd)
-      toast.success("Password changed!")
-      setCurrentPw("")
-      setNewPw("")
-      setConfirmPw("")
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to change password")
-    } finally {
-      setSavingPw(false)
     }
   }
 
@@ -161,49 +131,13 @@ function ProfileTab({ user }: { user: Props["user"] }) {
         </div>
       </div>
 
-      {/* Password section */}
+      {/* Password section — managed by Clerk */}
       <div className="bg-card border border-border rounded-[12px] p-6">
-        <h3 className="text-[14px] font-semibold mb-4">Change password</h3>
-
-        <div className="space-y-3 max-w-sm">
-          {[
-            { label: "Current password", value: currentPw, setValue: setCurrentPw },
-            { label: "New password",     value: newPw,     setValue: setNewPw     },
-            { label: "Confirm new",      value: confirmPw, setValue: setConfirmPw },
-          ].map(({ label, value, setValue }) => (
-            <div key={label} className="space-y-1.5">
-              {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
-              <label className="text-[12px] font-medium text-muted-foreground">
-                {label}
-              </label>
-              <input
-                type="password"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                placeholder="••••••••"
-                className="w-full bg-background border border-border rounded-[8px] px-3 py-2 text-[13px] outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-              />
-            </div>
-          ))}
-
-          {confirmPw && (
-            <p className={`text-[11px] ${newPw === confirmPw ? "text-emerald-400" : "text-red-400"}`}>
-              {newPw === confirmPw ? "✓ Passwords match" : "✗ Passwords do not match"}
-            </p>
-          )}
-
-          <button
-            type="button"
-            onClick={handleChangePassword}
-            disabled={savingPw || !currentPw || !newPw || newPw !== confirmPw}
-            className="flex items-center gap-2 h-8 px-4 text-[12px] font-semibold bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed text-white border border-indigo-700/80 rounded-[8px] shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none transition-all duration-100"
-          >
-            {savingPw
-              ? <><Loader2 size={12} className="animate-spin" /> Changing...</>
-              : <><Shield size={12} /> Change password</>
-            }
-          </button>
-        </div>
+        <h3 className="text-[14px] font-semibold mb-1">Password &amp; security</h3>
+        <p className="text-[12px] text-muted-foreground">
+          Password and security settings are managed through your account provider (Google, GitHub, or email).
+          Sign out and sign back in if you need to update your credentials.
+        </p>
       </div>
 
       {/* Danger zone */}

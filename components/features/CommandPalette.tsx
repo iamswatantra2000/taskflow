@@ -9,7 +9,7 @@ import {
   FolderPlus, Plus, LogOut, Settings,
   Search, ArrowRight
 } from "lucide-react"
-import { signOut } from "next-auth/react"
+import { useClerk } from "@clerk/nextjs"
 
 type Props = {
   projects: { id: string; name: string; color: string }[]
@@ -18,6 +18,7 @@ type Props = {
 export function CommandPalette({ projects }: Props) {
   const router            = useRouter()
   const [open, setOpen]   = useState(false)
+  const { signOut }       = useClerk()
   const [query, setQuery] = useState("")
 
   useEffect(() => {
@@ -149,7 +150,7 @@ export function CommandPalette({ projects }: Props) {
 
               <Command.Item
                 value="sign out logout"
-                onSelect={() => runCommand(() => signOut({ callbackUrl: "/login" }))}
+                onSelect={() => runCommand(() => signOut({ redirectUrl: "/login" }))}
                 className="flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-[13px] text-red-400 cursor-pointer data-[selected=true]:bg-red-950/50 transition-colors"
               >
                 <LogOut size={14} className="flex-shrink-0" />

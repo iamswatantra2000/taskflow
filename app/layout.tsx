@@ -2,7 +2,7 @@
 import type { Metadata } from "next"
 import { Manrope, Inter_Tight } from "next/font/google"
 import "./globals.css"
-import { SessionProvider } from "next-auth/react"
+import { ClerkProvider } from "@clerk/nextjs"
 import { Toaster } from "sonner"
 import { ThemeProvider } from "next-themes"
 
@@ -29,27 +29,27 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={`${manrope.variable} ${interTight.variable}`}
-    >
-      <body className={manrope.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem={false}
-        >
-          <SessionProvider>
+    <ClerkProvider>
+      <html
+        lang="en"
+        suppressHydrationWarning
+        className={`${manrope.variable} ${interTight.variable}`}
+      >
+        <body className={manrope.className}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem={false}
+          >
             {children}
-          </SessionProvider>
-          <Toaster
-            theme="system"
-            position="top-center"
-            richColors
-          />
-        </ThemeProvider>
-      </body>
-    </html>
+            <Toaster
+              theme="system"
+              position="top-center"
+              richColors
+            />
+          </ThemeProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   )
 }

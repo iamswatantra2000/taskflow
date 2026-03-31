@@ -12,7 +12,7 @@ import {
   Search, BarChart2, Menu, X, LogOut
 } from "lucide-react"
 import { useState } from "react"
-import { signOut } from "next-auth/react"
+import { useClerk } from "@clerk/nextjs"
 
 type Project = {
   id:    string
@@ -37,9 +37,10 @@ function getInitials(name: string) {
 }
 
 export function AppSidebar({ user, projects }: AppSidebarProps) {
-  const pathname                  = usePathname()
-  const [collapsed, setCollapsed] = useState(false)
+  const pathname                    = usePathname()
+  const [collapsed, setCollapsed]   = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const { signOut }                 = useClerk()
 
   function openCommandPalette() {
     document.dispatchEvent(
@@ -199,7 +200,7 @@ export function AppSidebar({ user, projects }: AppSidebarProps) {
         {/* Sign out — mobile only (desktop uses topbar ProfileDropdown) */}
         <button
           type="button"
-          onClick={() => signOut({ callbackUrl: "/login" })}
+          onClick={() => signOut({ redirectUrl: "/login" })}
           className="md:hidden w-full flex items-center gap-2.5 px-2 py-[7px] rounded-[7px] text-[12.5px] text-muted-foreground hover:bg-red-950/40 hover:text-red-400 transition-all"
         >
           <LogOut size={15} className="flex-shrink-0" />
