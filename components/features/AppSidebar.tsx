@@ -10,7 +10,7 @@ import { LogoMark } from "@/components/ui/LogoMark"
 import {
   LayoutDashboard, CheckSquare, Clock,
   Settings, ChevronLeft, ChevronRight,
-  Search, BarChart2, Menu, X, LogOut
+  Search, BarChart2, Menu, X, LogOut, Lock
 } from "lucide-react"
 import { useState } from "react"
 import { useClerk, useUser } from "@clerk/nextjs"
@@ -24,25 +24,69 @@ type Project = {
 type AppSidebarProps = {
   user:     { name?: string | null; email?: string | null }
   projects: Project[]
+  plan:     string
 }
 
-const navItems = [
+type NavItem = {
+  href:  string
+  label: string
+  icon:  React.ElementType
+  pro?:  boolean
+  proLabel?: string
+}
+
+const navItems: NavItem[] = [
   { href: "/dashboard",  label: "Dashboard", icon: LayoutDashboard },
   { href: "/my-tasks",   label: "My tasks",  icon: CheckSquare     },
-  { href: "/activity",   label: "Activity",  icon: Clock           },
-  { href: "/analytics",  label: "Analytics", icon: BarChart2       },
+  { href: "/activity",   label: "Activity",  icon: Clock,    pro: true, proLabel: "Activity feed" },
+  { href: "/analytics",  label: "Analytics", icon: BarChart2, pro: true, proLabel: "Analytics"    },
 ]
 
 function getInitials(name: string) {
   return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
 }
 
-export function AppSidebar({ user, projects }: AppSidebarProps) {
+// A locked nav item: greyed out, not navigable, shows upgrade tooltip on the right
+function LockedNavItem({ label, icon: Icon, proLabel, collapsed }: {
+  label: string
+  icon: React.ElementType
+  proLabel: string
+  collapsed: boolean
+}) {
+  return (
+    <div className="relative group/locked">
+      {/* The item itself — dimmed, not clickable */}
+      <div className="flex items-center gap-2.5 px-2 py-[7px] rounded-[7px] text-[12.5px] opacity-40 cursor-not-allowed select-none overflow-hidden">
+        <Icon size={15} className="flex-shrink-0" />
+        {!collapsed && <span className="whitespace-nowrap">{label}</span>}
+        {!collapsed && <Lock size={9} className="ml-auto flex-shrink-0 text-muted-foreground" />}
+      </div>
+
+      {/* Tooltip — appears to the right of the sidebar item */}
+      <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 z-[200] pointer-events-none
+        opacity-0 group-hover/locked:opacity-100 transition-opacity duration-150">
+        <div className="bg-[#1c1c1c] border border-white/10 rounded-[8px] px-3 py-1.5 flex items-center gap-2 whitespace-nowrap shadow-xl">
+          <Lock size={9} className="text-amber-400 flex-shrink-0" />
+          <span className="text-[11px] text-[#ccc]">{proLabel} · Pro</span>
+          <a href="/#pricing" className="text-[11px] font-semibold text-indigo-400 hover:text-indigo-300">
+            Upgrade →
+          </a>
+        </div>
+        {/* Left arrow */}
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 w-2 h-2 bg-[#1c1c1c] border-l border-b border-white/10 rotate-45" />
+      </div>
+    </div>
+  )
+}
+
+export function AppSidebar({ user, projects, plan }: AppSidebarProps) {
   const pathname                    = usePathname()
   const [collapsed, setCollapsed]   = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const { signOut }                 = useClerk()
   const { user: clerkUser }         = useUser()
+
+  const isPro = plan === "pro" || plan === "enterprise"
 
   function openCommandPalette() {
     document.dispatchEvent(
@@ -84,22 +128,38 @@ export function AppSidebar({ user, projects }: AppSidebarProps) {
 
       {/* Nav */}
       <nav className="flex-1 p-2 space-y-0.5 overflow-y-auto overflow-x-hidden">
-        {navItems.map(({ href, label, icon: Icon }) => (
-          <Link
-            key={href}
-            href={href}
-            onClick={() => setMobileOpen(false)}
-            className={cn(
-              "flex items-center gap-2.5 px-2 py-[7px] rounded-[7px] text-[12.5px] transition-all overflow-hidden",
-              pathname === href
-                ? "bg-primary/10 text-primary font-medium"
-                : "text-muted-foreground hover:bg-accent hover:text-foreground"
-            )}
-          >
-            <Icon size={15} className="flex-shrink-0" />
-            {!collapsed && <span className="whitespace-nowrap">{label}</span>}
-          </Link>
-        ))}
+        {navItems.map(({ href, label, icon: Icon, pro, proLabel }) => {
+          const isLocked = pro && !isPro
+
+          if (isLocked) {
+            return (
+              <LockedNavItem
+                key={href}
+                label={label}
+                icon={Icon}
+                proLabel={proLabel ?? label}
+                collapsed={collapsed}
+              />
+            )
+          }
+
+          return (
+            <Link
+              key={href}
+              href={href}
+              onClick={() => setMobileOpen(false)}
+              className={cn(
+                "flex items-center gap-2.5 px-2 py-[7px] rounded-[7px] text-[12.5px] transition-all overflow-hidden",
+                pathname === href
+                  ? "bg-primary/10 text-primary font-medium"
+                  : "text-muted-foreground hover:bg-accent hover:text-foreground"
+              )}
+            >
+              <Icon size={15} className="flex-shrink-0" />
+              {!collapsed && <span className="whitespace-nowrap">{label}</span>}
+            </Link>
+          )
+        })}
 
         {/* Search */}
         {!collapsed && (
@@ -250,17 +310,3 @@ export function AppSidebar({ user, projects }: AppSidebarProps) {
     </>
   )
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
