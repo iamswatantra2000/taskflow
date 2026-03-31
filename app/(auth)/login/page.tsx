@@ -10,7 +10,7 @@ export default function LoginPage() {
       <div className="flex flex-col items-center gap-3">
         <LogoMark height={36} />
         <div className="text-center">
-          <h1 className="text-[18px] font-extrabold text-[#f0f0f0] font-bricolage">TaskFlow</h1>
+          <h1 className="text-[#f0f0f0] font-bricolage" style={{ fontWeight: 900, fontSize: 18 }}>TaskFlow</h1>
           <p className="text-[13px] text-[#555] mt-1">Sign in to your workspace</p>
         </div>
       </div>

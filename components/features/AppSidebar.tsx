@@ -59,9 +59,9 @@ export function AppSidebar({ user, projects }: AppSidebarProps) {
           onClick={() => setMobileOpen(false)}
           className="flex items-center gap-2 min-w-0"
         >
-          <LogoMark height={20} className="flex-shrink-0" />
+          <LogoMark height={22} className="flex-shrink-0" />
           {!collapsed && (
-            <span className="text-[13px] font-extrabold whitespace-nowrap font-bricolage">TaskFlow</span>
+            <span className="whitespace-nowrap font-bricolage" style={{ fontSize: 13, fontWeight: 900 }}>TaskFlow</span>
           )}
         </Link>
         {/* Desktop collapse button */}
