@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { NewProjectDialog } from "./NewProjectDialog"
+import { LogoMark } from "@/components/ui/LogoMark"
 import {
   LayoutDashboard, CheckSquare, Clock,
   Settings, ChevronLeft, ChevronRight,
@@ -58,9 +59,7 @@ export function AppSidebar({ user, projects }: AppSidebarProps) {
           onClick={() => setMobileOpen(false)}
           className="flex items-center gap-2.5 overflow-hidden min-w-0"
         >
-          <div className="w-[26px] h-[26px] rounded-[7px] bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center flex-shrink-0">
-            <span className="text-white text-[11px] font-bold">T</span>
-          </div>
+          <LogoMark height={20} className="flex-shrink-0" />
           {!collapsed && (
             <span className="text-[13px] font-bold whitespace-nowrap font-bricolage">TaskFlow</span>
           )}

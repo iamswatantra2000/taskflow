@@ -1,5 +1,6 @@
 // app/(auth)/register/page.tsx
 import { SignUp } from "@clerk/nextjs"
+import { LogoMark } from "@/components/ui/LogoMark"
 
 export default function RegisterPage() {
   return (
@@ -7,9 +8,7 @@ export default function RegisterPage() {
 
       {/* Logo */}
       <div className="flex flex-col items-center gap-3">
-        <div className="w-10 h-10 rounded-[10px] bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/25">
-          <span className="text-white font-bold text-sm">T</span>
-        </div>
+        <LogoMark height={36} />
         <div className="text-center">
           <h1 className="text-[18px] font-bold text-[#f0f0f0] font-bricolage">TaskFlow</h1>
           <p className="text-[13px] text-[#555] mt-1">Create your free account</p>

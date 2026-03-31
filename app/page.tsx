@@ -7,6 +7,7 @@ import {
 import { OnboardingTour } from "@/components/features/OnboardingTour"
 import { AnimateOnView } from "@/components/ui/AnimateOnView"
 import { NavLinks } from "@/components/ui/NavLinks"
+import { LogoMark } from "@/components/ui/LogoMark"
 import { getSession } from "@/lib/session"
 
 // ——— Navbar ———
@@ -18,10 +19,8 @@ async function Navbar() {
     <nav className="fixed top-0 left-0 right-0 z-50 h-14 border-b border-white/[0.06] bg-[#080808]/85 backdrop-blur-xl">
       <div className="max-w-6xl mx-auto px-5 sm:px-6 h-full flex items-center justify-between">
 
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-[8px] bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-indigo-500/25">
-            <span className="text-white text-[11px] font-bold">T</span>
-          </div>
+        <div className="flex items-center gap-2">
+          <LogoMark height={22} />
           <span className="text-[14px] font-bold text-white font-bricolage">TaskFlow</span>
         </div>
 
@@ -646,10 +645,8 @@ function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10 sm:mb-12">
 
           <div className="col-span-2 md:col-span-1">
-            <div className="flex items-center gap-2.5 mb-3">
-              <div className="w-7 h-7 rounded-[8px] bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
-                <span className="text-white text-[11px] font-bold">T</span>
-              </div>
+            <div className="flex items-center gap-2 mb-3">
+              <LogoMark height={20} />
               <span className="text-[14px] font-bold text-white font-bricolage">TaskFlow</span>
             </div>
             <p className="text-[12.5px] text-[#333] leading-relaxed max-w-[190px]">
