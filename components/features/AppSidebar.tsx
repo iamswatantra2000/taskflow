@@ -12,7 +12,8 @@ import {
   Settings, ChevronLeft, ChevronRight,
   Search, BarChart2, Menu, X, LogOut, Lock
 } from "lucide-react"
-import { useState } from "react"
+import { useState, useRef } from "react"
+import { createPortal } from "react-dom"
 import { useClerk, useUser } from "@clerk/nextjs"
 
 type Project = {
@@ -46,35 +47,54 @@ function getInitials(name: string) {
   return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
 }
 
-// A locked nav item: greyed out, not navigable, shows upgrade tooltip on the right
+// A locked nav item: greyed out, not navigable, shows upgrade tooltip via fixed portal
 function LockedNavItem({ label, icon: Icon, proLabel, collapsed }: {
   label: string
   icon: React.ElementType
   proLabel: string
   collapsed: boolean
 }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [pos, setPos] = useState<{ top: number; left: number } | null>(null)
+
+  function handleMouseEnter() {
+    if (ref.current) {
+      const rect = ref.current.getBoundingClientRect()
+      setPos({ top: rect.top + rect.height / 2, left: rect.right + 10 })
+    }
+  }
+
   return (
-    <div className="relative group/locked">
+    <div
+      ref={ref}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={() => setPos(null)}
+    >
       {/* The item itself — dimmed, not clickable */}
-      <div className="flex items-center gap-2.5 px-2 py-[7px] rounded-[7px] text-[12.5px] opacity-40 cursor-not-allowed select-none overflow-hidden">
+      <div className="flex items-center gap-2.5 px-2 py-[7px] rounded-[7px] text-[12.5px] opacity-40 cursor-not-allowed select-none">
         <Icon size={15} className="flex-shrink-0" />
         {!collapsed && <span className="whitespace-nowrap">{label}</span>}
         {!collapsed && <Lock size={9} className="ml-auto flex-shrink-0 text-muted-foreground" />}
       </div>
 
-      {/* Tooltip — appears to the right of the sidebar item */}
-      <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 z-[200] pointer-events-none
-        opacity-0 group-hover/locked:opacity-100 transition-opacity duration-150">
-        <div className="bg-[#1c1c1c] border border-white/10 rounded-[8px] px-3 py-1.5 flex items-center gap-2 whitespace-nowrap shadow-xl">
-          <Lock size={9} className="text-amber-400 flex-shrink-0" />
-          <span className="text-[11px] text-[#ccc]">{proLabel} · Pro</span>
-          <a href="/#pricing" className="text-[11px] font-semibold text-indigo-400 hover:text-indigo-300">
-            Upgrade →
-          </a>
-        </div>
-        {/* Left arrow */}
-        <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 w-2 h-2 bg-[#1c1c1c] border-l border-b border-white/10 rotate-45" />
-      </div>
+      {/* Tooltip rendered via portal so it escapes overflow containers */}
+      {pos && typeof document !== "undefined" && createPortal(
+        <div
+          className="fixed z-[9999] pointer-events-none"
+          style={{ top: pos.top, left: pos.left, transform: "translateY(-50%)" }}
+        >
+          <div className="bg-[#1c1c1c] border border-white/10 rounded-[8px] px-3 py-1.5 flex items-center gap-2 whitespace-nowrap shadow-xl">
+            <Lock size={9} className="text-amber-400 flex-shrink-0" />
+            <span className="text-[11px] text-[#ccc]">{proLabel} · Pro</span>
+            <a href="/#pricing" className="text-[11px] font-semibold text-indigo-400 pointer-events-auto hover:text-indigo-300">
+              Upgrade →
+            </a>
+          </div>
+          {/* Left-pointing arrow */}
+          <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-[5px] w-2 h-2 bg-[#1c1c1c] border-l border-b border-white/10 rotate-45" />
+        </div>,
+        document.body
+      )}
     </div>
   )
 }
