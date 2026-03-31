@@ -4,173 +4,264 @@
 import { useState, useEffect } from "react"
 import {
   LayoutDashboard, FolderPlus, CheckSquare,
-  BarChart2, X, ChevronRight,
+  BarChart3, X, ChevronRight, ChevronLeft, Check,
 } from "lucide-react"
 
 const TOUR_KEY = "tf_tour_v1"
 
 const steps = [
   {
-    icon: LayoutDashboard,
-    gradient: "from-indigo-500 to-violet-600",
-    glow: "shadow-indigo-500/30",
-    title: "Welcome to TaskFlow",
+    icon:      LayoutDashboard,
+    gradient:  "from-indigo-500 to-violet-600",
+    glow:      "rgba(99,102,241,0.2)",
+    bar:       "from-indigo-500 to-violet-500",
+    badge:     "text-indigo-300 bg-indigo-500/[0.1] border-indigo-500/25",
+    badgeText: "Welcome",
+    title:     "Welcome to TaskFlow",
     description:
-      "Your all-in-one workspace for managing projects, tracking tasks, and shipping faster. Let us walk you through what's inside.",
+      "Your all-in-one workspace for managing projects, tracking tasks, and shipping faster. Here's everything you need to know to hit the ground running.",
+    highlights: ["Kanban board", "Real-time stats", "Team workspaces"],
   },
   {
-    icon: FolderPlus,
-    gradient: "from-violet-500 to-purple-600",
-    glow: "shadow-violet-500/30",
-    title: "Create a project",
+    icon:      FolderPlus,
+    gradient:  "from-violet-500 to-purple-600",
+    glow:      "rgba(139,92,246,0.2)",
+    bar:       "from-violet-500 to-purple-500",
+    badge:     "text-violet-300 bg-violet-500/[0.1] border-violet-500/25",
+    badgeText: "Projects",
+    title:     "Organise with projects",
     description:
-      "Everything lives inside projects. Use the sidebar to create one — give it a name and pick a color. You can have as many as you need.",
+      "Everything lives inside projects. Create one from the sidebar — give it a name and a colour. Group your work the way your team actually thinks.",
+    highlights: ["Custom colours", "Sidebar shortcuts", "Up to 3 on free"],
   },
   {
-    icon: CheckSquare,
-    gradient: "from-blue-500 to-indigo-600",
-    glow: "shadow-blue-500/30",
-    title: "Add and move tasks",
+    icon:      CheckSquare,
+    gradient:  "from-sky-500 to-indigo-600",
+    glow:      "rgba(14,165,233,0.2)",
+    bar:       "from-sky-500 to-indigo-500",
+    badge:     "text-sky-300 bg-sky-500/[0.1] border-sky-500/25",
+    badgeText: "Tasks",
+    title:     "Create and move tasks",
     description:
-      "Inside a project, hit \"+ New task\" to create tasks. Set priorities, due dates, and drag them between columns — Todo, In Progress, In Review, Done.",
+      "Hit \"+ New task\" inside any project. Set a priority, a due date, and drag cards between columns — Todo, In Progress, In Review, Done.",
+    highlights: ["Priority levels", "Due dates", "Drag & drop"],
   },
   {
-    icon: BarChart2,
-    gradient: "from-emerald-500 to-teal-600",
-    glow: "shadow-emerald-500/30",
-    title: "Track everything",
+    icon:      BarChart3,
+    gradient:  "from-emerald-500 to-teal-600",
+    glow:      "rgba(16,185,129,0.2)",
+    bar:       "from-emerald-500 to-teal-500",
+    badge:     "text-emerald-300 bg-emerald-500/[0.1] border-emerald-500/25",
+    badgeText: "Analytics",
+    title:     "Track everything, always",
     description:
-      "Your dashboard shows real-time stats, a full kanban board, and the activity feed. All your work — one beautiful overview.",
+      "Your dashboard shows live stats, a full kanban view, and the activity feed. All your work — one clean, focused overview.",
+    highlights: ["Live task stats", "Activity feed", "Analytics (Pro)"],
   },
 ]
 
 export function OnboardingTour() {
-  const [visible, setVisible] = useState(false)
-  const [step, setStep]       = useState(0)
-  const [animating, setAnimating] = useState(false)
+  const [visible,   setVisible]   = useState(false)
+  const [step,      setStep]      = useState(0)
+  const [exiting,   setExiting]   = useState(false)
+  const [direction, setDirection] = useState<"forward" | "back">("forward")
+  const [mounted,   setMounted]   = useState(false)
 
+  // Mount check — show tour if not seen before
   useEffect(() => {
-    if (!localStorage.getItem(TOUR_KEY)) setVisible(true)
+    if (!localStorage.getItem(TOUR_KEY)) {
+      setVisible(true)
+      // Small delay so entrance animation triggers after paint
+      requestAnimationFrame(() => setTimeout(() => setMounted(true), 30))
+    }
   }, [])
+
+  // Keyboard navigation
+  useEffect(() => {
+    if (!visible) return
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") goTo(Math.min(step + 1, steps.length - 1), "forward")
+      if (e.key === "ArrowLeft"  || e.key === "ArrowUp")   goTo(Math.max(step - 1, 0), "back")
+      if (e.key === "Escape") dismiss()
+    }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [visible, step])
 
   function dismiss() {
     localStorage.setItem(TOUR_KEY, "1")
-    setVisible(false)
+    setMounted(false)
+    setTimeout(() => setVisible(false), 350)
   }
 
-  function goTo(next: number) {
-    setAnimating(true)
+  function goTo(next: number, dir: "forward" | "back") {
+    if (next === step || exiting) return
+    setDirection(dir)
+    setExiting(true)
     setTimeout(() => {
       setStep(next)
-      setAnimating(false)
-    }, 150)
+      setExiting(false)
+    }, 180)
   }
 
-  function next() {
-    if (step < steps.length - 1) goTo(step + 1)
-    else dismiss()
-  }
-
-  function prev() {
-    if (step > 0) goTo(step - 1)
-  }
+  function next() { if (step < steps.length - 1) goTo(step + 1, "forward"); else dismiss() }
+  function prev() { if (step > 0) goTo(step - 1, "back") }
 
   if (!visible) return null
 
-  const current = steps[step]
-  const Icon    = current.icon
-  const isLast  = step === steps.length - 1
-  const isFirst = step === 0
+  const cur    = steps[step]
+  const Icon   = cur.icon
+  const isLast = step === steps.length - 1
+
+  const contentStyle: React.CSSProperties = {
+    opacity:   exiting ? 0 : 1,
+    transform: exiting
+      ? `translateX(${direction === "forward" ? "-12px" : "12px"}) translateY(4px)`
+      : "translateX(0) translateY(0)",
+    transition: "opacity 0.18s ease, transform 0.18s ease",
+  }
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-4">
+    <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-4 sm:p-6">
+
       {/* Backdrop */}
       <button
         type="button"
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm cursor-default"
+        className="absolute inset-0 bg-black/75 backdrop-blur-md cursor-default"
         onClick={dismiss}
         aria-label="Close tour"
       />
 
       {/* Card */}
-      <div className="relative w-full max-w-[420px] rounded-2xl border border-white/10 bg-[#0c0c0c] shadow-2xl shadow-black/80 overflow-hidden">
+      <div
+        className="relative w-full max-w-[480px] rounded-[22px] border border-white/[0.08] bg-[#0d0d0d] overflow-hidden"
+        style={{
+          boxShadow: "0 40px 100px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.05)",
+          opacity:    mounted ? 1 : 0,
+          transform:  mounted ? "scale(1) translateY(0)" : "scale(0.95) translateY(16px)",
+          transition: "opacity 0.35s cubic-bezier(0.16,1,0.3,1), transform 0.35s cubic-bezier(0.16,1,0.3,1)",
+        }}
+      >
+        {/* Step-coloured glow inside card */}
+        <div
+          className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[320px] h-[200px] rounded-full blur-[80px] pointer-events-none transition-all duration-700"
+          style={{ background: cur.glow }}
+        />
 
-        {/* Top accent line */}
-        <div className={`h-[2px] w-full bg-gradient-to-r ${current.gradient} transition-all duration-500`} />
-
-        <div className="p-6 sm:p-7">
-          {/* Dismiss */}
-          <button
-            type="button"
-            onClick={dismiss}
-            className="absolute top-4 right-4 w-7 h-7 flex items-center justify-center rounded-lg text-[#444] hover:text-[#888] hover:bg-white/5 transition-colors"
-          >
-            <X size={14} />
-          </button>
-
-          {/* Step dots */}
-          <div className="flex items-center gap-1.5 mb-7">
-            {steps.map((_, i) => (
-              <button
-                key={`dot-${i}`}
-                type="button"
-                onClick={() => goTo(i)}
-                className={`h-[3px] rounded-full transition-all duration-300 ${
-                  i === step   ? "w-8 bg-indigo-500"
-                  : i < step  ? "w-3 bg-indigo-500/40"
-                  :              "w-3 bg-white/10 hover:bg-white/20"
-                }`}
+        {/* ── Segmented progress bar ── */}
+        <div className="flex gap-1 p-3 pb-0">
+          {steps.map((s, i) => (
+            <button
+              key={`seg-${i}`}
+              type="button"
+              onClick={() => goTo(i, i > step ? "forward" : "back")}
+              aria-label={`Go to step ${i + 1}`}
+              className="flex-1 h-[3px] rounded-full overflow-hidden bg-white/[0.06] relative transition-colors hover:bg-white/[0.1]"
+            >
+              <div
+                className={`absolute inset-0 bg-gradient-to-r ${cur.bar} rounded-full transition-all duration-500`}
+                style={{ transform: i <= step ? "scaleX(1)" : "scaleX(0)", transformOrigin: "left" }}
               />
-            ))}
-          </div>
+            </button>
+          ))}
+        </div>
 
-          {/* Content */}
-          <div className={`transition-opacity duration-150 ${animating ? "opacity-0" : "opacity-100"}`}>
+        {/* ── Dismiss button ── */}
+        <button
+          type="button"
+          onClick={dismiss}
+          className="absolute top-5 right-5 w-7 h-7 flex items-center justify-center rounded-[8px] text-[#3a3a3a] hover:text-[#888] hover:bg-white/[0.05] transition-all z-10"
+        >
+          <X size={14} />
+        </button>
+
+        {/* ── Main content ── */}
+        <div className="relative px-7 pt-6 pb-7">
+          <div style={contentStyle}>
+
             {/* Icon */}
-            <div className={`w-12 h-12 rounded-[14px] bg-gradient-to-br ${current.gradient} flex items-center justify-center mb-5 shadow-xl ${current.glow}`}>
-              <Icon size={22} className="text-white" />
+            <div className="relative w-fit mb-6">
+              {/* Pulse glow ring */}
+              <div
+                className="absolute -inset-2 rounded-[24px] opacity-40 blur-lg animate-pulse"
+                style={{ background: `linear-gradient(135deg, ${cur.glow}, transparent)` }}
+              />
+              {/* Icon chip */}
+              <div className={`relative w-[64px] h-[64px] rounded-[18px] bg-gradient-to-br ${cur.gradient} flex items-center justify-center shadow-2xl`}>
+                <Icon size={28} className="text-white" strokeWidth={1.8} />
+              </div>
             </div>
 
-            {/* Meta */}
-            <p className="text-[10.5px] font-semibold text-[#444] uppercase tracking-[0.1em] mb-2">
-              Step {step + 1} of {steps.length}
-            </p>
+            {/* Step badge + counter */}
+            <div className="flex items-center gap-2.5 mb-3">
+              <span className={`inline-flex text-[10px] font-bold uppercase tracking-[0.1em] px-2.5 py-1 rounded-full border ${cur.badge}`}>
+                {cur.badgeText}
+              </span>
+              <span className="text-[10.5px] font-medium text-[#333]">
+                {step + 1} / {steps.length}
+              </span>
+            </div>
 
-            <h2 className="text-[18px] font-semibold text-white mb-2.5 leading-snug tracking-[-0.02em]">
-              {current.title}
+            {/* Title */}
+            <h2 className="text-[22px] font-bold text-white leading-tight tracking-[-0.03em] mb-3">
+              {cur.title}
             </h2>
 
-            <p className="text-[13px] text-[#666] leading-[1.7] mb-8">
-              {current.description}
+            {/* Description */}
+            <p className="text-[13.5px] text-[#666] leading-[1.75] mb-5">
+              {cur.description}
             </p>
+
+            {/* Highlight chips */}
+            <div className="flex flex-wrap gap-2">
+              {cur.highlights.map((h) => (
+                <span
+                  key={h}
+                  className="inline-flex items-center gap-1.5 text-[11.5px] font-medium text-[#777] bg-white/[0.03] border border-white/[0.07] rounded-full px-3 py-1 hover:border-white/[0.12] hover:text-[#999] transition-colors"
+                >
+                  <Check size={9} className="text-[#555]" />
+                  {h}
+                </span>
+              ))}
+            </div>
           </div>
 
-          {/* Actions */}
+          {/* ── Keyboard hint ── */}
+          <p className="text-center text-[10px] text-[#252525] mt-5 mb-4 select-none">
+            Use ← → arrow keys to navigate
+          </p>
+
+          {/* ── Actions ── */}
           <div className="flex items-center justify-between">
             <button
               type="button"
               onClick={dismiss}
-              className="text-[12px] text-[#3a3a3a] hover:text-[#666] transition-colors"
+              className="text-[12px] font-medium text-[#333] hover:text-[#666] transition-colors"
             >
               Skip tour
             </button>
 
             <div className="flex items-center gap-2">
-              {!isFirst && (
+              {step > 0 && (
                 <button
                   type="button"
                   onClick={prev}
-                  className="h-8 px-3.5 text-[12px] font-medium text-[#555] hover:text-white bg-[#111] hover:bg-[#161616] border border-white/8 hover:border-white/15 rounded-[8px] shadow-[0_3px_0_0_rgba(0,0,0,0.5)] active:translate-y-[3px] active:shadow-none transition-all duration-100"
+                  className="flex items-center gap-1 h-9 px-4 text-[12.5px] font-medium text-[#555] hover:text-[#bbb] bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.08] hover:border-white/[0.14] rounded-[10px] transition-all duration-150"
                 >
+                  <ChevronLeft size={13} />
                   Back
                 </button>
               )}
+
               <button
                 type="button"
                 onClick={next}
-                className="flex items-center gap-1.5 h-8 px-4 bg-indigo-600 hover:bg-indigo-500 text-white text-[12.5px] font-semibold rounded-[8px] border border-indigo-700/80 shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none transition-all duration-100"
+                className={`flex items-center gap-1.5 h-9 px-5 text-[13px] font-semibold text-white rounded-[10px] border transition-all duration-150
+                  active:translate-y-[2px] active:shadow-none
+                  bg-gradient-to-r ${cur.bar} border-transparent shadow-[0_4px_0_0_rgba(0,0,0,0.4)]
+                  hover:opacity-90`}
               >
-                {isLast ? "Get started" : "Next"}
+                {isLast ? "Get started ✦" : "Next"}
                 {!isLast && <ChevronRight size={13} />}
               </button>
             </div>
