@@ -29,12 +29,7 @@ const BANKS = [
   "PNB", "Yes Bank", "Bank of Baroda", "Canara", "IndusInd",
 ]
 
-const UPI_APPS = [
-  { label: "GPay",    suffix: "oksbi"  },
-  { label: "PhonePe", suffix: "ybl"    },
-  { label: "Paytm",   suffix: "paytm"  },
-  { label: "BHIM",    suffix: "upi"    },
-]
+const UPI_APPS = ["GPay", "PhonePe", "Paytm", "BHIM"]
 
 const LOADING_MSGS: Record<Tab, string[]> = {
   card:       ["Verifying card details…", "Authorising payment…",     "Confirming transaction…"],
@@ -181,7 +176,8 @@ export function PaymentModal({ open, onClose, planName, planPrice }: PaymentModa
   const [saveCard,   setSaveCard]   = useState(false)
 
   // UPI state
-  const [upiId, setUpiId] = useState("")
+  const [upiId,        setUpiId]        = useState("")
+  const [selectedUpiApp, setSelectedUpiApp] = useState("")
 
   // Net Banking state
   const [selectedBank, setSelectedBank] = useState("")
@@ -190,7 +186,7 @@ export function PaymentModal({ open, onClose, planName, planPrice }: PaymentModa
     setTab("card"); setStep("form"); setLoadingStep(0)
     setCardNum(""); setExpiry(""); setCvv(""); setCardName("")
     setShowCvv(false); setCvvFocused(false); setSaveCard(false)
-    setUpiId(""); setSelectedBank("")
+    setUpiId(""); setSelectedUpiApp(""); setSelectedBank("")
   }
 
   function handleClose() {
@@ -453,30 +449,32 @@ export function PaymentModal({ open, onClose, planName, planPrice }: PaymentModa
                   </div>
 
                   <div>
-                    <p className="text-[11.5px] text-[#555] mb-2.5">Or pay with</p>
+                    <p className="text-[11.5px] text-[#555] mb-2.5">Select payment app</p>
                     <div className="grid grid-cols-4 gap-2">
-                      {UPI_APPS.map(({ label, suffix }) => (
+                      {UPI_APPS.map((app) => (
                         <button
-                          key={label}
+                          key={app}
                           type="button"
-                          onClick={() => setUpiId(`yourname@${suffix}`)}
+                          onClick={() => setSelectedUpiApp(app)}
                           className={`h-12 rounded-[9px] border text-[12px] font-medium transition-all duration-150 ${
-                            upiId === `yourname@${suffix}`
+                            selectedUpiApp === app
                               ? "border-indigo-500/40 bg-indigo-600/10 text-indigo-300"
                               : "border-white/[0.07] bg-white/[0.02] text-[#555] hover:border-white/[0.14] hover:text-[#888]"
                           }`}
                         >
-                          {label}
+                          {app}
                         </button>
                       ))}
                     </div>
                   </div>
 
-                  {upiId && (
+                  {(upiId || selectedUpiApp) && (
                     <div className="flex items-center gap-2 p-3 rounded-[9px] bg-emerald-500/[0.06] border border-emerald-500/15">
                       <CheckCircle size={13} className="text-emerald-500 flex-shrink-0" />
                       <p className="text-[12px] text-emerald-400">
-                        Payment request will be sent to <span className="font-medium">{upiId}</span>
+                        {selectedUpiApp && <span className="font-medium">{selectedUpiApp}</span>}
+                        {selectedUpiApp && upiId && " · "}
+                        {upiId && <span className="font-medium">{upiId}</span>}
                       </p>
                     </div>
                   )}
