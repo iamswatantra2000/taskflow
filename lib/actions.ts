@@ -353,3 +353,16 @@ export async function moveTaskToProject(taskId: string, projectId: string) {
   revalidatePath("/")
   revalidatePath("/projects/[id]")
 }
+
+// ——— Upgrade plan ———
+export async function upgradePlan(plan: "free" | "pro" | "enterprise") {
+  const session = await requireAuth()
+
+  await db
+    .update(users)
+    .set({ plan, updatedAt: new Date() })
+    .where(eq(users.id, session.user.id!))
+
+  revalidatePath("/settings")
+  revalidatePath("/dashboard")
+}

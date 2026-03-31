@@ -13,7 +13,7 @@ import {
 import {
   User, Building2, Palette,
   Bell, Sun, Moon, Monitor,
-  Save, Loader2, Camera
+  Save, Loader2, Camera, Zap, CheckCircle,
 } from "lucide-react"
 
 type Props = {
@@ -21,6 +21,7 @@ type Props = {
     id:    string
     name:  string
     email: string
+    plan:  string
   }
   workspace: {
     id:   string
@@ -48,6 +49,80 @@ function getInitials(name: string) {
 }
 
 // ——— Profile Tab ———
+const PLAN_META: Record<string, { label: string; color: string; bg: string; border: string; features: string[] }> = {
+  free: {
+    label: "Free",
+    color: "text-[#888]",
+    bg: "bg-white/[0.03]",
+    border: "border-white/[0.08]",
+    features: ["Up to 3 projects", "Unlimited tasks", "Kanban board"],
+  },
+  pro: {
+    label: "Pro",
+    color: "text-indigo-400",
+    bg: "bg-indigo-600/[0.08]",
+    border: "border-indigo-500/25",
+    features: ["Unlimited projects", "Advanced filters", "Analytics", "Priority support"],
+  },
+  enterprise: {
+    label: "Enterprise",
+    color: "text-violet-400",
+    bg: "bg-violet-600/[0.08]",
+    border: "border-violet-500/25",
+    features: ["Everything in Pro", "SSO / SAML", "Audit logs", "SLA guarantee"],
+  },
+}
+
+function PlanCard({ plan }: { plan: string }) {
+  const meta = PLAN_META[plan] ?? PLAN_META.free
+
+  return (
+    <div className={`border rounded-[12px] p-6 ${meta.bg} ${meta.border}`}>
+      <div className="flex items-start justify-between mb-4">
+        <div>
+          <h3 className="text-[14px] font-semibold mb-1">Current plan</h3>
+          <div className="flex items-center gap-2">
+            <span className={`text-[20px] font-bold ${meta.color}`}>{meta.label}</span>
+            {plan !== "free" && (
+              <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${meta.bg} ${meta.border} ${meta.color}`}>
+                Active
+              </span>
+            )}
+          </div>
+        </div>
+        <div className={`w-10 h-10 rounded-[10px] flex items-center justify-center border ${meta.bg} ${meta.border}`}>
+          <Zap size={16} className={meta.color} />
+        </div>
+      </div>
+
+      <ul className="space-y-1.5 mb-5">
+        {meta.features.map((f) => (
+          <li key={f} className="flex items-center gap-2 text-[12.5px] text-muted-foreground">
+            <CheckCircle size={12} className={meta.color} />
+            {f}
+          </li>
+        ))}
+      </ul>
+
+      {plan === "free" && (
+        <a
+          href="/#pricing"
+          className="inline-flex items-center gap-1.5 h-8 px-4 text-[12px] font-semibold bg-indigo-600 hover:bg-indigo-500 text-white border border-indigo-700/80 rounded-[8px] shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none transition-all duration-100"
+        >
+          <Zap size={11} />
+          Upgrade to Pro
+        </a>
+      )}
+
+      {plan === "pro" && (
+        <p className="text-[12px] text-muted-foreground">
+          Need more? <a href="/#pricing" className="text-indigo-400 hover:underline">Contact sales</a> for Enterprise.
+        </p>
+      )}
+    </div>
+  )
+}
+
 function ProfileTab({ user }: { user: Props["user"] }) {
   const { user: clerkUser }       = useUser()
   const [name, setName]           = useState(user.name)
@@ -170,6 +245,9 @@ function ProfileTab({ user }: { user: Props["user"] }) {
           </button>
         </div>
       </div>
+
+      {/* Plan section */}
+      <PlanCard plan={user.plan} />
 
       {/* Password section — managed by Clerk */}
       <div className="bg-card border border-border rounded-[12px] p-6">

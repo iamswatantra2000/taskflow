@@ -48,6 +48,7 @@ export default async function SettingsPage() {
         id:    user?.id    ?? "",
         name:  user?.name  ?? "",
         email: user?.email ?? "",
+        plan:  user?.plan  ?? "free",
       }}
       workspace={{
         id:   workspace?.id   ?? "",

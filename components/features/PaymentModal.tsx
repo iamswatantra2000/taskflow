@@ -13,6 +13,7 @@ import {
   CreditCard, Smartphone, Building2,
   Lock, CheckCircle, Eye, EyeOff, ShieldCheck,
 } from "lucide-react"
+import { upgradePlan } from "@/lib/actions"
 
 type Tab  = "card" | "upi" | "netbanking"
 type Step = "form" | "loading" | "success"
@@ -22,6 +23,7 @@ interface PaymentModalProps {
   onClose: () => void
   planName: string
   planPrice: string
+  userId: string | null
 }
 
 const BANKS = [
@@ -158,7 +160,7 @@ function CardPreview({
 }
 
 // ── Main component ───────────────────────────────────────────────────────────
-export function PaymentModal({ open, onClose, planName, planPrice }: PaymentModalProps) {
+export function PaymentModal({ open, onClose, planName, planPrice, userId }: PaymentModalProps) {
   const router = useRouter()
   const txnId = useMemo(() => `TF-${Math.random().toString(36).slice(2, 8).toUpperCase()}`, [])
 
@@ -195,12 +197,24 @@ export function PaymentModal({ open, onClose, planName, planPrice }: PaymentModa
     setTimeout(resetForm, 300)
   }
 
-  function handlePay() {
+  async function handlePay() {
     setStep("loading")
     setLoadingStep(0)
-    setTimeout(() => setLoadingStep(1), 900)
-    setTimeout(() => setLoadingStep(2), 1800)
-    setTimeout(() => setStep("success"), 2700)
+
+    await new Promise((r) => setTimeout(r, 900))
+    setLoadingStep(1)
+
+    await new Promise((r) => setTimeout(r, 900))
+    setLoadingStep(2)
+
+    await new Promise((r) => setTimeout(r, 900))
+
+    // Persist plan if user is logged in
+    if (userId) {
+      try { await upgradePlan("pro") } catch { /* silent — mock flow */ }
+    }
+
+    setStep("success")
   }
 
   const brand = getCardBrand(cardNum)

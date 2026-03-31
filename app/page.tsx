@@ -556,7 +556,9 @@ function Footer() {
 }
 
 // ——— Main page ———
-export default function LandingPage() {
+export default async function LandingPage() {
+  const session = await getSession()
+
   return (
     <div className="min-h-screen bg-[#080808] text-white">
       <OnboardingTour />
@@ -566,7 +568,7 @@ export default function LandingPage() {
         <Features />
         <HowItWorks />
         <Testimonials />
-        <PricingSection />
+        <PricingSection userId={session?.user?.id ?? null} />
         <CTABanner />
       </main>
       <Footer />

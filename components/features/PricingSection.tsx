@@ -64,7 +64,7 @@ const plans = [
   },
 ]
 
-export function PricingSection() {
+export function PricingSection({ userId }: { userId: string | null }) {
   const [paymentOpen, setPaymentOpen] = useState(false)
   const [contactOpen, setContactOpen] = useState(false)
 
@@ -165,6 +165,7 @@ export function PricingSection() {
         onClose={() => setPaymentOpen(false)}
         planName="Pro"
         planPrice="$12 per user / month"
+        userId={userId}
       />
 
       <ContactSalesModal

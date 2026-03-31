@@ -20,7 +20,7 @@ async function ensureUserInDb(clerkUser: ClerkUser) {
   const name  = fullName ?? username ?? email.split("@")[0] ?? "User"
 
   const [existing] = await db
-    .select({ name: users.name, email: users.email })
+    .select({ name: users.name, email: users.email, plan: users.plan })
     .from(users)
     .where(eq(users.id, clerkId))
     .limit(1)
@@ -28,7 +28,7 @@ async function ensureUserInDb(clerkUser: ClerkUser) {
   if (existing) return existing
 
   // First login — create user + workspace + default project
-  await db.insert(users).values({ id: clerkId, name, email })
+  await db.insert(users).values({ id: clerkId, name, email, plan: "free" })
 
   const slug = `${name.toLowerCase().replace(/\s+/g, "-")}-${clerkId.slice(-6)}`
 
@@ -50,11 +50,11 @@ async function ensureUserInDb(clerkUser: ClerkUser) {
     workspaceId: workspace.id,
   })
 
-  return { name, email }
+  return { name, email, plan: "free" as const }
 }
 
 /**
- * Require authentication. Returns { user: { id, name, email } }.
+ * Require authentication. Returns { user: { id, name, email, plan } }.
  * Redirects to /login if unauthenticated.
  */
 export async function requireAuth() {
@@ -64,13 +64,14 @@ export async function requireAuth() {
   const clerkUser = await currentUser()
   if (!clerkUser) redirect("/login")
 
-  const { name, email } = await ensureUserInDb(clerkUser as ClerkUser)
+  const { name, email, plan } = await ensureUserInDb(clerkUser as ClerkUser)
 
   return {
     user: {
       id:    userId,
       name:  name  ?? "User",
       email: email ?? "",
+      plan:  plan  ?? "free",
     },
   }
 }
