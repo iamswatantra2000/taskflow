@@ -63,6 +63,14 @@ const priorityConfig = {
   LOW:    { label: "Low",    class: "bg-emerald-950 text-emerald-400 border-emerald-900" },
 }
 
+// Per-column color treatment — bg tint + border accent + label color
+const columnStyles: Record<string, { bg: string; borderColor: string; labelColor: string }> = {
+  TODO:        { bg: "bg-card",                borderColor: "border-border",           labelColor: "text-muted-foreground" },
+  IN_PROGRESS: { bg: "bg-indigo-950/[0.18]",   borderColor: "border-indigo-500/25",   labelColor: "text-indigo-400"       },
+  IN_REVIEW:   { bg: "bg-amber-950/[0.15]",    borderColor: "border-amber-500/25",    labelColor: "text-amber-400"        },
+  DONE:        { bg: "bg-emerald-950/[0.12]",  borderColor: "border-emerald-500/20",  labelColor: "text-emerald-400"      },
+}
+
 function getInitials(name: string) {
   return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
 }
@@ -102,7 +110,8 @@ function TaskCard({
       style={style}
       className={`group bg-card border border-border rounded-[8px] p-3 hover:border-border/80 hover:bg-accent/50 transition-all
         ${task.status === "IN_PROGRESS" ? "border-l-2 border-l-indigo-500" : ""}
-        ${task.status === "DONE" ? "opacity-50" : ""}
+        ${task.status === "IN_REVIEW"   ? "border-l-2 border-l-amber-500/70" : ""}
+        ${task.status === "DONE"        ? "opacity-60" : ""}
       `}
     >
       {/* Top row */}
@@ -127,7 +136,7 @@ function TaskCard({
         {/** biome-ignore lint/a11y/useKeyWithClickEvents: intentional */}
         <p
           onClick={() => onSelect(task)}
-          className="flex-1 text-[12px] text-foreground/80 leading-[1.45] cursor-pointer hover:text-foreground transition-colors"
+          className="flex-1 text-[12px] font-medium text-foreground/80 leading-[1.45] cursor-pointer hover:text-foreground transition-colors"
         >
           {task.title}
         </p>
@@ -204,12 +213,16 @@ function DroppableColumn({
   children: React.ReactNode
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: col.id })
+  const styles = columnStyles[col.id] ?? columnStyles.TODO
+
   return (
     <div
       ref={setNodeRef}
       id={col.id}
-      className={`bg-card border rounded-[10px] p-3 flex flex-col gap-2 min-h-[200px] transition-colors ${
-        isOver ? "border-indigo-500/50 bg-indigo-950/20" : "border-border"
+      className={`border rounded-[10px] p-3 flex flex-col gap-2 min-h-[200px] transition-colors ${
+        isOver
+          ? "bg-indigo-950/25 border-indigo-500/50"
+          : `${styles.bg} ${styles.borderColor}`
       }`}
     >
       {children}
@@ -356,7 +369,7 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects }:
         {showCelebration ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <div className="text-6xl mb-4 animate-bounce">🎉</div>
-            <h3 className="text-[18px] font-semibold text-foreground mb-2">
+            <h3 className="text-[18px] font-bold text-foreground mb-2">
               You are all caught up!
             </h3>
             <p className="text-[13px] text-muted-foreground max-w-sm">
@@ -384,7 +397,7 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects }:
                   <div className="flex items-center justify-between mb-1">
                     <div className="flex items-center gap-1.5">
                       <div className={`w-[7px] h-[7px] rounded-full ${col.dot}`} />
-                      <span className="text-[11px] font-medium text-muted-foreground">
+                      <span className={`text-[11px] font-semibold ${(columnStyles[col.id] ?? columnStyles.TODO).labelColor}`}>
                         {col.label}
                       </span>
                     </div>

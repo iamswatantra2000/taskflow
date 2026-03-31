@@ -70,7 +70,7 @@ export function DashboardClient({
 			<div className="h-[50px] border-b border-border flex items-center justify-between pl-14 pr-4 md:px-5 flex-shrink-0 bg-background z-10">
 				<div className="flex items-center gap-2 min-w-0">
 					<span className="text-[13px] text-muted-foreground hidden sm:inline">Workspace /</span>
-					<span className="text-[13px] font-medium text-foreground truncate">
+					<span className="text-[13px] font-semibold text-foreground truncate">
 						Dashboard
 					</span>
 				</div>
@@ -144,7 +144,7 @@ export function DashboardClient({
 			<div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
 				{/* Welcome */}
 				<div>
-					<h1 className="text-[18px] font-semibold text-foreground tracking-tight">
+					<h1 className="text-[20px] font-bold text-foreground tracking-tight">
 						Good day, {firstName}
 					</h1>
 					<p className="text-[13px] text-muted-foreground mt-1">
@@ -163,11 +163,11 @@ export function DashboardClient({
 								{stat.label}
 							</p>
 							<p
-								className={`text-[26px] font-semibold tracking-tight leading-none ${stat.valueColor}`}
+								className={`text-[26px] font-bold tracking-tight leading-none ${stat.valueColor}`}
 							>
 								<AnimatedCounter value={stat.value} duration={1500} delay={index * 150} />
 							</p>
-							<p className="text-[11px] text-muted-foreground/60 mt-1.5">
+							<p className="text-[11px] font-medium text-muted-foreground/60 mt-1.5">
 								{stat.sub}
 							</p>
 						</div>
@@ -177,7 +177,7 @@ export function DashboardClient({
 				{/* Board */}
 				<div>
 					<div className="flex items-center justify-between mb-3">
-						<h2 className="text-[13px] font-medium text-foreground">
+						<h2 className="text-[13px] font-semibold text-foreground">
 							Task board
 						</h2>
 					</div>
