@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Check } from "lucide-react"
 import { AnimateOnView } from "@/components/ui/AnimateOnView"
 import { PaymentModal } from "@/components/features/PaymentModal"
+import { ContactSalesModal } from "@/components/features/ContactSalesModal"
 
 const plans = [
   {
@@ -22,7 +23,7 @@ const plans = [
     cta: "Get started free",
     href: "/register",
     popular: false,
-    hasPayment: false,
+    action: "link" as const,
   },
   {
     name: "Pro",
@@ -41,7 +42,7 @@ const plans = [
     cta: "Start free trial",
     href: "/register",
     popular: true,
-    hasPayment: true,
+    action: "payment" as const,
   },
   {
     name: "Enterprise",
@@ -59,12 +60,13 @@ const plans = [
     cta: "Contact sales",
     href: "/register",
     popular: false,
-    hasPayment: false,
+    action: "contact" as const,
   },
 ]
 
 export function PricingSection() {
   const [paymentOpen, setPaymentOpen] = useState(false)
+  const [contactOpen, setContactOpen] = useState(false)
 
   return (
     <>
@@ -108,11 +110,19 @@ export function PricingSection() {
                     <p className="text-[12.5px] text-[#555] leading-relaxed">{plan.description}</p>
                   </div>
 
-                  {plan.hasPayment ? (
+                  {plan.action === "payment" ? (
                     <button
                       type="button"
                       onClick={() => setPaymentOpen(true)}
                       className="w-full h-8 flex items-center justify-center text-[12.5px] font-semibold rounded-[8px] border transition-all duration-150 active:translate-y-[3px] active:shadow-none whitespace-nowrap bg-indigo-600 hover:bg-indigo-500 text-white border-indigo-700/80 shadow-[0_3px_0_0_#3730a3]"
+                    >
+                      {plan.cta}
+                    </button>
+                  ) : plan.action === "contact" ? (
+                    <button
+                      type="button"
+                      onClick={() => setContactOpen(true)}
+                      className="w-full h-8 flex items-center justify-center text-[12.5px] font-semibold rounded-[8px] border transition-all duration-150 active:translate-y-[3px] active:shadow-none whitespace-nowrap bg-[#111] hover:bg-[#161616] text-[#888] hover:text-white border-white/10 hover:border-white/18 shadow-[0_3px_0_0_rgba(0,0,0,0.55)]"
                     >
                       {plan.cta}
                     </button>
@@ -155,6 +165,11 @@ export function PricingSection() {
         onClose={() => setPaymentOpen(false)}
         planName="Pro"
         planPrice="$12 per user / month"
+      />
+
+      <ContactSalesModal
+        open={contactOpen}
+        onClose={() => setContactOpen(false)}
       />
     </>
   )
