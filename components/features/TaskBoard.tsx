@@ -21,7 +21,7 @@ import {
   useSortable,
 } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { CalendarDays } from "lucide-react"
 import { DeleteTaskButton } from "./DeleteTaskButton"
 import { TaskDetailDialog } from "./TaskDetailDialog"
 import { TaskProjectMenu } from "./TaskProjectMenu"
@@ -57,10 +57,20 @@ type Props = {
 }
 
 const priorityConfig = {
-  HIGH:   { label: "High",   class: "bg-red-950 text-red-400 border-red-900"             },
-  URGENT: { label: "Urgent", class: "bg-red-950 text-red-400 border-red-900"             },
-  MEDIUM: { label: "Medium", class: "bg-amber-950 text-amber-400 border-amber-900"       },
-  LOW:    { label: "Low",    class: "bg-emerald-950 text-emerald-400 border-emerald-900" },
+  URGENT: { label: "Urgent", dot: "bg-red-500",    pill: "bg-red-500/[0.08] text-red-400 border-red-500/20"       },
+  HIGH:   { label: "High",   dot: "bg-orange-500", pill: "bg-orange-500/[0.08] text-orange-400 border-orange-500/20" },
+  MEDIUM: { label: "Medium", dot: "bg-amber-500",  pill: "bg-amber-500/[0.08] text-amber-400 border-amber-500/20"  },
+  LOW:    { label: "Low",    dot: "bg-sky-500",    pill: "bg-sky-500/[0.08] text-sky-400 border-sky-500/20"       },
+}
+
+function getDateMeta(dueDate: Date, status: string) {
+  const now   = new Date(); now.setHours(0, 0, 0, 0)
+  const due   = new Date(dueDate); due.setHours(0, 0, 0, 0)
+  const diff  = (due.getTime() - now.getTime()) / 86400000
+  const done  = status === "DONE"
+  if (!done && diff < 0)  return { color: "text-red-400",   label: new Date(dueDate).toLocaleDateString("en-US", { month: "short", day: "numeric" }) }
+  if (!done && diff === 0) return { color: "text-amber-400", label: "Today" }
+  return { color: "text-[#555]", label: new Date(dueDate).toLocaleDateString("en-US", { month: "short", day: "numeric" }) }
 }
 
 // Per-column color treatment — bg tint + border accent + label color
@@ -71,23 +81,20 @@ const columnStyles: Record<string, { bg: string; borderColor: string; labelColor
   DONE:        { bg: "bg-emerald-950/[0.12]",  borderColor: "border-emerald-500/20",  labelColor: "text-emerald-400"      },
 }
 
-function getInitials(name: string) {
-  return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
-}
-
 // ——— Single draggable task card ———
 function TaskCard({
   task,
-  userName,
   onSelect,
   projects,
 }: {
   task:     Task
-  userName: string
   onSelect: (task: Task) => void
   projects: { id: string; name: string; color: string }[]
 }) {
-  const priority = priorityConfig[task.priority as keyof typeof priorityConfig]
+  const priority   = priorityConfig[task.priority as keyof typeof priorityConfig]
+  const project    = projects.find((p) => p.id === task.projectId)
+  const dateMeta   = task.dueDate ? getDateMeta(task.dueDate, task.status) : null
+  const isDone     = task.status === "DONE"
 
   const {
     attributes,
@@ -101,78 +108,95 @@ function TaskCard({
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.4 : 1,
+    opacity: isDragging ? 0.35 : 1,
   }
+
+  const leftAccent =
+    task.status === "IN_PROGRESS" ? "border-l-[3px] border-l-indigo-500" :
+    task.status === "IN_REVIEW"   ? "border-l-[3px] border-l-amber-500"  :
+    task.status === "DONE"        ? "border-l-[3px] border-l-emerald-500" : ""
 
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className={`group bg-card border border-border rounded-[8px] p-3 hover:border-border/80 hover:bg-accent/50 transition-all
-        ${task.status === "IN_PROGRESS" ? "border-l-2 border-l-indigo-500" : ""}
-        ${task.status === "IN_REVIEW"   ? "border-l-2 border-l-amber-500/70" : ""}
-        ${task.status === "DONE"        ? "opacity-60" : ""}
+      className={`group relative bg-[#111] border border-white/[0.07] rounded-[10px] p-3.5
+        hover:border-white/[0.13] hover:bg-[#141414]
+        hover:-translate-y-[1px] hover:shadow-[0_6px_20px_rgba(0,0,0,0.45)]
+        transition-all duration-150
+        ${leftAccent}
+        ${isDone ? "opacity-55" : ""}
       `}
     >
-      {/* Top row */}
-      <div className="flex items-start gap-2 mb-2">
+      {/* Project color dot — top right corner */}
+      {project && (
+        <div
+          className="absolute top-3 right-3 w-[6px] h-[6px] rounded-full opacity-60"
+          style={{ background: project.color }}
+        />
+      )}
+
+      {/* Top row: drag handle + title */}
+      <div className="flex items-start gap-2 mb-3 pr-3">
+        {/* Drag handle — only visible on hover */}
         <div
           {...attributes}
           {...listeners}
           style={{ touchAction: "none" }}
-          className="flex-shrink-0 mt-0.5 cursor-grab active:cursor-grabbing text-muted-foreground/40 hover:text-muted-foreground transition-colors"
+          className="flex-shrink-0 mt-[3px] cursor-grab active:cursor-grabbing text-[#333] hover:text-[#666] opacity-0 group-hover:opacity-100 transition-all"
         >
           {/** biome-ignore lint/a11y/noSvgWithoutTitle: drag handle */}
-          <svg width="10" height="14" viewBox="0 0 10 14" fill="none">
-            <circle cx="2"  cy="2"  r="1.2" fill="currentColor"/>
-            <circle cx="8"  cy="2"  r="1.2" fill="currentColor"/>
-            <circle cx="2"  cy="7"  r="1.2" fill="currentColor"/>
-            <circle cx="8"  cy="7"  r="1.2" fill="currentColor"/>
-            <circle cx="2"  cy="12" r="1.2" fill="currentColor"/>
-            <circle cx="8"  cy="12" r="1.2" fill="currentColor"/>
+          <svg width="9" height="13" viewBox="0 0 10 14" fill="none">
+            <circle cx="2"  cy="2"  r="1.3" fill="currentColor"/>
+            <circle cx="8"  cy="2"  r="1.3" fill="currentColor"/>
+            <circle cx="2"  cy="7"  r="1.3" fill="currentColor"/>
+            <circle cx="8"  cy="7"  r="1.3" fill="currentColor"/>
+            <circle cx="2"  cy="12" r="1.3" fill="currentColor"/>
+            <circle cx="8"  cy="12" r="1.3" fill="currentColor"/>
           </svg>
         </div>
 
         {/** biome-ignore lint/a11y/useKeyWithClickEvents: intentional */}
         <p
           onClick={() => onSelect(task)}
-          className="flex-1 text-[12px] font-medium text-foreground/80 leading-[1.45] cursor-pointer hover:text-foreground transition-colors"
+          className={`flex-1 text-[13px] font-semibold leading-snug cursor-pointer transition-colors
+            ${isDone
+              ? "text-[#555] line-through decoration-[#444]"
+              : "text-[#ddd] hover:text-white"
+            }`}
         >
           {task.title}
         </p>
-
-        <TaskProjectMenu
-          taskId={task.id}
-          currentProjectId={task.projectId}
-          projects={projects}
-        />
-
-        <DeleteTaskButton taskId={task.id} />
       </div>
 
-      {/* Bottom row */}
-      <div className="flex items-center justify-between pl-4">
-        <span className={`text-[10px] font-medium px-[7px] py-[2px] rounded-[5px] border ${priority.class}`}>
+      {/* Bottom row: priority badge + date + actions */}
+      <div className="flex items-center justify-between gap-2 pl-[17px]">
+
+        {/* Priority pill with colored dot */}
+        <div className={`inline-flex items-center gap-1.5 text-[10.5px] font-semibold px-2 py-[3px] rounded-full border ${priority.pill}`}>
+          <span className={`w-[5px] h-[5px] rounded-full flex-shrink-0 ${priority.dot}`} />
           {priority.label}
-        </span>
+        </div>
 
-        {task.dueDate && (
-          <span className={`text-[10px] ${
-            new Date(task.dueDate) < new Date() && task.status !== "DONE"
-              ? "text-red-400"
-              : "text-muted-foreground"
-          }`}>
-            {new Date(task.dueDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-          </span>
-        )}
+        {/* Right side: date + actions */}
+        <div className="flex items-center gap-2 ml-auto">
+          {dateMeta && (
+            <div className={`flex items-center gap-1 ${dateMeta.color}`}>
+              <CalendarDays size={10} className="flex-shrink-0" />
+              <span className="text-[10.5px] font-medium">{dateMeta.label}</span>
+            </div>
+          )}
 
-        {task.assigneeId && (
-          <Avatar className="h-[18px] w-[18px]">
-            <AvatarFallback className="text-[8px] bg-gradient-to-br from-indigo-500 to-violet-600 text-white border-0">
-              {getInitials(userName)}
-            </AvatarFallback>
-          </Avatar>
-        )}
+          {/* Action buttons — hidden until hover */}
+          <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+            <TaskProjectMenu
+              taskId={task.id}
+              currentProjectId={task.projectId}
+              projects={projects}
+            />
+            <DeleteTaskButton taskId={task.id} />
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -182,23 +206,13 @@ function TaskCard({
 function DragOverlayCard({ task }: { task: Task }) {
   const priority = priorityConfig[task.priority as keyof typeof priorityConfig]
   return (
-    <div className="bg-card border border-indigo-500 rounded-[8px] p-3 w-[220px] rotate-1 shadow-2xl">
-      <div className="flex items-start gap-2 mb-2">
-        {/** biome-ignore lint/a11y/noSvgWithoutTitle: drag handle */}
-        <svg width="10" height="14" viewBox="0 0 10 14" fill="none" className="flex-shrink-0 mt-0.5 text-muted-foreground">
-          <circle cx="2"  cy="2"  r="1.2" fill="currentColor"/>
-          <circle cx="8"  cy="2"  r="1.2" fill="currentColor"/>
-          <circle cx="2"  cy="7"  r="1.2" fill="currentColor"/>
-          <circle cx="8"  cy="7"  r="1.2" fill="currentColor"/>
-          <circle cx="2"  cy="12" r="1.2" fill="currentColor"/>
-          <circle cx="8"  cy="12" r="1.2" fill="currentColor"/>
-        </svg>
-        <p className="text-[12px] text-foreground leading-[1.45] flex-1">{task.title}</p>
-      </div>
-      <div className="pl-4">
-        <span className={`text-[10px] font-medium px-[7px] py-[2px] rounded-[5px] border ${priority.class}`}>
+    <div className="bg-[#141414] border border-indigo-500/60 rounded-[10px] p-3.5 w-[230px] rotate-[1.5deg] shadow-[0_20px_60px_rgba(0,0,0,0.7)] ring-1 ring-indigo-500/20">
+      <p className="text-[13px] font-semibold text-white leading-snug mb-3 pl-[17px]">{task.title}</p>
+      <div className="pl-[17px]">
+        <div className={`inline-flex items-center gap-1.5 text-[10.5px] font-semibold px-2 py-[3px] rounded-full border ${priority.pill}`}>
+          <span className={`w-[5px] h-[5px] rounded-full flex-shrink-0 ${priority.dot}`} />
           {priority.label}
-        </span>
+        </div>
       </div>
     </div>
   )
@@ -411,7 +425,6 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects }:
                     <TaskCard
                       key={task.id}
                       task={task}
-                      userName={userName}
                       onSelect={setSelectedTask}
                       projects={projects}
                     />
