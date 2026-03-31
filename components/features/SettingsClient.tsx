@@ -411,9 +411,9 @@ function AppearanceTab() {
   const { theme, setTheme } = useTheme()
 
   const themes = [
-    { id: "dark",   label: "Dark",   icon: Moon,    desc: "Easy on the eyes"     },
-    { id: "light",  label: "Light",  icon: Sun,     desc: "Clean and bright"     },
-    { id: "system", label: "System", icon: Monitor, desc: "Follows your OS theme" },
+    { id: "dark",   label: "Dark",   icon: Moon,    desc: "Easy on the eyes",     comingSoon: false },
+    { id: "light",  label: "Light",  icon: Sun,     desc: "Clean and bright",     comingSoon: true  },
+    { id: "system", label: "System", icon: Monitor, desc: "Follows your OS theme", comingSoon: false },
   ]
 
   const accents = [
@@ -437,30 +437,40 @@ function AppearanceTab() {
 
         <div className="grid grid-cols-3 gap-3">
           {themes.map((t) => (
-            <button
-              key={t.id}
-              type="button"
-              onClick={() => {
-                setTheme(t.id)
-                toast.success(`${t.label} mode enabled`)
-              }}
-              className={`flex flex-col items-center gap-2 p-4 rounded-[10px] border transition-all ${
-                theme === t.id
-                  ? "border-primary bg-primary/10"
-                  : "border-border hover:border-border/80 hover:bg-accent"
-              }`}
-            >
-              <t.icon size={20} className={theme === t.id ? "text-primary" : "text-muted-foreground"} />
-              <div className="text-center">
-                <p className={`text-[12px] font-medium ${theme === t.id ? "text-primary" : ""}`}>
-                  {t.label}
-                </p>
-                <p className="text-[10px] text-muted-foreground">{t.desc}</p>
-              </div>
-              {theme === t.id && (
-                <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+            <div key={t.id} className="relative">
+              <button
+                type="button"
+                disabled={t.comingSoon}
+                onClick={() => {
+                  if (t.comingSoon) return
+                  setTheme(t.id)
+                  toast.success(`${t.label} mode enabled`)
+                }}
+                className={`w-full flex flex-col items-center gap-2 p-4 rounded-[10px] border transition-all ${
+                  t.comingSoon
+                    ? "border-border opacity-40 cursor-not-allowed"
+                    : theme === t.id
+                      ? "border-primary bg-primary/10"
+                      : "border-border hover:border-border/80 hover:bg-accent"
+                }`}
+              >
+                <t.icon size={20} className={!t.comingSoon && theme === t.id ? "text-primary" : "text-muted-foreground"} />
+                <div className="text-center">
+                  <p className={`text-[12px] font-medium ${!t.comingSoon && theme === t.id ? "text-primary" : ""}`}>
+                    {t.label}
+                  </p>
+                  <p className="text-[10px] text-muted-foreground">{t.desc}</p>
+                </div>
+                {!t.comingSoon && theme === t.id && (
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                )}
+              </button>
+              {t.comingSoon && (
+                <span className="absolute -top-2 left-1/2 -translate-x-1/2 text-[9px] font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/25 px-2 py-0.5 rounded-full whitespace-nowrap">
+                  Coming soon
+                </span>
               )}
-            </button>
+            </div>
           ))}
         </div>
       </div>

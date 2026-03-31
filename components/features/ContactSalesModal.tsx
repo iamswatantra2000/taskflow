@@ -15,13 +15,24 @@ interface ContactSalesModalProps {
   onClose: () => void
 }
 
-const TEAM_SIZES = [
-  "1 – 10 people",
-  "11 – 50 people",
-  "51 – 200 people",
-  "201 – 500 people",
-  "500+ people",
+const TEAM_TIERS = [
+  { label: "1 – 10 people",    min: 1,   max: 10,  perUser: 10,  custom: false },
+  { label: "11 – 50 people",   min: 11,  max: 50,  perUser: 8,   custom: false },
+  { label: "51 – 200 people",  min: 51,  max: 200, perUser: 7,   custom: false },
+  { label: "201 – 500 people", min: 201, max: 500, perUser: 6,   custom: false },
+  { label: "500+ people",      min: 500, max: null, perUser: null, custom: true },
 ]
+
+function getEstimate(tierLabel: string) {
+  const tier = TEAM_TIERS.find((t) => t.label === tierLabel)
+  if (!tier || tier.custom || !tier.perUser || !tier.max) return null
+  return {
+    min: tier.min * tier.perUser,
+    max: tier.max * tier.perUser,
+    perUser: tier.perUser,
+    range: tier.label,
+  }
+}
 
 const NEXT_STEPS = [
   { n: "1", text: "A sales rep reviews your enquiry" },
@@ -206,14 +217,66 @@ export function ContactSalesModal({ open, onClose }: ContactSalesModalProps) {
                       className="h-9 w-full appearance-none rounded-[9px] border border-white/10 bg-white/[0.03] px-3 pr-8 text-[13px] text-foreground outline-none transition-all duration-150 focus-visible:border-indigo-500/60 focus-visible:shadow-[0_0_0_3px_hsl(var(--ring)/0.15)] [&>option]:bg-[#111]"
                     >
                       <option value="" disabled>Select…</option>
-                      {TEAM_SIZES.map((s) => (
-                        <option key={s} value={s}>{s}</option>
+                      {TEAM_TIERS.map((t) => (
+                        <option key={t.label} value={t.label}>{t.label}</option>
                       ))}
                     </select>
                     <Users size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#444] pointer-events-none" />
                   </div>
                 </div>
               </div>
+
+              {/* ── Amount estimate ── */}
+              {teamSize && (() => {
+                const est = getEstimate(teamSize)
+                const isCustom = TEAM_TIERS.find((t) => t.label === teamSize)?.custom
+                return (
+                  <div className={`rounded-[10px] border p-4 transition-all duration-200 ${
+                    isCustom
+                      ? "border-violet-500/20 bg-violet-500/[0.05]"
+                      : "border-indigo-500/20 bg-indigo-500/[0.05]"
+                  }`}>
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <p className="text-[10.5px] font-semibold text-[#444] uppercase tracking-wider mb-1">
+                          Estimated monthly cost
+                        </p>
+                        {isCustom ? (
+                          <p className="text-[18px] font-bold text-violet-300">Custom pricing</p>
+                        ) : est ? (
+                          <p className="text-[18px] font-bold text-white">
+                            ${est.min.toLocaleString()}
+                            <span className="text-[#555] font-normal text-[13px]"> – </span>
+                            ${est.max.toLocaleString()}
+                            <span className="text-[#555] font-normal text-[13px]"> / mo</span>
+                          </p>
+                        ) : null}
+                        {!isCustom && est && (
+                          <p className="text-[11px] text-[#444] mt-0.5">
+                            ${est.perUser}/user · {est.range}
+                          </p>
+                        )}
+                        {isCustom && (
+                          <p className="text-[11px] text-[#555] mt-0.5">
+                            Our team will build a tailored quote for you
+                          </p>
+                        )}
+                      </div>
+                      {!isCustom && (
+                        <div className="text-right flex-shrink-0">
+                          <p className="text-[10px] text-[#444] mb-1">Per user / month</p>
+                          <p className="text-[16px] font-bold text-indigo-400">
+                            ${getEstimate(teamSize)?.perUser}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-[10.5px] text-[#3a3a3a] mt-3 pt-3 border-t border-white/[0.05]">
+                      Final pricing confirmed by our sales team after the call
+                    </p>
+                  </div>
+                )
+              })()}
 
               <div>
                 <label className="block text-[11.5px] text-[#555] mb-1.5">
