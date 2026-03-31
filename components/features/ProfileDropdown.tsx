@@ -2,14 +2,12 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { useTheme } from "next-themes"
 import { useClerk, useUser } from "@clerk/nextjs"
-import { useRouter } from "next/navigation"
 import { updateDisplayName } from "@/lib/actions"
 import { toast } from "sonner"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
-  User, Sun, Moon, LogOut, ChevronRight, X,
+  User, LogOut, ChevronRight, X,
 } from "lucide-react"
 
 type Props = {
@@ -70,10 +68,8 @@ function ChangeNameForm({ currentName, onDone }: { currentName: string; onDone: 
 
 // ——— Main dropdown ———
 export function ProfileDropdown({ user }: Props) {
-  const { theme, setTheme } = useTheme()
   const { signOut }         = useClerk()
   const { user: clerkUser } = useUser()
-  const router              = useRouter()
   const [open, setOpen]     = useState(false)
   const [view, setView]     = useState<"menu" | "name">("menu")
   const ref                 = useRef<HTMLDivElement>(null)
@@ -90,8 +86,6 @@ export function ProfileDropdown({ user }: Props) {
   }, [])
 
   function close() { setOpen(false); setView("menu") }
-
-  const isDark = theme === "dark"
 
   return (
     <div className="relative" ref={ref}>
@@ -146,20 +140,6 @@ export function ProfileDropdown({ user }: Props) {
                   <ChevronRight size={12} className="text-[#444] group-hover:text-[#666] transition-colors" />
                 </button>
 
-                {/* Theme toggle */}
-                <button
-                  type="button"
-                  onClick={() => setTheme(isDark ? "light" : "dark")}
-                  className="w-full flex items-center justify-between px-2.5 py-2 rounded-[7px] hover:bg-[#1f1f1f] transition-colors"
-                >
-                  <div className="flex items-center gap-2.5">
-                    {isDark ? <Sun size={13} className="text-[#555]" /> : <Moon size={13} className="text-[#555]" />}
-                    <span className="text-[12px] text-[#ccc]">{isDark ? "Light mode" : "Dark mode"}</span>
-                  </div>
-                  <div className={`w-8 h-4 rounded-full transition-colors relative ${isDark ? "bg-[#2a2a2a]" : "bg-indigo-600"}`}>
-                    <div className={`absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all ${isDark ? "left-0.5" : "left-4"}`} />
-                  </div>
-                </button>
               </div>
 
               {/* Sign out */}

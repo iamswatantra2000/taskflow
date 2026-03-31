@@ -80,7 +80,7 @@ function ProGate({
 				<div className="bg-[#1c1c1c] border border-white/10 rounded-[8px] px-3 py-1.5 flex items-center gap-2 whitespace-nowrap shadow-xl">
 					<Lock size={9} className="text-amber-400 flex-shrink-0" />
 					<span className="text-[11px] text-[#ccc]">{label}</span>
-					<a href="/#pricing" className="text-[11px] font-semibold text-indigo-400 hover:text-indigo-300">
+					<a href="/upgrade" className="text-[11px] font-semibold text-indigo-400 hover:text-indigo-300">
 						Upgrade →
 					</a>
 				</div>

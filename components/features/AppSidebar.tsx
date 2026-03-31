@@ -10,7 +10,7 @@ import { LogoMark } from "@/components/ui/LogoMark"
 import {
   LayoutDashboard, ListChecks, Activity,
   Settings2, ChevronLeft, ChevronRight,
-  Search, BarChart3, Menu, X, LogOut, Lock, Zap,
+  Search, BarChart3, Menu, X, LogOut, Lock, Zap, Sparkles,
 } from "lucide-react"
 import { useState, useRef } from "react"
 import { createPortal } from "react-dom"
@@ -96,7 +96,7 @@ function LockedNavItem({ label, icon: Icon, proLabel, collapsed }: {
             </div>
             <span className="text-[11.5px] text-[#bbb] font-medium">{proLabel}</span>
             <span className="text-[11px] text-[#444]">·</span>
-            <a href="/#pricing" className="text-[11.5px] font-semibold text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-1">
+            <a href="/upgrade" className="text-[11.5px] font-semibold text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-1">
               <Zap size={9} />
               Upgrade
             </a>
@@ -308,6 +308,24 @@ export function AppSidebar({ user, projects, plan }: AppSidebarProps) {
         "flex-shrink-0 border-t border-white/[0.06] pt-2 pb-2 space-y-0.5",
         collapsed ? "px-2" : "px-3"
       )}>
+        {/* Upgrade CTA — free users only */}
+        {!isPro && (
+          <Link
+            href="/upgrade"
+            onClick={() => setMobileOpen(false)}
+            className={cn(
+              "flex items-center gap-3 h-9 rounded-[8px] text-[13px] font-semibold transition-all",
+              "bg-indigo-600/[0.12] border border-indigo-500/20 text-indigo-400",
+              "hover:bg-indigo-600/[0.18] hover:border-indigo-500/30 hover:text-indigo-300",
+              collapsed ? "px-0 justify-center" : "px-3"
+            )}
+            title={collapsed ? "Upgrade to Pro" : undefined}
+          >
+            <Sparkles size={15} className="flex-shrink-0 text-indigo-400" />
+            {!collapsed && <span>Upgrade to Pro</span>}
+          </Link>
+        )}
+
         {/* Settings */}
         <Link
           href="/settings"
