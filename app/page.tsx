@@ -38,13 +38,19 @@ async function Navbar() {
 
         <div className="flex items-center gap-2 sm:gap-3">
           {isLoggedIn ? (
-            <Link
-              href="/dashboard"
-              className="h-8 px-4 text-[12.5px] font-semibold bg-indigo-600 hover:bg-indigo-500 text-white rounded-[8px] border border-indigo-700/80 shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none transition-all duration-150 flex items-center gap-1.5 whitespace-nowrap"
-            >
-              Open app
-              <ArrowRight size={12} />
-            </Link>
+            <>
+              {/* Greeting chip — desktop only */}
+              <span className="hidden sm:block text-[12.5px] text-[#444]">
+                Hey, {session.user.name?.split(" ")[0] ?? "there"} 👋
+              </span>
+              <Link
+                href="/dashboard"
+                className="h-8 px-4 text-[12.5px] font-semibold bg-indigo-600 hover:bg-indigo-500 text-white rounded-[8px] border border-indigo-700/80 shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none transition-all duration-150 flex items-center gap-1.5 whitespace-nowrap"
+              >
+                Dashboard
+                <ArrowRight size={12} />
+              </Link>
+            </>
           ) : (
             <>
               <Link

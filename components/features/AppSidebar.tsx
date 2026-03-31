@@ -51,7 +51,11 @@ export function AppSidebar({ user, projects }: AppSidebarProps) {
     <>
       {/* Logo */}
       <div className="flex items-center justify-between h-[50px] px-3 border-b border-border">
-        <Link href="/" className="flex items-center gap-2.5 overflow-hidden min-w-0">
+        <Link
+          href="/"
+          onClick={() => setMobileOpen(false)}
+          className="flex items-center gap-2.5 overflow-hidden min-w-0"
+        >
           <div className="w-[26px] h-[26px] rounded-[7px] bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center flex-shrink-0">
             <span className="text-white text-[11px] font-bold">T</span>
           </div>
