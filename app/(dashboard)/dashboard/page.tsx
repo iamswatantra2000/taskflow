@@ -74,6 +74,7 @@ export default async function DashboardPage() {
       firstName={firstName}
       user={session.user}
       workspaceId={membership?.workspaceId ?? ""}
+      plan={session.user.plan ?? "free"}
     />
   )
 }
