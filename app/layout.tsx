@@ -1,6 +1,6 @@
 // app/layout.tsx
 import type { Metadata } from "next"
-import { Manrope, Inter_Tight } from "next/font/google"
+import { Manrope, Inter_Tight, Bricolage_Grotesque } from "next/font/google"
 import "./globals.css"
 import { ClerkProvider } from "@clerk/nextjs"
 import { Toaster } from "sonner"
@@ -15,6 +15,12 @@ const manrope = Manrope({
 const interTight = Inter_Tight({
   subsets: ["latin"],
   variable: "--font-inter-tight",
+  display: "swap",
+})
+
+const bricolage = Bricolage_Grotesque({
+  subsets: ["latin"],
+  variable: "--font-bricolage",
   display: "swap",
 })
 
@@ -33,7 +39,7 @@ export default function RootLayout({
       <html
         lang="en"
         suppressHydrationWarning
-        className={`${manrope.variable} ${interTight.variable}`}
+        className={`${manrope.variable} ${interTight.variable} ${bricolage.variable}`}
       >
         <body className={manrope.className}>
           <ThemeProvider

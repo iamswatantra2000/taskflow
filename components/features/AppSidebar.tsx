@@ -62,7 +62,7 @@ export function AppSidebar({ user, projects }: AppSidebarProps) {
             <span className="text-white text-[11px] font-bold">T</span>
           </div>
           {!collapsed && (
-            <span className="text-[13px] font-semibold whitespace-nowrap">TaskFlow</span>
+            <span className="text-[13px] font-bold whitespace-nowrap font-bricolage">TaskFlow</span>
           )}
         </Link>
         {/* Desktop collapse button */}

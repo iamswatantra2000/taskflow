@@ -22,7 +22,7 @@ async function Navbar() {
           <div className="w-7 h-7 rounded-[8px] bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-indigo-500/25">
             <span className="text-white text-[11px] font-bold">T</span>
           </div>
-          <span className="text-[14px] font-semibold text-white">TaskFlow</span>
+          <span className="text-[14px] font-bold text-white font-bricolage">TaskFlow</span>
         </div>
 
         <NavLinks />
@@ -650,7 +650,7 @@ function Footer() {
               <div className="w-7 h-7 rounded-[8px] bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
                 <span className="text-white text-[11px] font-bold">T</span>
               </div>
-              <span className="text-[14px] font-semibold text-white">TaskFlow</span>
+              <span className="text-[14px] font-bold text-white font-bricolage">TaskFlow</span>
             </div>
             <p className="text-[12.5px] text-[#333] leading-relaxed max-w-[190px]">
               The project management tool built for teams that care about speed.

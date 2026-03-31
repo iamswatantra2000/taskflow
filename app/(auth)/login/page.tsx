@@ -11,7 +11,7 @@ export default function LoginPage() {
           <span className="text-white font-bold text-sm">T</span>
         </div>
         <div className="text-center">
-          <h1 className="text-[18px] font-bold text-[#f0f0f0] tracking-tight">TaskFlow</h1>
+          <h1 className="text-[18px] font-bold text-[#f0f0f0] font-bricolage">TaskFlow</h1>
           <p className="text-[13px] text-[#555] mt-1">Sign in to your workspace</p>
         </div>
       </div>
