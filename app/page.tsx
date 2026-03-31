@@ -5,9 +5,14 @@ import {
   ArrowRight, Star, Check, BarChart2, Clock,
 } from "lucide-react"
 import { OnboardingTour } from "@/components/features/OnboardingTour"
+import { AnimateOnView } from "@/components/ui/AnimateOnView"
+import { getSession } from "@/lib/session"
 
 // ——— Navbar ———
-function Navbar() {
+async function Navbar() {
+  const session = await getSession()
+  const isLoggedIn = !!session?.user
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 h-14 border-b border-white/[0.06] bg-[#080808]/85 backdrop-blur-xl">
       <div className="max-w-6xl mx-auto px-5 sm:px-6 h-full flex items-center justify-between">
@@ -32,18 +37,30 @@ function Navbar() {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <Link
-            href="/login"
-            className="hidden sm:block text-[12.5px] text-[#555] hover:text-white transition-colors"
-          >
-            Sign in
-          </Link>
-          <Link
-            href="/register"
-            className="h-8 px-4 text-[12.5px] font-semibold bg-indigo-600 hover:bg-indigo-500 text-white rounded-[8px] border border-indigo-700/80 shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none transition-all duration-100 flex items-center whitespace-nowrap"
-          >
-            Get started
-          </Link>
+          {isLoggedIn ? (
+            <Link
+              href="/dashboard"
+              className="h-8 px-4 text-[12.5px] font-semibold bg-indigo-600 hover:bg-indigo-500 text-white rounded-[8px] border border-indigo-700/80 shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none transition-all duration-150 flex items-center gap-1.5 whitespace-nowrap"
+            >
+              Open app
+              <ArrowRight size={12} />
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="hidden sm:block text-[12.5px] text-[#555] hover:text-white transition-colors"
+              >
+                Sign in
+              </Link>
+              <Link
+                href="/register"
+                className="h-8 px-4 text-[12.5px] font-semibold bg-indigo-600 hover:bg-indigo-500 text-white rounded-[8px] border border-indigo-700/80 shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none transition-all duration-150 flex items-center whitespace-nowrap"
+              >
+                Get started
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </nav>
@@ -71,7 +88,10 @@ function Hero() {
       <div className="relative max-w-4xl mx-auto text-center w-full">
 
         {/* Badge */}
-        <div className="inline-flex items-center gap-2 border border-indigo-500/25 bg-indigo-500/[0.07] rounded-full px-3.5 py-1.5 mb-7">
+        <div
+          style={{ animation: "fade-in-down 0.5s ease 0.05s both" }}
+          className="inline-flex items-center gap-2 border border-indigo-500/25 bg-indigo-500/[0.07] rounded-full px-3.5 py-1.5 mb-7"
+        >
           <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse flex-shrink-0" />
           <span className="text-[11.5px] font-medium text-indigo-300">
             Now in beta — free for everyone
@@ -79,40 +99,55 @@ function Hero() {
         </div>
 
         {/* Headline */}
-        <h1 className="text-[40px] sm:text-[62px] md:text-[78px] font-bold text-white leading-[1.04] mb-5 sm:mb-6">
+        <h1
+          style={{ animation: "fade-in-up 0.65s ease 0.15s both" }}
+          className="text-[40px] sm:text-[62px] md:text-[78px] font-bold text-white leading-[1.04] mb-5 sm:mb-6"
+        >
           The workspace where<br className="hidden sm:block" />{" "}
           <span className="bg-gradient-to-r from-indigo-400 via-violet-300 to-indigo-400 bg-clip-text text-transparent">
             great teams ship
           </span>
         </h1>
 
-        <p className="text-[15px] sm:text-[17px] text-[#666] max-w-[520px] mx-auto leading-relaxed mb-9 sm:mb-10">
+        <p
+          style={{ animation: "fade-in-up 0.65s ease 0.3s both" }}
+          className="text-[15px] sm:text-[17px] text-[#666] max-w-[520px] mx-auto leading-relaxed mb-9 sm:mb-10"
+        >
           Organize projects, track tasks, and collaborate seamlessly — all in one beautiful workspace built for speed.
         </p>
 
         {/* CTAs */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <div
+          style={{ animation: "fade-in-up 0.6s ease 0.45s both" }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-3"
+        >
           <Link
             href="/register"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-10 px-6 text-[13.5px] font-semibold bg-indigo-600 hover:bg-indigo-500 text-white rounded-[9px] border border-indigo-700/80 shadow-[0_4px_0_0_#3730a3] active:translate-y-[4px] active:shadow-none transition-all duration-100 whitespace-nowrap"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-10 px-6 text-[13.5px] font-semibold bg-indigo-600 hover:bg-indigo-500 text-white rounded-[9px] border border-indigo-700/80 shadow-[0_4px_0_0_#3730a3] active:translate-y-[4px] active:shadow-none transition-all duration-150 whitespace-nowrap"
           >
             Start for free
             <ArrowRight size={14} />
           </Link>
           <Link
             href="/login"
-            className="w-full sm:w-auto inline-flex items-center justify-center h-10 px-6 text-[13.5px] font-medium border border-white/10 hover:border-white/18 text-[#888] hover:text-white rounded-[9px] bg-white/[0.03] hover:bg-white/[0.05] shadow-[0_4px_0_0_rgba(0,0,0,0.4)] active:translate-y-[4px] active:shadow-none transition-all duration-100 whitespace-nowrap"
+            className="w-full sm:w-auto inline-flex items-center justify-center h-10 px-6 text-[13.5px] font-medium border border-white/10 hover:border-white/18 text-[#888] hover:text-white rounded-[9px] bg-white/[0.03] hover:bg-white/[0.05] shadow-[0_4px_0_0_rgba(0,0,0,0.4)] active:translate-y-[4px] active:shadow-none transition-all duration-150 whitespace-nowrap"
           >
             Sign in
           </Link>
         </div>
 
-        <p className="mt-5 text-[12px] text-[#3a3a3a]">
+        <p
+          style={{ animation: "fade-in-up 0.5s ease 0.55s both" }}
+          className="mt-5 text-[12px] text-[#3a3a3a]"
+        >
           No credit card · Free forever plan · 2-minute setup
         </p>
 
         {/* Metrics */}
-        <div className="flex items-center justify-center gap-8 sm:gap-14 mt-12 sm:mt-16 mb-12 sm:mb-16">
+        <div
+          style={{ animation: "fade-in-up 0.6s ease 0.65s both" }}
+          className="flex items-center justify-center gap-8 sm:gap-14 mt-12 sm:mt-16 mb-12 sm:mb-16"
+        >
           {[
             { value: "12k+",  label: "Teams" },
             { value: "1M+",   label: "Tasks created" },
@@ -126,7 +161,7 @@ function Hero() {
         </div>
 
         {/* App preview */}
-        <div className="relative">
+        <div style={{ animation: "fade-in-up 0.8s ease 0.75s both" }} className="relative">
           <div className="absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-b from-transparent to-[#080808] z-10 pointer-events-none" />
           <div className="absolute -inset-px bg-gradient-to-r from-indigo-500/15 via-violet-500/10 to-indigo-500/15 rounded-[20px] blur-sm" />
           <div className="relative border border-white/[0.07] rounded-[16px] sm:rounded-[20px] overflow-hidden bg-[#0c0c0c] shadow-2xl shadow-black/60">
@@ -268,7 +303,7 @@ function Features() {
     <section id="features" className="py-20 sm:py-28 px-5 sm:px-6 border-t border-white/[0.06]">
       <div className="max-w-6xl mx-auto">
 
-        <div className="text-center mb-12 sm:mb-16">
+        <AnimateOnView className="text-center mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-2 border border-white/8 bg-white/[0.02] rounded-full px-4 py-1.5 mb-5">
             <span className="text-[11.5px] font-medium text-[#555]">Features</span>
           </div>
@@ -278,13 +313,13 @@ function Features() {
           <p className="text-[14px] sm:text-[16px] text-[#555] max-w-[420px] mx-auto leading-relaxed">
             Built for modern teams who want to move fast without the complexity.
           </p>
-        </div>
+        </AnimateOnView>
 
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
-          {features.map((f) => (
+          {features.map((f, index) => (
+            <AnimateOnView key={f.title} delay={index * 70}>
             <div
-              key={f.title}
-              className="group p-5 sm:p-6 border border-white/[0.06] bg-[#0c0c0c] hover:border-white/10 hover:bg-[#0e0e0e] rounded-[14px] sm:rounded-[16px] transition-all duration-200"
+              className="group p-5 sm:p-6 border border-white/[0.06] bg-[#0c0c0c] hover:border-white/10 hover:bg-[#0e0e0e] rounded-[14px] sm:rounded-[16px] transition-all duration-200 h-full"
             >
               <div className={`w-9 h-9 rounded-[10px] border flex items-center justify-center mb-4 ${f.bg}`}>
                 <f.icon size={15} className={f.color} />
@@ -292,6 +327,7 @@ function Features() {
               <h3 className="text-[14px] font-semibold text-white mb-1.5">{f.title}</h3>
               <p className="text-[13px] text-[#555] leading-relaxed">{f.description}</p>
             </div>
+            </AnimateOnView>
           ))}
         </div>
 
@@ -329,7 +365,7 @@ function HowItWorks() {
     <section id="how-it-works" className="py-20 sm:py-28 px-5 sm:px-6 border-t border-white/[0.06]">
       <div className="max-w-6xl mx-auto">
 
-        <div className="text-center mb-12 sm:mb-16">
+        <AnimateOnView className="text-center mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-2 border border-white/8 bg-white/[0.02] rounded-full px-4 py-1.5 mb-5">
             <span className="text-[11.5px] font-medium text-[#555]">How it works</span>
           </div>
@@ -339,11 +375,11 @@ function HowItWorks() {
           <p className="text-[14px] sm:text-[16px] text-[#555] max-w-[420px] mx-auto leading-relaxed">
             No lengthy onboarding. No overwhelming settings. Just a clean workspace ready to use.
           </p>
-        </div>
+        </AnimateOnView>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
           {steps.map((step, index) => (
-            <div key={step.n} className="relative">
+            <AnimateOnView key={step.n} className="relative" delay={index * 80}>
               {index < steps.length - 1 && (
                 <div className="hidden md:block absolute top-[22px] left-[calc(50%+30px)] right-[-calc(50%-30px)] h-px bg-gradient-to-r from-white/8 to-transparent z-10" />
               )}
@@ -354,7 +390,7 @@ function HowItWorks() {
                 <h3 className="text-[13.5px] font-semibold text-white mb-2">{step.title}</h3>
                 <p className="text-[12.5px] text-[#555] leading-relaxed">{step.desc}</p>
               </div>
-            </div>
+            </AnimateOnView>
           ))}
         </div>
 
@@ -393,7 +429,7 @@ function Testimonials() {
     <section className="py-20 sm:py-28 px-5 sm:px-6 border-t border-white/[0.06]">
       <div className="max-w-6xl mx-auto">
 
-        <div className="text-center mb-12 sm:mb-16">
+        <AnimateOnView className="text-center mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-2 border border-white/8 bg-white/[0.02] rounded-full px-4 py-1.5 mb-5">
             <Star size={10} className="text-amber-400 fill-amber-400" />
             <span className="text-[11.5px] font-medium text-[#555]">Loved by teams</span>
@@ -401,13 +437,13 @@ function Testimonials() {
           <h2 className="text-[28px] sm:text-[44px] font-bold text-white">
             Teams that ship use TaskFlow
           </h2>
-        </div>
+        </AnimateOnView>
 
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
-          {testimonials.map((t) => (
+          {testimonials.map((t, index) => (
+            <AnimateOnView key={t.name} delay={index * 80}>
             <div
-              key={t.name}
-              className="border border-white/[0.06] bg-[#0c0c0c] rounded-[14px] sm:rounded-[16px] p-5 sm:p-6 flex flex-col gap-4"
+              className="border border-white/[0.06] bg-[#0c0c0c] rounded-[14px] sm:rounded-[16px] p-5 sm:p-6 flex flex-col gap-4 h-full"
             >
               <div className="flex gap-0.5">
                 {[...Array(5)].map((_, i) => (
@@ -428,6 +464,7 @@ function Testimonials() {
                 </div>
               </div>
             </div>
+            </AnimateOnView>
           ))}
         </div>
 
@@ -496,7 +533,7 @@ function Pricing() {
     <section id="pricing" className="py-20 sm:py-28 px-5 sm:px-6 border-t border-white/[0.06]">
       <div className="max-w-5xl mx-auto">
 
-        <div className="text-center mb-12 sm:mb-16">
+        <AnimateOnView className="text-center mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-2 border border-white/8 bg-white/[0.02] rounded-full px-4 py-1.5 mb-5">
             <span className="text-[11.5px] font-medium text-[#555]">Pricing</span>
           </div>
@@ -506,12 +543,12 @@ function Pricing() {
           <p className="text-[14px] sm:text-[16px] text-[#555] max-w-[420px] mx-auto leading-relaxed">
             Start free. Upgrade when your team grows. No hidden fees, ever.
           </p>
-        </div>
+        </AnimateOnView>
 
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 items-start">
-          {plans.map((plan) => (
+          {plans.map((plan, index) => (
+            <AnimateOnView key={plan.name} delay={index * 80}>
             <div
-              key={plan.name}
               className={`relative rounded-[16px] p-5 sm:p-6 border flex flex-col gap-5 ${
                 plan.popular
                   ? "border-indigo-500/35 bg-indigo-950/[0.12] ring-1 ring-indigo-500/15"
@@ -535,7 +572,7 @@ function Pricing() {
 
               <Link
                 href={plan.href}
-                className={`w-full h-8 flex items-center justify-center text-[12.5px] font-semibold rounded-[8px] border transition-all duration-100 active:translate-y-[3px] active:shadow-none whitespace-nowrap ${
+                className={`w-full h-8 flex items-center justify-center text-[12.5px] font-semibold rounded-[8px] border transition-all duration-150 active:translate-y-[3px] active:shadow-none whitespace-nowrap ${
                   plan.popular
                     ? "bg-indigo-600 hover:bg-indigo-500 text-white border-indigo-700/80 shadow-[0_3px_0_0_#3730a3]"
                     : "bg-[#111] hover:bg-[#161616] text-[#888] hover:text-white border-white/10 hover:border-white/18 shadow-[0_3px_0_0_rgba(0,0,0,0.55)]"
@@ -557,6 +594,7 @@ function Pricing() {
                 ))}
               </ul>
             </div>
+            </AnimateOnView>
           ))}
         </div>
 
@@ -570,6 +608,7 @@ function CTABanner() {
   return (
     <section className="py-16 sm:py-24 px-5 sm:px-6 border-t border-white/[0.06]">
       <div className="max-w-3xl mx-auto">
+        <AnimateOnView>
         <div className="relative rounded-[20px] border border-indigo-500/20 bg-gradient-to-br from-indigo-950/30 via-[#0c0c0c] to-violet-950/20 p-8 sm:p-14 text-center overflow-hidden">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-80 h-40 bg-indigo-500/8 rounded-full blur-[80px] pointer-events-none" />
           <div className="relative">
@@ -581,7 +620,7 @@ function CTABanner() {
             </p>
             <Link
               href="/register"
-              className="inline-flex items-center gap-2 h-10 px-6 text-[13.5px] font-semibold bg-indigo-600 hover:bg-indigo-500 text-white rounded-[9px] border border-indigo-700/80 shadow-[0_4px_0_0_#3730a3] active:translate-y-[4px] active:shadow-none transition-all duration-100 whitespace-nowrap"
+              className="inline-flex items-center gap-2 h-10 px-6 text-[13.5px] font-semibold bg-indigo-600 hover:bg-indigo-500 text-white rounded-[9px] border border-indigo-700/80 shadow-[0_4px_0_0_#3730a3] active:translate-y-[4px] active:shadow-none transition-all duration-150 whitespace-nowrap"
             >
               Get started free
               <ArrowRight size={14} />
@@ -589,6 +628,7 @@ function CTABanner() {
             <p className="mt-4 text-[11.5px] text-[#333]">No credit card required · Cancel anytime</p>
           </div>
         </div>
+        </AnimateOnView>
       </div>
     </section>
   )

@@ -1,14 +1,20 @@
 // app/layout.tsx
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { Manrope, Inter_Tight } from "next/font/google"
 import "./globals.css"
 import { SessionProvider } from "next-auth/react"
 import { Toaster } from "sonner"
 import { ThemeProvider } from "next-themes"
 
-const inter = Inter({
+const manrope = Manrope({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-manrope",
+  display: "swap",
+})
+
+const interTight = Inter_Tight({
+  subsets: ["latin"],
+  variable: "--font-inter-tight",
   display: "swap",
 })
 
@@ -26,9 +32,9 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={inter.variable}
+      className={`${manrope.variable} ${interTight.variable}`}
     >
-      <body className={inter.className}>
+      <body className={manrope.className}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

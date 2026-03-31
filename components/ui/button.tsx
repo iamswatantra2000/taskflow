@@ -6,7 +6,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 // Shared 3D press animation — push down + collapse shadow
-const press3d = "active:translate-y-[3px] transition-all duration-100"
+const press3d = "active:translate-y-[3px] transition-all duration-150"
 
 const buttonVariants = cva(
   `group/button inline-flex shrink-0 items-center justify-center gap-1.5 rounded-[8px] border text-[12.5px] font-medium whitespace-nowrap select-none cursor-pointer outline-none ${press3d} disabled:pointer-events-none disabled:opacity-40 focus-visible:ring-2 focus-visible:ring-ring/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5`,
