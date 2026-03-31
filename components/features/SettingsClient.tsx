@@ -1,10 +1,11 @@
 // components/features/SettingsClient.tsx
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { useTheme } from "next-themes"
+import { useUser } from "@clerk/nextjs"
 import { toast } from "sonner"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   updateDisplayName,
   updateWorkspaceName,
@@ -12,7 +13,7 @@ import {
 import {
   User, Building2, Palette,
   Bell, Sun, Moon, Monitor,
-  Save, Loader2
+  Save, Loader2, Camera
 } from "lucide-react"
 
 type Props = {
@@ -48,8 +49,26 @@ function getInitials(name: string) {
 
 // ——— Profile Tab ———
 function ProfileTab({ user }: { user: Props["user"] }) {
+  const { user: clerkUser }       = useUser()
   const [name, setName]           = useState(user.name)
   const [savingName, setSavingName] = useState(false)
+  const [uploadingImage, setUploadingImage] = useState(false)
+  const fileInputRef              = useRef<HTMLInputElement>(null)
+
+  async function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file || !clerkUser) return
+    setUploadingImage(true)
+    try {
+      await clerkUser.setProfileImage({ file })
+      toast.success("Profile picture updated!")
+    } catch {
+      toast.error("Failed to update profile picture")
+    } finally {
+      setUploadingImage(false)
+      e.target.value = ""
+    }
+  }
 
   async function handleSaveName() {
     if (name.trim() === user.name) return
@@ -75,16 +94,37 @@ function ProfileTab({ user }: { user: Props["user"] }) {
         <h3 className="text-[14px] font-semibold mb-4">Profile information</h3>
 
         <div className="flex items-center gap-4 mb-6">
-          <Avatar className="h-16 w-16">
-            <AvatarFallback className="text-lg bg-gradient-to-br from-indigo-500 to-violet-600 text-white border-0">
-              {getInitials(name || "User")}
-            </AvatarFallback>
-          </Avatar>
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="relative group flex-shrink-0"
+            title="Change profile picture"
+          >
+            <Avatar className="h-16 w-16">
+              <AvatarImage src={clerkUser?.imageUrl} className="object-cover" />
+              <AvatarFallback className="text-lg bg-gradient-to-br from-indigo-500 to-violet-600 text-white border-0">
+                {getInitials(name || "User")}
+              </AvatarFallback>
+            </Avatar>
+            <div className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              {uploadingImage
+                ? <Loader2 size={18} className="text-white animate-spin" />
+                : <Camera size={18} className="text-white" />
+              }
+            </div>
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleImageChange}
+          />
           <div>
             <p className="text-[13px] font-medium">{user.name}</p>
             <p className="text-[12px] text-muted-foreground">{user.email}</p>
             <p className="text-[11px] text-muted-foreground/60 mt-1">
-              Avatar is generated from your initials
+              Click your avatar to upload a new photo
             </p>
           </div>
         </div>

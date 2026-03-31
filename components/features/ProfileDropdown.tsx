@@ -3,11 +3,11 @@
 
 import { useState, useRef, useEffect } from "react"
 import { useTheme } from "next-themes"
-import { useClerk } from "@clerk/nextjs"
+import { useClerk, useUser } from "@clerk/nextjs"
 import { useRouter } from "next/navigation"
 import { updateDisplayName } from "@/lib/actions"
 import { toast } from "sonner"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   User, Sun, Moon, LogOut, ChevronRight, X,
 } from "lucide-react"
@@ -72,6 +72,7 @@ function ChangeNameForm({ currentName, onDone }: { currentName: string; onDone: 
 export function ProfileDropdown({ user }: Props) {
   const { theme, setTheme } = useTheme()
   const { signOut }         = useClerk()
+  const { user: clerkUser } = useUser()
   const router              = useRouter()
   const [open, setOpen]     = useState(false)
   const [view, setView]     = useState<"menu" | "name">("menu")
@@ -101,6 +102,7 @@ export function ProfileDropdown({ user }: Props) {
         className="focus:outline-none"
       >
         <Avatar className="h-7 w-7 cursor-pointer ring-2 ring-transparent hover:ring-indigo-500 transition-all">
+          <AvatarImage src={clerkUser?.imageUrl} className="object-cover" />
           <AvatarFallback className="text-xs bg-gradient-to-br from-indigo-500 to-violet-600 text-white border-0 text-[11px]">
             {getInitials(user.name ?? "User")}
           </AvatarFallback>
@@ -117,6 +119,7 @@ export function ProfileDropdown({ user }: Props) {
               <div className="p-3 border-b border-[#222]">
                 <div className="flex items-center gap-3">
                   <Avatar className="h-9 w-9">
+                    <AvatarImage src={clerkUser?.imageUrl} className="object-cover" />
                     <AvatarFallback className="text-[13px] bg-gradient-to-br from-indigo-500 to-violet-600 text-white border-0">
                       {getInitials(user.name ?? "User")}
                     </AvatarFallback>

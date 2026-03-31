@@ -4,7 +4,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { NewProjectDialog } from "./NewProjectDialog"
 import {
   LayoutDashboard, CheckSquare, Clock,
@@ -12,7 +12,7 @@ import {
   Search, BarChart2, Menu, X, LogOut
 } from "lucide-react"
 import { useState } from "react"
-import { useClerk } from "@clerk/nextjs"
+import { useClerk, useUser } from "@clerk/nextjs"
 
 type Project = {
   id:    string
@@ -41,6 +41,7 @@ export function AppSidebar({ user, projects }: AppSidebarProps) {
   const [collapsed, setCollapsed]   = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const { signOut }                 = useClerk()
+  const { user: clerkUser }         = useUser()
 
   function openCommandPalette() {
     document.dispatchEvent(
@@ -185,6 +186,7 @@ export function AppSidebar({ user, projects }: AppSidebarProps) {
 
         <div className="flex items-center gap-2.5 px-2 py-[7px] rounded-[7px] hover:bg-accent cursor-pointer overflow-hidden">
           <Avatar className="h-[26px] w-[26px] flex-shrink-0">
+            <AvatarImage src={clerkUser?.imageUrl} className="object-cover" />
             <AvatarFallback className="text-[10px] bg-gradient-to-br from-indigo-500 to-violet-600 text-white border-0">
               {getInitials(user.name ?? "User")}
             </AvatarFallback>
