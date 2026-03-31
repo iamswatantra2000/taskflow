@@ -7,15 +7,16 @@ import { Command } from "cmdk"
 import {
   LayoutDashboard, CheckSquare, Clock,
   FolderPlus, Plus, LogOut, Settings,
-  Search, ArrowRight
+  Search, ArrowRight, Lock, BarChart3,
 } from "lucide-react"
 import { useClerk } from "@clerk/nextjs"
 
 type Props = {
   projects: { id: string; name: string; color: string }[]
+  plan:     string
 }
 
-export function CommandPalette({ projects }: Props) {
+export function CommandPalette({ projects, plan }: Props) {
   const router            = useRouter()
   const [open, setOpen]   = useState(false)
   const { signOut }       = useClerk()
@@ -32,6 +33,8 @@ export function CommandPalette({ projects }: Props) {
     document.addEventListener("keydown", handleKeyDown)
     return () => document.removeEventListener("keydown", handleKeyDown)
   }, [])
+
+  const isPro = plan === "pro" || plan === "enterprise"
 
   function runCommand(fn: () => void) {
     setOpen(false)
@@ -83,22 +86,33 @@ export function CommandPalette({ projects }: Props) {
               className="[&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-[#444] [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-wider [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5"
             >
               {[
-                { label: "Go to Dashboard", icon: LayoutDashboard, href: "/dashboard" },
-                { label: "Go to My Tasks",  icon: CheckSquare,     href: "/my-tasks"  },
-                { label: "Go to Activity",  icon: Clock,           href: "/activity"  },
-                { label: "Go to Settings",  icon: Settings,        href: "/settings"  },
-              ].map((item) => (
-                <Command.Item
-                  key={item.href}
-                  value={item.label}
-                  onSelect={() => runCommand(() => router.push(item.href))}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-[13px] text-[#999] cursor-pointer data-[selected=true]:bg-[#1f1f1f] data-[selected=true]:text-[#e0e0e0] transition-colors"
-                >
-                  <item.icon size={14} className="flex-shrink-0" />
-                  <span className="flex-1">{item.label}</span>
-                  <ArrowRight size={12} className="text-[#444]" />
-                </Command.Item>
-              ))}
+                { label: "Go to Dashboard", icon: LayoutDashboard, href: "/dashboard",  pro: false },
+                { label: "Go to My Tasks",  icon: CheckSquare,     href: "/my-tasks",   pro: false },
+                { label: "Go to Activity",  icon: Clock,           href: "/activity",   pro: true  },
+                { label: "Go to Analytics", icon: BarChart3,       href: "/analytics",  pro: true  },
+                { label: "Go to Settings",  icon: Settings,        href: "/settings",   pro: false },
+              ].map((item) => {
+                const locked = item.pro && !isPro
+                return (
+                  <Command.Item
+                    key={item.href}
+                    value={item.label}
+                    onSelect={() => runCommand(() => router.push(locked ? "/upgrade" : item.href))}
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-[13px] cursor-pointer transition-colors data-[selected=true]:bg-[#1f1f1f] data-[selected=true]:text-[#e0e0e0] text-[#999]"
+                  >
+                    <item.icon size={14} className={`flex-shrink-0 ${locked ? "text-[#444]" : ""}`} />
+                    <span className={`flex-1 ${locked ? "text-[#555]" : ""}`}>{item.label}</span>
+                    {locked ? (
+                      <div className="flex items-center gap-1.5">
+                        <Lock size={10} className="text-amber-500/70" />
+                        <span className="text-[10px] text-amber-500/60 font-medium">Pro</span>
+                      </div>
+                    ) : (
+                      <ArrowRight size={12} className="text-[#444]" />
+                    )}
+                  </Command.Item>
+                )
+              })}
             </Command.Group>
 
             {/* Projects */}

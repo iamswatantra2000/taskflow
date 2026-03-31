@@ -32,7 +32,7 @@ export default async function DashboardLayout({
         {children}
       </div>
       {/* Command palette available on ALL dashboard pages */}
-      <CommandPalette projects={userProjects} />
+      <CommandPalette projects={userProjects} plan={session.user.plan ?? "free"} />
     </div>
   )
 }
