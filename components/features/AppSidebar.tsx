@@ -54,10 +54,21 @@ function LockedNavItem({ label, icon: Icon, proLabel, collapsed }: {
   proLabel: string
   collapsed: boolean
 }) {
-  const ref = useRef<HTMLDivElement>(null)
+  const ref      = useRef<HTMLDivElement>(null)
+  const hideRef  = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [pos, setPos] = useState<{ top: number; left: number } | null>(null)
 
+  function clearHide() {
+    if (hideRef.current) clearTimeout(hideRef.current)
+  }
+
+  function scheduleHide() {
+    clearHide()
+    hideRef.current = setTimeout(() => setPos(null), 150)
+  }
+
   function handleMouseEnter() {
+    clearHide()
     if (ref.current) {
       const rect = ref.current.getBoundingClientRect()
       setPos({ top: rect.top + rect.height / 2, left: rect.right + 10 })
@@ -65,7 +76,7 @@ function LockedNavItem({ label, icon: Icon, proLabel, collapsed }: {
   }
 
   return (
-    <div ref={ref} onMouseEnter={handleMouseEnter} onMouseLeave={() => setPos(null)}>
+    <div ref={ref} onMouseEnter={handleMouseEnter} onMouseLeave={scheduleHide}>
       <div className="flex items-center gap-3 px-3 h-9 rounded-[8px] text-[13px] opacity-30 cursor-not-allowed select-none">
         <Icon size={16} className="flex-shrink-0" />
         {!collapsed && <span className="whitespace-nowrap font-medium">{label}</span>}
@@ -74,8 +85,10 @@ function LockedNavItem({ label, icon: Icon, proLabel, collapsed }: {
 
       {pos && typeof document !== "undefined" && createPortal(
         <div
-          className="fixed z-[9999] pointer-events-none"
+          className="fixed z-[9999] pointer-events-auto"
           style={{ top: pos.top, left: pos.left, transform: "translateY(-50%)" }}
+          onMouseEnter={clearHide}
+          onMouseLeave={scheduleHide}
         >
           <div className="bg-[#181818] border border-white/10 rounded-[9px] px-3 py-2 flex items-center gap-2.5 whitespace-nowrap shadow-2xl shadow-black/50">
             <div className="w-5 h-5 rounded-full bg-amber-500/10 flex items-center justify-center flex-shrink-0">
@@ -83,7 +96,7 @@ function LockedNavItem({ label, icon: Icon, proLabel, collapsed }: {
             </div>
             <span className="text-[11.5px] text-[#bbb] font-medium">{proLabel}</span>
             <span className="text-[11px] text-[#444]">·</span>
-            <a href="/#pricing" className="text-[11.5px] font-semibold text-indigo-400 pointer-events-auto hover:text-indigo-300 transition-colors flex items-center gap-1">
+            <a href="/#pricing" className="text-[11.5px] font-semibold text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-1">
               <Zap size={9} />
               Upgrade
             </a>
