@@ -22,6 +22,7 @@ const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
   variable: "--font-bricolage",
   display: "swap",
+  weight: ["600", "700", "800"],
 })
 
 export const metadata: Metadata = {

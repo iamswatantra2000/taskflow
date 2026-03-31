@@ -7,19 +7,20 @@ type Props = {
 }
 
 export function LogoMark({ height = 24, className }: Props) {
-  const width = Math.round(height * (614 / 423))
+  const width = Math.round(height * (820 / 445))
 
+  // viewBox expanded to cover full path extent (path goes to x≈-80, x≈730)
   return (
     <svg
       width={width}
       height={height}
-      viewBox="0 0 614 423"
+      viewBox="-80 -10 820 445"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
     >
       <defs>
-        <linearGradient id="tf-logo-grad" x1="0" y1="0" x2="614" y2="423" gradientUnits="userSpaceOnUse">
+        <linearGradient id="tf-logo-grad" x1="-80" y1="-10" x2="740" y2="435" gradientUnits="userSpaceOnUse">
           <stop offset="0%"   stopColor="#6366f1" />
           <stop offset="100%" stopColor="#7c3aed" />
         </linearGradient>

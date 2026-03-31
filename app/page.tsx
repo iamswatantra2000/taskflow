@@ -21,7 +21,7 @@ async function Navbar() {
 
         <div className="flex items-center gap-2">
           <LogoMark height={22} />
-          <span className="text-[14px] font-bold text-white font-bricolage">TaskFlow</span>
+          <span className="text-[14px] font-extrabold text-white font-bricolage">TaskFlow</span>
         </div>
 
         <NavLinks />
@@ -647,7 +647,7 @@ function Footer() {
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-3">
               <LogoMark height={20} />
-              <span className="text-[14px] font-bold text-white font-bricolage">TaskFlow</span>
+              <span className="text-[14px] font-extrabold text-white font-bricolage">TaskFlow</span>
             </div>
             <p className="text-[12.5px] text-[#333] leading-relaxed max-w-[190px]">
               The project management tool built for teams that care about speed.
