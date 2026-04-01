@@ -87,14 +87,19 @@ export async function sendInvitation(email: string, role: "MEMBER" | "ADMIN") {
     expiresAt,
   })
 
-  // Send email
   const inviteUrl = `${APP_URL}/invite/${token}`
-  await sendInviteEmail({
-    to:            email,
-    inviterName:   session.user.name,
-    workspaceName: workspace.name,
-    inviteUrl,
-  })
+
+  // Send email — non-blocking: invite is valid even if email fails
+  try {
+    await sendInviteEmail({
+      to:            email,
+      inviterName:   session.user.name,
+      workspaceName: workspace.name,
+      inviteUrl,
+    })
+  } catch {
+    // Email delivery failed (e.g. Resend domain restriction) — invite link still works
+  }
 
   revalidatePath("/settings")
   return { success: true, inviteUrl }
