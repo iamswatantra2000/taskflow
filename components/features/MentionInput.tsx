@@ -6,13 +6,14 @@ import { useState, useRef } from "react"
 type Member = { id: string; name: string }
 
 type Props = {
-  value:       string
-  onChange:    (value: string, mentionedIds: string[]) => void
-  members:     Member[]
+  value:        string
+  onChange:     (value: string, mentionedIds: string[]) => void
+  members:      Member[]
   placeholder?: string
   rows?:        number
   className?:   string
   onSubmit?:    () => void
+  textareaRef?: React.RefObject<HTMLTextAreaElement | null>
 }
 
 function getInitials(name: string) {
@@ -20,13 +21,14 @@ function getInitials(name: string) {
 }
 
 export function MentionInput({
-  value, onChange, members, placeholder, rows = 3, className = "", onSubmit,
+  value, onChange, members, placeholder, rows = 3, className = "", onSubmit, textareaRef: externalRef,
 }: Props) {
   const [mentionQuery, setMentionQuery] = useState<string | null>(null)
   const [mentionStart, setMentionStart] = useState(0)
   const [mentionedIds, setMentionedIds] = useState<string[]>([])
   const [dropdownIdx, setDropdownIdx]   = useState(0)
-  const textareaRef                     = useRef<HTMLTextAreaElement>(null)
+  const internalRef                     = useRef<HTMLTextAreaElement>(null)
+  const textareaRef                     = externalRef ?? internalRef
 
   const filtered = mentionQuery !== null
     ? members

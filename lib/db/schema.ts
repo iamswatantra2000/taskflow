@@ -94,12 +94,13 @@ export const invitations = pgTable("invitations", {
   createdAt:   timestamp("created_at").defaultNow().notNull(),
 })
 
-export const notificationTypeEnum = pgEnum("notification_type", ["MENTION"])
+export const notificationTypeEnum = pgEnum("notification_type", ["MENTION", "REPLY"])
 
 export const comments = pgTable("comments", {
   id:        text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   taskId:    text("task_id").notNull().references(() => tasks.id, { onDelete: "cascade" }),
   userId:    text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  parentId:  text("parent_id"),   // null = top-level, set = reply
   content:   text("content").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 })

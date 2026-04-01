@@ -12,6 +12,7 @@ export async function getComments(taskId: string) {
       id:        comments.id,
       content:   comments.content,
       createdAt: comments.createdAt,
+      parentId:  comments.parentId,
       userName:  users.name,
       userId:    users.id,
     })
@@ -24,8 +25,9 @@ export async function getComments(taskId: string) {
     id:        r.id,
     content:   r.content,
     createdAt: r.createdAt,
-    userName:  r.userName ?? "Unknown",
-    userId:    r.userId   ?? "",
+    parentId:  r.parentId  ?? null,
+    userName:  r.userName  ?? "Unknown",
+    userId:    r.userId    ?? "",
   }))
 }
 
@@ -34,31 +36,62 @@ export async function createComment(
   content:          string,
   mentionedUserIds: string[],
   taskTitle:        string,
+  parentId?:        string,
 ) {
   const session   = await requireAuth()
   const commentId = crypto.randomUUID()
 
   await db.insert(comments).values({
-    id:      commentId,
+    id:       commentId,
     taskId,
-    userId:  session.user.id,
+    userId:   session.user.id,
     content,
+    parentId: parentId ?? null,
   })
 
-  // Notify each mentioned user (skip self)
-  const toNotify = mentionedUserIds.filter((id) => id !== session.user.id)
-  if (toNotify.length > 0) {
-    await db.insert(notifications).values(
-      toNotify.map((uid) => ({
+  const notifs: {
+    id: string; userId: string; type: "MENTION" | "REPLY"
+    message: string; taskId: string; commentId: string; isRead: boolean
+  }[] = []
+
+  // Notify mentioned users (skip self)
+  for (const uid of mentionedUserIds) {
+    if (uid !== session.user.id) {
+      notifs.push({
         id:        crypto.randomUUID(),
         userId:    uid,
-        type:      "MENTION" as const,
+        type:      "MENTION",
         message:   `${session.user.name} mentioned you in "${taskTitle}"`,
         taskId,
         commentId,
         isRead:    false,
-      }))
-    )
+      })
+    }
+  }
+
+  // Notify parent comment author on reply (skip self + already mentioned)
+  if (parentId) {
+    const [parent] = await db
+      .select({ userId: comments.userId })
+      .from(comments)
+      .where(eq(comments.id, parentId))
+      .limit(1)
+
+    if (parent && parent.userId !== session.user.id && !notifs.find((n) => n.userId === parent.userId)) {
+      notifs.push({
+        id:        crypto.randomUUID(),
+        userId:    parent.userId,
+        type:      "REPLY",
+        message:   `${session.user.name} replied to your comment in "${taskTitle}"`,
+        taskId,
+        commentId,
+        isRead:    false,
+      })
+    }
+  }
+
+  if (notifs.length > 0) {
+    await db.insert(notifications).values(notifs)
   }
 
   revalidatePath("/dashboard")
