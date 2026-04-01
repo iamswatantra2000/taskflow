@@ -13,11 +13,19 @@ import {
   Trash2, Users, Check, Mail, AlertTriangle, Sparkles,
   Clock, MessageSquare, UserPlus, ArrowUpRight,
 } from "lucide-react"
+import { InviteModal } from "./InviteModal"
+
+type Invitation = {
+  id: string; email: string; role: string
+  status: string; createdAt: Date; expiresAt: Date
+}
 
 type Props = {
-  user:      { id: string; name: string; email: string; plan: string }
-  workspace: { id: string; name: string; slug: string }
-  members:   { id: string; name: string; email: string; role: string; joinedAt: Date }[]
+  user:           { id: string; name: string; email: string; plan: string }
+  workspace:      { id: string; name: string; slug: string }
+  members:        { id: string; name: string; email: string; role: string; joinedAt: Date }[]
+  userRole:       string
+  pendingInvites: Invitation[]
 }
 
 const tabs = [
@@ -384,9 +392,19 @@ function ProfileTab({ user }: { user: Props["user"] }) {
 // ══════════════════════════════
 // ── Workspace Tab ──
 // ══════════════════════════════
-function WorkspaceTab({ workspace, members }: { workspace: Props["workspace"]; members: Props["members"] }) {
-  const [name, setName]     = useState(workspace.name)
-  const [saving, setSaving] = useState(false)
+function WorkspaceTab({
+  workspace, members, userRole, pendingInvites,
+}: {
+  workspace:      Props["workspace"]
+  members:        Props["members"]
+  userRole:       string
+  pendingInvites: Invitation[]
+}) {
+  const [name, setName]         = useState(workspace.name)
+  const [saving, setSaving]     = useState(false)
+  const [inviteOpen, setInviteOpen] = useState(false)
+
+  const canInvite = userRole === "OWNER" || userRole === "ADMIN"
 
   async function handleSave() {
     if (name.trim() === workspace.name) return
@@ -411,6 +429,14 @@ function WorkspaceTab({ workspace, members }: { workspace: Props["workspace"]; m
 
   return (
     <div className="space-y-4">
+
+      {inviteOpen && (
+        <InviteModal
+          onClose={() => setInviteOpen(false)}
+          pendingInvites={pendingInvites}
+          userRole={userRole}
+        />
+      )}
 
       <Card>
         <SectionHead
@@ -444,10 +470,14 @@ function WorkspaceTab({ workspace, members }: { workspace: Props["workspace"]; m
           right={
             <button
               type="button"
-              className="flex items-center gap-1.5 h-8 px-3.5 text-[12px] font-semibold
-                text-[#444] border border-white/[0.07] rounded-[9px]
-                shadow-[0_3px_0_0_rgba(0,0,0,0.4)] opacity-50 cursor-not-allowed"
-              onClick={() => toast("Team invitations coming soon!")}
+              onClick={() => canInvite ? setInviteOpen(true) : toast.error("Only owners and admins can invite members")}
+              className={`flex items-center gap-1.5 h-8 px-3.5 text-[12px] font-semibold
+                border rounded-[9px] shadow-[0_3px_0_0_rgba(0,0,0,0.4)]
+                transition-all duration-100 active:translate-y-[2px] active:shadow-none
+                ${canInvite
+                  ? "bg-indigo-600 hover:bg-indigo-500 text-white border-indigo-700/80"
+                  : "text-[#444] border-white/[0.07] opacity-50 cursor-not-allowed"
+                }`}
             >
               <UserPlus size={12} />
               Invite
@@ -729,7 +759,7 @@ function NotificationsTab() {
 // ══════════════════════════════
 // ── Main ──
 // ══════════════════════════════
-export function SettingsClient({ user, workspace, members }: Props) {
+export function SettingsClient({ user, workspace, members, userRole, pendingInvites }: Props) {
   const [activeTab, setActiveTab] = useState("profile")
   const [show, setShow]           = useState(true)
 
@@ -798,7 +828,7 @@ export function SettingsClient({ user, workspace, members }: Props) {
           }}
         >
           {activeTab === "profile"       && <ProfileTab user={user} />}
-          {activeTab === "workspace"     && <WorkspaceTab workspace={workspace} members={members} />}
+          {activeTab === "workspace"     && <WorkspaceTab workspace={workspace} members={members} userRole={userRole} pendingInvites={pendingInvites} />}
           {activeTab === "appearance"    && <AppearanceTab />}
           {activeTab === "notifications" && <NotificationsTab />}
         </div>

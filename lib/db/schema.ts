@@ -3,6 +3,8 @@ import {
   pgTable, pgEnum, text, timestamp, boolean, uniqueIndex
 } from "drizzle-orm/pg-core"
 
+export const invitationStatusEnum = pgEnum("invitation_status", ["PENDING", "ACCEPTED", "REVOKED"])
+
 // ——— Enums ———
 export const roleEnum = pgEnum("role", ["OWNER", "ADMIN", "MEMBER"])
 export const statusEnum = pgEnum("status", ["TODO", "IN_PROGRESS", "IN_REVIEW", "DONE", "CANCELLED"])
@@ -78,6 +80,19 @@ export const activityTypeEnum = pgEnum("activity_type", [
   "PROJECT_CREATED",
   "MEMBER_JOINED",
 ])
+
+// ——— Workspace Invitations ———
+export const invitations = pgTable("invitations", {
+  id:          text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  token:       text("token").notNull().unique(),
+  email:       text("email").notNull(),
+  workspaceId: text("workspace_id").notNull().references(() => workspaces.id, { onDelete: "cascade" }),
+  invitedById: text("invited_by_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  role:        roleEnum("role").default("MEMBER").notNull(),
+  status:      invitationStatusEnum("status").default("PENDING").notNull(),
+  expiresAt:   timestamp("expires_at").notNull(),
+  createdAt:   timestamp("created_at").defaultNow().notNull(),
+})
 
 export const activities = pgTable("activities", {
   id:          text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),

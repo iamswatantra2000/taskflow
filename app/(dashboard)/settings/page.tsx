@@ -1,13 +1,13 @@
 // app/(dashboard)/settings/page.tsx
 import { requireAuth } from "@/lib/session"
-import { db, workspaces, workspaceMembers, users } from "@/lib/db"
-import { eq } from "drizzle-orm"
+import { db, workspaces, workspaceMembers, users, invitations } from "@/lib/db"
+import { eq, and } from "drizzle-orm"
 import { SettingsClient } from "../../../components/features/SettingsClient"
 
 export default async function SettingsPage() {
   const session = await requireAuth()
 
-  // Get workspace
+  // Get workspace membership
   const [membership] = await db
     .select()
     .from(workspaceMembers)
@@ -29,7 +29,7 @@ export default async function SettingsPage() {
     .where(eq(users.id, session.user.id!))
     .limit(1)
 
-  // Get all workspace members
+  // Get all workspace members with their user info
   const members = await db
     .select({
       id:       users.id,
@@ -41,6 +41,19 @@ export default async function SettingsPage() {
     .from(workspaceMembers)
     .leftJoin(users, eq(workspaceMembers.userId, users.id))
     .where(eq(workspaceMembers.workspaceId, membership?.workspaceId ?? ""))
+
+  // Get pending invitations for this workspace
+  const pendingInvites = membership
+    ? await db
+        .select()
+        .from(invitations)
+        .where(
+          and(
+            eq(invitations.workspaceId, membership.workspaceId),
+            eq(invitations.status, "PENDING"),
+          )
+        )
+    : []
 
   return (
     <SettingsClient
@@ -61,6 +74,15 @@ export default async function SettingsPage() {
         email:    m.email ?? "",
         role:     m.role  ?? "MEMBER",
         joinedAt: m.joinedAt,
+      }))}
+      userRole={membership?.role ?? "MEMBER"}
+      pendingInvites={pendingInvites.map((inv) => ({
+        id:        inv.id,
+        email:     inv.email,
+        role:      inv.role,
+        status:    inv.status,
+        createdAt: inv.createdAt,
+        expiresAt: inv.expiresAt,
       }))}
     />
   )

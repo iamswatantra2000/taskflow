@@ -1,7 +1,7 @@
 // components/features/DashboardClient.tsx
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   Search, Sparkles, Lock,
   ListTodo, Zap, CheckCircle2, Circle,
@@ -50,6 +50,7 @@ type Props = {
 	user: { name?: string | null; email?: string | null };
 	workspaceId: string;
 	plan: string;
+	invited?: boolean;
 };
 
 // Per-stat visual config — icon, accent bar, icon chip colors
@@ -147,11 +148,20 @@ export function DashboardClient({
 	firstName,
 	user,
 	plan,
+	invited,
 }: Props) {
 	const [filters, setFilters] = useState<FilterState>({
 		priority: [],
 		search: "",
 	});
+
+	useEffect(() => {
+		if (invited) {
+			toast.success("Welcome to the workspace!", {
+				description: "You've successfully joined via invitation.",
+			})
+		}
+	}, [invited]);
 
 	const totalTasks = columns.reduce((sum, col) => sum + col.tasks.length, 0);
 
