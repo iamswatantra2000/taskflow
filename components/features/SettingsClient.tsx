@@ -6,141 +6,250 @@ import { useTheme } from "next-themes"
 import { useUser } from "@clerk/nextjs"
 import { toast } from "sonner"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { updateDisplayName, updateWorkspaceName } from "@/lib/actions"
 import {
-  updateDisplayName,
-  updateWorkspaceName,
-} from "@/lib/actions"
-import {
-  User, Building2, Palette,
-  Bell, Sun, Moon, Monitor,
-  Save, Loader2, Camera, Zap, CheckCircle,
+  User, Building2, Palette, Bell, Sun, Moon, Monitor,
+  Save, Loader2, Camera, Zap, CheckCircle, Shield,
+  Trash2, Users, Check, Mail, AlertTriangle, Sparkles,
+  Clock, MessageSquare, UserPlus, ArrowUpRight,
 } from "lucide-react"
 
 type Props = {
-  user: {
-    id:    string
-    name:  string
-    email: string
-    plan:  string
-  }
-  workspace: {
-    id:   string
-    name: string
-    slug: string
-  }
-  members: {
-    id:       string
-    name:     string
-    email:    string
-    role:     string
-    joinedAt: Date
-  }[]
+  user:      { id: string; name: string; email: string; plan: string }
+  workspace: { id: string; name: string; slug: string }
+  members:   { id: string; name: string; email: string; role: string; joinedAt: Date }[]
 }
 
 const tabs = [
-  { id: "profile",    label: "Profile",    icon: User      },
-  { id: "workspace",  label: "Workspace",  icon: Building2 },
-  { id: "appearance", label: "Appearance", icon: Palette   },
-  { id: "notifications", label: "Notifications", icon: Bell },
+  { id: "profile",       label: "Profile",       icon: User,      color: "indigo" },
+  { id: "workspace",     label: "Workspace",     icon: Building2, color: "violet" },
+  { id: "appearance",   label: "Appearance",    icon: Palette,   color: "sky"    },
+  { id: "notifications", label: "Notifications", icon: Bell,      color: "amber"  },
 ]
+
+const TAB_COLORS: Record<string, { active: string; icon: string }> = {
+  indigo: { active: "bg-indigo-500/[0.1] text-indigo-300 border-indigo-500/25", icon: "bg-indigo-500/[0.12] text-indigo-400" },
+  violet: { active: "bg-violet-500/[0.1] text-violet-300 border-violet-500/25", icon: "bg-violet-500/[0.12] text-violet-400" },
+  sky:    { active: "bg-sky-500/[0.1]    text-sky-300    border-sky-500/25",    icon: "bg-sky-500/[0.12]    text-sky-400"    },
+  amber:  { active: "bg-amber-500/[0.1]  text-amber-300  border-amber-500/25",  icon: "bg-amber-500/[0.12]  text-amber-400"  },
+}
 
 function getInitials(name: string) {
   return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
 }
 
-// ——— Profile Tab ———
-const PLAN_META: Record<string, { label: string; color: string; bg: string; border: string; features: string[] }> = {
+// ── Shared card wrapper ──
+function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={`bg-[#0d0d0d] border border-white/[0.07] rounded-[16px] p-6
+      hover:border-white/[0.11] hover:-translate-y-[1px] hover:shadow-[0_16px_48px_rgba(0,0,0,0.6)]
+      transition-all duration-200 ${className}`}>
+      {children}
+    </div>
+  )
+}
+
+// ── Section heading with icon chip ──
+function SectionHead({
+  icon: Icon, title, subtitle, iconBg = "bg-indigo-500/[0.1]", iconColor = "text-indigo-400", right,
+}: {
+  icon: React.ElementType; title: string; subtitle?: string
+  iconBg?: string; iconColor?: string; right?: React.ReactNode
+}) {
+  return (
+    <div className="flex items-start justify-between mb-5">
+      <div className="flex items-center gap-3">
+        <div className={`w-8 h-8 rounded-[9px] ${iconBg} border border-white/[0.07] flex items-center justify-center flex-shrink-0`}>
+          <Icon size={14} className={iconColor} />
+        </div>
+        <div>
+          <h3 className="text-[14px] font-bold text-white tracking-tight leading-none">{title}</h3>
+          {subtitle && <p className="text-[11.5px] text-[#3a3a3a] mt-1">{subtitle}</p>}
+        </div>
+      </div>
+      {right}
+    </div>
+  )
+}
+
+// ── Labelled input ──
+function Field({
+  label, value, onChange, disabled, hint,
+}: {
+  label: string; value: string; onChange?: (v: string) => void
+  disabled?: boolean; hint?: string
+}) {
+  return (
+    <div className="space-y-1.5">
+      <p className="text-[11px] font-semibold text-[#3a3a3a] uppercase tracking-[0.08em]">{label}</p>
+      <input
+        value={value}
+        onChange={onChange ? (e) => onChange(e.target.value) : undefined}
+        disabled={disabled}
+        className={`w-full rounded-[10px] px-3.5 py-2.5 text-[13px] outline-none transition-all duration-150 border
+          ${disabled
+            ? "bg-white/[0.02] border-white/[0.04] text-[#333] cursor-not-allowed"
+            : "bg-white/[0.03] border-white/[0.08] text-[#ccc] placeholder-[#2a2a2a] " +
+              "hover:border-white/[0.13] focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/[0.1]"
+          }`}
+      />
+      {hint && <p className="text-[11px] text-[#2a2a2a]">{hint}</p>}
+    </div>
+  )
+}
+
+// ── Save button ──
+function SaveBtn({ onClick, loading, disabled }: { onClick: () => void; loading: boolean; disabled: boolean }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={loading || disabled}
+      className="flex items-center gap-2 h-9 px-5 text-[12.5px] font-semibold
+        bg-indigo-600 hover:bg-indigo-500 disabled:opacity-35 disabled:cursor-not-allowed
+        text-white border border-indigo-700/80 rounded-[10px]
+        shadow-[0_4px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none
+        transition-all duration-100"
+    >
+      {loading
+        ? <><Loader2 size={13} className="animate-spin" /> Saving...</>
+        : <><Save size={13} /> Save changes</>
+      }
+    </button>
+  )
+}
+
+// ══════════════════════════════
+// ── Plan card ──
+// ══════════════════════════════
+const PLAN_META: Record<string, {
+  label: string; badge: string; badgeBg: string; border: string
+  glow: string; cardBg: string; features: string[]
+  PlanIcon: React.ElementType
+}> = {
   free: {
-    label: "Free",
-    color: "text-[#888]",
-    bg: "bg-white/[0.03]",
-    border: "border-white/[0.08]",
-    features: ["Up to 3 projects", "Unlimited tasks", "Kanban board"],
+    label:    "Free",
+    badge:    "text-[#555]",
+    badgeBg:  "bg-white/[0.04]  border-white/[0.08]",
+    border:   "border-white/[0.07]",
+    glow:     "rgba(255,255,255,0.015)",
+    cardBg:   "bg-[#0d0d0d]",
+    features: ["Up to 3 projects", "Unlimited tasks", "Kanban board", "Basic search & filters"],
+    PlanIcon: Zap,
   },
   pro: {
-    label: "Pro",
-    color: "text-indigo-400",
-    bg: "bg-indigo-600/[0.08]",
-    border: "border-indigo-500/25",
-    features: ["Unlimited projects", "Advanced filters", "Analytics", "Priority support"],
+    label:    "Pro",
+    badge:    "text-indigo-300",
+    badgeBg:  "bg-indigo-500/[0.12] border-indigo-500/25",
+    border:   "border-indigo-500/20",
+    glow:     "rgba(99,102,241,0.08)",
+    cardBg:   "bg-indigo-950/[0.07]",
+    features: ["Unlimited projects", "Advanced filters", "Analytics", "Activity feed", "Priority support"],
+    PlanIcon: Sparkles,
   },
   enterprise: {
-    label: "Enterprise",
-    color: "text-violet-400",
-    bg: "bg-violet-600/[0.08]",
-    border: "border-violet-500/25",
-    features: ["Everything in Pro", "SSO / SAML", "Audit logs", "SLA guarantee"],
+    label:    "Enterprise",
+    badge:    "text-violet-300",
+    badgeBg:  "bg-violet-500/[0.12] border-violet-500/25",
+    border:   "border-violet-500/20",
+    glow:     "rgba(139,92,246,0.08)",
+    cardBg:   "bg-violet-950/[0.07]",
+    features: ["Everything in Pro", "SSO / SAML", "Audit logs", "SLA guarantee", "Dedicated support"],
+    PlanIcon: Shield,
   },
 }
 
 function PlanCard({ plan }: { plan: string }) {
   const meta = PLAN_META[plan] ?? PLAN_META.free
+  const { PlanIcon } = meta
 
   return (
-    <div className={`border rounded-[12px] p-6 ${meta.bg} ${meta.border}`}>
-      <div className="flex items-start justify-between mb-4">
+    <div
+      className={`relative rounded-[16px] p-6 border ${meta.border} ${meta.cardBg} overflow-hidden
+        hover:-translate-y-[1px] transition-all duration-200`}
+      style={{ boxShadow: `0 0 80px ${meta.glow}, 0 16px 48px rgba(0,0,0,0.5)` }}
+    >
+      {/* Background glow blob */}
+      <div
+        className="absolute -bottom-8 -right-8 w-[200px] h-[160px] rounded-full blur-[70px] pointer-events-none"
+        style={{ background: meta.glow }}
+      />
+
+      <div className="relative flex items-start justify-between mb-5">
         <div>
-          <h3 className="text-[14px] font-semibold mb-1">Current plan</h3>
-          <div className="flex items-center gap-2">
-            <span className={`text-[20px] font-bold ${meta.color}`}>{meta.label}</span>
-            {plan !== "free" && (
-              <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${meta.bg} ${meta.border} ${meta.color}`}>
-                Active
-              </span>
-            )}
+          <p className="text-[10.5px] font-semibold text-[#2e2e2e] uppercase tracking-[0.1em] mb-2">Current plan</p>
+          <div className="flex items-center gap-2.5">
+            <span className="text-[30px] font-bold text-white tracking-tight leading-none">{meta.label}</span>
+            <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${meta.badgeBg} ${meta.badge}`}>
+              {plan === "free" ? "Forever free" : "Active"}
+            </span>
           </div>
         </div>
-        <div className={`w-10 h-10 rounded-[10px] flex items-center justify-center border ${meta.bg} ${meta.border}`}>
-          <Zap size={16} className={meta.color} />
+        <div className={`w-10 h-10 rounded-[11px] flex items-center justify-center border ${meta.badgeBg}`}>
+          <PlanIcon size={16} className={meta.badge} />
         </div>
       </div>
 
-      <ul className="space-y-1.5 mb-5">
+      <ul className="space-y-2 mb-5 relative">
         {meta.features.map((f) => (
-          <li key={f} className="flex items-center gap-2 text-[12.5px] text-muted-foreground">
-            <CheckCircle size={12} className={meta.color} />
+          <li key={f} className="flex items-center gap-2.5 text-[12.5px] text-[#444]">
+            <div className="w-[18px] h-[18px] rounded-full bg-white/[0.04] border border-white/[0.06] flex items-center justify-center flex-shrink-0">
+              <Check size={9} className="text-[#444]" />
+            </div>
             {f}
           </li>
         ))}
       </ul>
 
-      {plan === "free" && (
-        <a
-          href="/#pricing"
-          className="inline-flex items-center gap-1.5 h-8 px-4 text-[12px] font-semibold bg-indigo-600 hover:bg-indigo-500 text-white border border-indigo-700/80 rounded-[8px] shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none transition-all duration-100"
-        >
-          <Zap size={11} />
-          Upgrade to Pro
-        </a>
-      )}
-
-      {plan === "pro" && (
-        <p className="text-[12px] text-muted-foreground">
-          Need more? <a href="/#pricing" className="text-indigo-400 hover:underline">Contact sales</a> for Enterprise.
-        </p>
-      )}
+      <div className="relative">
+        {plan === "free" && (
+          <a
+            href="/upgrade"
+            className="inline-flex items-center gap-1.5 h-9 px-5 text-[12.5px] font-semibold
+              bg-indigo-600 hover:bg-indigo-500 text-white border border-indigo-700/80
+              rounded-[10px] shadow-[0_4px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none
+              transition-all duration-100"
+          >
+            <Sparkles size={13} /> Upgrade to Pro
+          </a>
+        )}
+        {plan === "pro" && (
+          <p className="text-[12px] text-[#444]">
+            Need more?{" "}
+            <a href="/upgrade" className="text-indigo-400 hover:text-indigo-300 inline-flex items-center gap-0.5 transition-colors">
+              Contact sales for Enterprise <ArrowUpRight size={11} />
+            </a>
+          </p>
+        )}
+        {plan === "enterprise" && (
+          <p className="text-[12px] text-violet-400/70">You&apos;re on the highest tier. Thank you!</p>
+        )}
+      </div>
     </div>
   )
 }
 
+// ══════════════════════════════
+// ── Profile Tab ──
+// ══════════════════════════════
 function ProfileTab({ user }: { user: Props["user"] }) {
-  const { user: clerkUser }       = useUser()
-  const [name, setName]           = useState(user.name)
-  const [savingName, setSavingName] = useState(false)
-  const [uploadingImage, setUploadingImage] = useState(false)
-  const fileInputRef              = useRef<HTMLInputElement>(null)
+  const { user: clerkUser }           = useUser()
+  const [name, setName]               = useState(user.name)
+  const [savingName, setSavingName]   = useState(false)
+  const [uploading, setUploading]     = useState(false)
+  const fileInputRef                  = useRef<HTMLInputElement>(null)
 
   async function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file || !clerkUser) return
-    setUploadingImage(true)
+    setUploading(true)
     try {
       await clerkUser.setProfileImage({ file })
       toast.success("Profile picture updated!")
     } catch {
       toast.error("Failed to update profile picture")
     } finally {
-      setUploadingImage(false)
+      setUploading(false)
       e.target.value = ""
     }
   }
@@ -162,116 +271,108 @@ function ProfileTab({ user }: { user: Props["user"] }) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
 
-      {/* Avatar + name section */}
-      <div className="bg-card border border-border rounded-[12px] p-6">
-        <h3 className="text-[14px] font-semibold mb-4">Profile information</h3>
+      {/* Profile information */}
+      <Card>
+        <SectionHead
+          icon={User}
+          title="Profile information"
+          subtitle="Your public identity across workspaces"
+        />
 
-        <div className="flex items-center gap-4 mb-6">
+        {/* Avatar row */}
+        <div className="flex items-center gap-5 mb-6 p-4 rounded-[12px] bg-white/[0.02] border border-white/[0.05]">
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
             className="relative group flex-shrink-0"
             title="Change profile picture"
           >
-            <Avatar className="h-16 w-16">
+            {/* Hover glow ring */}
+            <div className="absolute -inset-[3px] rounded-full bg-gradient-to-br from-indigo-500/40 to-violet-600/40 opacity-0 group-hover:opacity-100 blur-sm transition-all duration-300" />
+            <Avatar className="relative h-[72px] w-[72px] ring-2 ring-white/[0.08] ring-offset-2 ring-offset-[#0d0d0d]">
               <AvatarImage src={clerkUser?.imageUrl} className="object-cover" />
-              <AvatarFallback className="text-lg bg-gradient-to-br from-indigo-500 to-violet-600 text-white border-0">
+              <AvatarFallback className="text-xl font-bold bg-gradient-to-br from-indigo-500 to-violet-600 text-white">
                 {getInitials(name || "User")}
               </AvatarFallback>
             </Avatar>
-            <div className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-              {uploadingImage
+            <div className="absolute inset-0 rounded-full bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              {uploading
                 ? <Loader2 size={18} className="text-white animate-spin" />
-                : <Camera size={18} className="text-white" />
+                : <Camera size={16} className="text-white" />
               }
             </div>
           </button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleImageChange}
-          />
+          <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
           <div>
-            <p className="text-[13px] font-medium">{user.name}</p>
-            <p className="text-[12px] text-muted-foreground">{user.email}</p>
-            <p className="text-[11px] text-muted-foreground/60 mt-1">
-              Click your avatar to upload a new photo
+            <p className="text-[15px] font-bold text-white tracking-tight">{user.name}</p>
+            <p className="text-[12.5px] text-[#444] mt-0.5">{user.email}</p>
+            <p className="text-[11px] text-[#2a2a2a] mt-2 flex items-center gap-1.5">
+              <Camera size={10} />
+              Click avatar to change photo
             </p>
           </div>
         </div>
 
-        <div className="space-y-3">
-          <div className="space-y-1.5">
-            {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
-            <label className="text-[12px] font-medium text-muted-foreground">
-              Display name
-            </label>
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full bg-background border border-border rounded-[8px] px-3 py-2 text-[13px] outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-            />
+        <div className="space-y-4">
+          <Field label="Display name" value={name} onChange={setName} />
+          <Field
+            label="Email address"
+            value={user.email}
+            disabled
+            hint="Email cannot be changed — managed by your auth provider"
+          />
+          <div className="pt-1">
+            <SaveBtn onClick={handleSaveName} loading={savingName} disabled={name.trim() === user.name} />
           </div>
-
-          <div className="space-y-1.5">
-            {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
-            <label className="text-[12px] font-medium text-muted-foreground">
-              Email address
-            </label>
-            <input
-              value={user.email}
-              disabled
-              className="w-full bg-muted border border-border rounded-[8px] px-3 py-2 text-[13px] text-muted-foreground cursor-not-allowed"
-            />
-            <p className="text-[11px] text-muted-foreground/60">
-              Email cannot be changed
-            </p>
-          </div>
-
-          <button
-            type="button"
-            onClick={handleSaveName}
-            disabled={savingName || name.trim() === user.name}
-            className="flex items-center gap-2 h-8 px-4 text-[12px] font-semibold bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed text-white border border-indigo-700/80 rounded-[8px] shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none transition-all duration-100"
-          >
-            {savingName
-              ? <><Loader2 size={12} className="animate-spin" /> Saving...</>
-              : <><Save size={12} /> Save changes</>
-            }
-          </button>
         </div>
-      </div>
+      </Card>
 
-      {/* Plan section */}
+      {/* Plan */}
       <PlanCard plan={user.plan} />
 
-      {/* Password section — managed by Clerk */}
-      <div className="bg-card border border-border rounded-[12px] p-6">
-        <h3 className="text-[14px] font-semibold mb-1">Password &amp; security</h3>
-        <p className="text-[12px] text-muted-foreground">
-          Password and security settings are managed through your account provider (Google, GitHub, or email).
-          Sign out and sign back in if you need to update your credentials.
+      {/* Security */}
+      <Card>
+        <SectionHead
+          icon={Shield}
+          title="Password &amp; security"
+          subtitle="Authentication managed by your provider"
+          iconBg="bg-emerald-500/[0.1]"
+          iconColor="text-emerald-400"
+        />
+        <p className="text-[12.5px] text-[#3a3a3a] leading-relaxed">
+          Password and 2FA settings are handled by your auth provider (Google, GitHub, or email).
+          Sign out and sign back in to update your credentials.
         </p>
-      </div>
+      </Card>
 
       {/* Danger zone */}
-      <div className="bg-card border border-red-900/50 rounded-[12px] p-6">
-        <h3 className="text-[14px] font-semibold text-red-400 mb-1">
-          Danger zone
-        </h3>
-        <p className="text-[12px] text-muted-foreground mb-4">
-          Permanently delete your account and all associated data.
-          This action cannot be undone.
+      <div
+        className="rounded-[16px] p-6 border border-red-900/30 bg-red-950/[0.05]
+          hover:border-red-900/50 hover:-translate-y-[1px]
+          hover:shadow-[0_16px_48px_rgba(127,29,29,0.15)]
+          transition-all duration-200"
+      >
+        <SectionHead
+          icon={AlertTriangle}
+          title="Danger zone"
+          subtitle="Irreversible — proceed with caution"
+          iconBg="bg-red-500/[0.1]"
+          iconColor="text-red-400"
+        />
+        <p className="text-[12.5px] text-[#3a3a3a] mb-5 leading-relaxed">
+          Permanently delete your account and all associated data. This action cannot be undone.
         </p>
         <button
           type="button"
-          className="h-8 px-4 text-[12px] font-medium border border-red-900/60 text-red-400 hover:bg-red-950/30 rounded-[8px] shadow-[0_3px_0_0_rgba(69,10,10,0.7)] active:translate-y-[3px] active:shadow-none transition-all duration-100"
+          className="flex items-center gap-2 h-9 px-5 text-[12.5px] font-semibold border border-red-900/40
+            text-red-400 hover:bg-red-950/40 rounded-[10px]
+            shadow-[0_4px_0_0_rgba(69,10,10,0.5)] active:translate-y-[3px] active:shadow-none
+            transition-all duration-100"
           onClick={() => toast.error("Please contact support to delete your account")}
         >
+          <Trash2 size={13} />
           Delete account
         </button>
       </div>
@@ -280,16 +381,12 @@ function ProfileTab({ user }: { user: Props["user"] }) {
   )
 }
 
-// ——— Workspace Tab ———
-function WorkspaceTab({
-  workspace,
-  members,
-}: {
-  workspace: Props["workspace"]
-  members:   Props["members"]
-}) {
-  const [name, setName]       = useState(workspace.name)
-  const [saving, setSaving]   = useState(false)
+// ══════════════════════════════
+// ── Workspace Tab ──
+// ══════════════════════════════
+function WorkspaceTab({ workspace, members }: { workspace: Props["workspace"]; members: Props["members"] }) {
+  const [name, setName]     = useState(workspace.name)
+  const [saving, setSaving] = useState(false)
 
   async function handleSave() {
     if (name.trim() === workspace.name) return
@@ -306,114 +403,144 @@ function WorkspaceTab({
     }
   }
 
-  const roleColors: Record<string, string> = {
-    OWNER:  "bg-violet-950 text-violet-400 border-violet-900",
-    ADMIN:  "bg-blue-950 text-blue-400 border-blue-900",
-    MEMBER: "bg-[#1a1a1a] text-[#888] border-[#2a2a2a]",
+  const roleStyles: Record<string, { bg: string; text: string; border: string }> = {
+    OWNER:  { bg: "bg-violet-500/[0.1]", text: "text-violet-300", border: "border-violet-500/25" },
+    ADMIN:  { bg: "bg-indigo-500/[0.1]", text: "text-indigo-300", border: "border-indigo-500/25" },
+    MEMBER: { bg: "bg-white/[0.04]",     text: "text-[#555]",     border: "border-white/[0.08]"  },
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
 
-      {/* Workspace info */}
-      <div className="bg-card border border-border rounded-[12px] p-6">
-        <h3 className="text-[14px] font-semibold mb-4">Workspace settings</h3>
-
-        <div className="space-y-3 max-w-sm">
-          <div className="space-y-1.5">
-            {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
-            <label className="text-[12px] font-medium text-muted-foreground">
-              Workspace name
-            </label>
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full bg-background border border-border rounded-[8px] px-3 py-2 text-[13px] outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-            />
+      <Card>
+        <SectionHead
+          icon={Building2}
+          title="Workspace settings"
+          subtitle="Configure your team workspace"
+          iconBg="bg-violet-500/[0.1]"
+          iconColor="text-violet-400"
+        />
+        <div className="space-y-4 max-w-sm">
+          <Field label="Workspace name" value={name} onChange={setName} />
+          <Field
+            label="Workspace slug"
+            value={workspace.slug}
+            disabled
+            hint="Slug cannot be changed after creation"
+          />
+          <div className="pt-1">
+            <SaveBtn onClick={handleSave} loading={saving} disabled={name.trim() === workspace.name} />
           </div>
-
-          <div className="space-y-1.5">
-            {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
-            <label className="text-[12px] font-medium text-muted-foreground">
-              Workspace slug
-            </label>
-            <input
-              value={workspace.slug}
-              disabled
-              className="w-full bg-muted border border-border rounded-[8px] px-3 py-2 text-[13px] text-muted-foreground cursor-not-allowed"
-            />
-            <p className="text-[11px] text-muted-foreground/60">
-              Slug cannot be changed after creation
-            </p>
-          </div>
-
-          <button
-            type="button"
-            onClick={handleSave}
-            disabled={saving || name.trim() === workspace.name}
-            className="flex items-center gap-2 h-8 px-4 text-[12px] font-semibold bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed text-white border border-indigo-700/80 rounded-[8px] shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none transition-all duration-100"
-          >
-            {saving
-              ? <><Loader2 size={12} className="animate-spin" /> Saving...</>
-              : <><Save size={12} /> Save changes</>
-            }
-          </button>
         </div>
-      </div>
+      </Card>
 
-      {/* Members list */}
-      <div className="bg-card border border-border rounded-[12px] p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-[14px] font-semibold">
-            Members
-            <span className="ml-2 text-[11px] text-muted-foreground font-normal">
-              {members.length} total
-            </span>
-          </h3>
-          <button
-            type="button"
-            className="h-7 px-3 text-[12px] font-medium text-[#555] border border-white/8 rounded-[7px] shadow-[0_2px_0_0_rgba(0,0,0,0.4)] opacity-50 cursor-not-allowed transition-all duration-100"
-            onClick={() => toast("Team invitations coming soon!")}
-          >
-            + Invite member
-          </button>
-        </div>
+      <Card>
+        <SectionHead
+          icon={Users}
+          title="Members"
+          subtitle={`${members.length} member${members.length !== 1 ? "s" : ""} in this workspace`}
+          iconBg="bg-violet-500/[0.1]"
+          iconColor="text-violet-400"
+          right={
+            <button
+              type="button"
+              className="flex items-center gap-1.5 h-8 px-3.5 text-[12px] font-semibold
+                text-[#444] border border-white/[0.07] rounded-[9px]
+                shadow-[0_3px_0_0_rgba(0,0,0,0.4)] opacity-50 cursor-not-allowed"
+              onClick={() => toast("Team invitations coming soon!")}
+            >
+              <UserPlus size={12} />
+              Invite
+            </button>
+          }
+        />
 
         <div className="space-y-1">
-          {members.map((member) => (
-            <div
-              key={member.id}
-              className="flex items-center gap-3 p-3 rounded-[8px] hover:bg-muted/50 transition-colors"
-            >
-              <Avatar className="h-8 w-8">
-                <AvatarFallback className="text-[11px] bg-gradient-to-br from-indigo-500 to-violet-600 text-white border-0">
-                  {getInitials(member.name || "User")}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-medium truncate">{member.name}</p>
-                <p className="text-[11px] text-muted-foreground truncate">{member.email}</p>
+          {members.map((member) => {
+            const rs = roleStyles[member.role] ?? roleStyles.MEMBER
+            return (
+              <div
+                key={member.id}
+                className="flex items-center gap-3 p-3 rounded-[10px] border border-transparent
+                  hover:bg-white/[0.02] hover:border-white/[0.05] transition-all duration-150"
+              >
+                <Avatar className="h-9 w-9 flex-shrink-0">
+                  <AvatarFallback className="text-[11px] font-bold bg-gradient-to-br from-indigo-500 to-violet-600 text-white">
+                    {getInitials(member.name || "User")}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[13px] font-semibold text-[#bbb] truncate">{member.name}</p>
+                  <p className="text-[11px] text-[#3a3a3a] truncate">{member.email}</p>
+                </div>
+                <span className={`text-[10px] font-bold uppercase tracking-[0.06em] px-2.5 py-0.5 rounded-full border ${rs.bg} ${rs.border} ${rs.text}`}>
+                  {member.role}
+                </span>
               </div>
-              <span className={`text-[10px] font-medium px-2 py-0.5 rounded-[5px] border ${roleColors[member.role] ?? roleColors.MEMBER}`}>
-                {member.role}
-              </span>
-            </div>
-          ))}
+            )
+          })}
         </div>
-      </div>
+      </Card>
 
     </div>
   )
 }
 
-// ——— Appearance Tab ———
+// ══════════════════════════════
+// ── Appearance Tab ──
+// ══════════════════════════════
 function AppearanceTab() {
   const { theme, setTheme } = useTheme()
+  const [accent, setAccent] = useState("#6366f1")
 
   const themes = [
-    { id: "dark",   label: "Dark",   icon: Moon,    desc: "Easy on the eyes",     comingSoon: false },
-    { id: "light",  label: "Light",  icon: Sun,     desc: "Clean and bright",     comingSoon: true  },
-    { id: "system", label: "System", icon: Monitor, desc: "Follows your OS theme", comingSoon: false },
+    {
+      id: "dark", label: "Dark", icon: Moon, desc: "Easy on the eyes", comingSoon: false,
+      preview: (
+        <div className="w-full h-11 rounded-[7px] bg-[#0d0d0d] border border-white/[0.08] overflow-hidden flex gap-1 p-1.5">
+          <div className="w-5 bg-white/[0.04] rounded-[3px]" />
+          <div className="flex-1 flex flex-col gap-1 justify-center">
+            <div className="h-1.5 bg-white/[0.07] rounded-full" />
+            <div className="h-1.5 bg-white/[0.04] rounded-full w-3/4" />
+            <div className="h-1.5 bg-indigo-500/30 rounded-full w-1/2" />
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: "light", label: "Light", icon: Sun, desc: "Clean and bright", comingSoon: true,
+      preview: (
+        <div className="w-full h-11 rounded-[7px] bg-white border border-black/[0.08] overflow-hidden flex gap-1 p-1.5">
+          <div className="w-5 bg-black/[0.05] rounded-[3px]" />
+          <div className="flex-1 flex flex-col gap-1 justify-center">
+            <div className="h-1.5 bg-black/[0.1] rounded-full" />
+            <div className="h-1.5 bg-black/[0.06] rounded-full w-3/4" />
+            <div className="h-1.5 bg-indigo-400/40 rounded-full w-1/2" />
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: "system", label: "System", icon: Monitor, desc: "Follows your OS", comingSoon: false,
+      preview: (
+        <div className="w-full h-11 rounded-[7px] overflow-hidden flex">
+          <div className="flex-1 bg-[#0d0d0d] border-r border-white/[0.05] flex gap-0.5 p-1.5">
+            <div className="w-3 bg-white/[0.04] rounded-[2px]" />
+            <div className="flex-1 flex flex-col gap-0.5 justify-center">
+              <div className="h-1 bg-white/[0.07] rounded-full" />
+              <div className="h-1 bg-indigo-500/30 rounded-full w-2/3" />
+            </div>
+          </div>
+          <div className="flex-1 bg-[#f4f4f5] flex gap-0.5 p-1.5">
+            <div className="w-3 bg-black/[0.06] rounded-[2px]" />
+            <div className="flex-1 flex flex-col gap-0.5 justify-center">
+              <div className="h-1 bg-black/[0.1] rounded-full" />
+              <div className="h-1 bg-indigo-400/40 rounded-full w-2/3" />
+            </div>
+          </div>
+        </div>
+      ),
+    },
   ]
 
   const accents = [
@@ -426,14 +553,16 @@ function AppearanceTab() {
   ]
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
 
-      {/* Theme */}
-      <div className="bg-card border border-border rounded-[12px] p-6">
-        <h3 className="text-[14px] font-semibold mb-1">Theme</h3>
-        <p className="text-[12px] text-muted-foreground mb-4">
-          Choose how TaskFlow looks to you
-        </p>
+      <Card>
+        <SectionHead
+          icon={Moon}
+          title="Interface theme"
+          subtitle="Choose how TaskFlow looks to you"
+          iconBg="bg-sky-500/[0.1]"
+          iconColor="text-sky-400"
+        />
 
         <div className="grid grid-cols-3 gap-3">
           {themes.map((t) => (
@@ -446,119 +575,172 @@ function AppearanceTab() {
                   setTheme(t.id)
                   toast.success(`${t.label} mode enabled`)
                 }}
-                className={`w-full flex flex-col items-center gap-2 p-4 rounded-[10px] border transition-all ${
-                  t.comingSoon
-                    ? "border-border opacity-40 cursor-not-allowed"
+                className={`w-full flex flex-col gap-2.5 p-3 rounded-[12px] border transition-all duration-150 text-left
+                  ${t.comingSoon
+                    ? "border-white/[0.04] opacity-40 cursor-not-allowed"
                     : theme === t.id
-                      ? "border-primary bg-primary/10"
-                      : "border-border hover:border-border/80 hover:bg-accent"
-                }`}
+                      ? "border-indigo-500/30 bg-indigo-500/[0.07] ring-1 ring-indigo-500/15"
+                      : "border-white/[0.07] hover:border-white/[0.12] hover:bg-white/[0.02]"
+                  }`}
               >
-                <t.icon size={20} className={!t.comingSoon && theme === t.id ? "text-primary" : "text-muted-foreground"} />
-                <div className="text-center">
-                  <p className={`text-[12px] font-medium ${!t.comingSoon && theme === t.id ? "text-primary" : ""}`}>
-                    {t.label}
-                  </p>
-                  <p className="text-[10px] text-muted-foreground">{t.desc}</p>
+                {t.preview}
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className={`text-[12px] font-semibold ${!t.comingSoon && theme === t.id ? "text-indigo-300" : "text-[#666]"}`}>
+                      {t.label}
+                    </p>
+                    <p className="text-[10px] text-[#2e2e2e] mt-0.5">{t.desc}</p>
+                  </div>
+                  {!t.comingSoon && theme === t.id && (
+                    <div className="w-4 h-4 rounded-full bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center flex-shrink-0">
+                      <Check size={9} className="text-indigo-400" />
+                    </div>
+                  )}
                 </div>
-                {!t.comingSoon && theme === t.id && (
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                )}
               </button>
               {t.comingSoon && (
-                <span className="absolute -top-2 left-1/2 -translate-x-1/2 text-[9px] font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/25 px-2 py-0.5 rounded-full whitespace-nowrap">
-                  Coming soon
-                </span>
+                <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-amber-500/[0.12] text-amber-400 border border-amber-500/20 text-[9px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap tracking-[0.06em]">
+                  SOON
+                </div>
               )}
             </div>
           ))}
         </div>
-      </div>
+      </Card>
 
-      {/* Accent color */}
-      <div className="bg-card border border-border rounded-[12px] p-6">
-        <h3 className="text-[14px] font-semibold mb-1">Accent color</h3>
-        <p className="text-[12px] text-muted-foreground mb-4">
-          Personalize your TaskFlow experience
-        </p>
+      <Card>
+        <SectionHead
+          icon={Palette}
+          title="Accent color"
+          subtitle="Personalize your TaskFlow experience"
+          iconBg="bg-pink-500/[0.1]"
+          iconColor="text-pink-400"
+        />
 
-        <div className="flex items-center gap-3 flex-wrap">
+        <div className="flex items-end gap-5 flex-wrap">
           {accents.map((a) => (
             <button
               key={a.color}
               type="button"
-              onClick={() => toast(`${a.label} accent coming soon!`)}
-              className="flex flex-col items-center gap-1.5 group"
+              onClick={() => {
+                setAccent(a.color)
+                toast(`${a.label} accent — coming soon!`)
+              }}
+              className="flex flex-col items-center gap-2 group"
               title={a.label}
             >
-              <div
-                className="w-8 h-8 rounded-full transition-transform group-hover:scale-110 ring-2 ring-transparent group-hover:ring-offset-2 group-hover:ring-offset-background"
-                style={{
-                  background: a.color
-                }}
-              />
-              <span className="text-[10px] text-muted-foreground">{a.label}</span>
+              <div className="relative">
+                {/* Selected ring */}
+                {accent === a.color && (
+                  <div
+                    className="absolute -inset-[3px] rounded-full border-2 opacity-70 transition-all"
+                    style={{ borderColor: a.color }}
+                  />
+                )}
+                <div
+                  className="w-10 h-10 rounded-full transition-all duration-200 group-hover:scale-110 relative"
+                  style={{
+                    background: a.color,
+                    boxShadow: accent === a.color ? `0 0 16px ${a.color}60` : "none",
+                  }}
+                >
+                  {accent === a.color && (
+                    <div className="absolute inset-0 rounded-full flex items-center justify-center bg-black/25">
+                      <Check size={14} className="text-white" strokeWidth={2.5} />
+                    </div>
+                  )}
+                </div>
+              </div>
+              <span className="text-[10.5px] text-[#3a3a3a] group-hover:text-[#555] transition-colors">{a.label}</span>
             </button>
           ))}
         </div>
-      </div>
+      </Card>
 
     </div>
   )
 }
 
-// ——— Notifications Tab ———
+// ══════════════════════════════
+// ── Notifications Tab ──
+// ══════════════════════════════
 function NotificationsTab() {
   const notifications = [
-    { id: "task_assigned", label: "Task assigned to you",    desc: "When someone assigns a task to you"          },
-    { id: "task_moved",    label: "Task status changed",     desc: "When your task is moved to a new column"     },
-    { id: "due_date",      label: "Due date reminder",       desc: "24 hours before a task is due"               },
-    { id: "new_member",    label: "New member joined",       desc: "When someone joins your workspace"           },
-    { id: "comment",       label: "New comment on task",     desc: "When someone comments on your task"         },
+    { id: "task_assigned", label: "Task assigned to you",  desc: "When someone assigns a task to you",      icon: User,          iconBg: "bg-indigo-500/[0.1]",  iconColor: "text-indigo-400"  },
+    { id: "task_moved",    label: "Task status changed",   desc: "When a task is moved to a new column",    icon: CheckCircle,   iconBg: "bg-emerald-500/[0.1]", iconColor: "text-emerald-400" },
+    { id: "due_date",      label: "Due date reminder",     desc: "24 hours before a task is due",           icon: Clock,         iconBg: "bg-amber-500/[0.1]",   iconColor: "text-amber-400"   },
+    { id: "new_member",    label: "New member joined",     desc: "When someone joins your workspace",       icon: UserPlus,      iconBg: "bg-violet-500/[0.1]",  iconColor: "text-violet-400"  },
+    { id: "comment",       label: "New comment on task",   desc: "When someone comments on your task",     icon: MessageSquare, iconBg: "bg-sky-500/[0.1]",     iconColor: "text-sky-400"     },
   ]
 
   return (
-    <div className="space-y-6">
-      <div className="bg-card border border-border rounded-[12px] p-6">
-        <div className="flex items-center justify-between mb-1">
-          <h3 className="text-[14px] font-semibold">Notification preferences</h3>
-          <span className="text-[11px] bg-amber-950 text-amber-400 border border-amber-900 px-2 py-0.5 rounded-full">
-            Coming soon
-          </span>
-        </div>
-        <p className="text-[12px] text-muted-foreground mb-6">
-          Choose what you want to be notified about. Requires email setup.
-        </p>
+    <div className="space-y-4">
+      <Card>
+        <SectionHead
+          icon={Bell}
+          title="Notification preferences"
+          subtitle="Choose what you want to hear about"
+          iconBg="bg-amber-500/[0.1]"
+          iconColor="text-amber-400"
+          right={
+            <span className="text-[10px] font-bold uppercase tracking-[0.06em] bg-amber-500/[0.1] text-amber-400 border border-amber-500/20 px-2.5 py-1 rounded-full">
+              Coming soon
+            </span>
+          }
+        />
 
-        <div className="space-y-1">
+        <div className="space-y-2">
           {notifications.map((n) => (
             <div
               key={n.id}
-              className="flex items-center justify-between p-3 rounded-[8px] hover:bg-muted/50 transition-colors opacity-60"
+              className="flex items-center gap-3.5 p-3.5 rounded-[12px] bg-white/[0.01] border border-white/[0.04]
+                hover:border-white/[0.07] hover:bg-white/[0.02] transition-all duration-150 opacity-55"
             >
-              <div>
-                <p className="text-[13px] font-medium">{n.label}</p>
-                <p className="text-[11px] text-muted-foreground">{n.desc}</p>
+              <div className={`w-8 h-8 rounded-[9px] ${n.iconBg} border border-white/[0.07] flex items-center justify-center flex-shrink-0`}>
+                <n.icon size={13} className={n.iconColor} />
               </div>
-              {/* Toggle pill — UI only */}
-              <div className="w-9 h-5 bg-muted border border-border rounded-full relative cursor-not-allowed">
-                <div className="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-muted-foreground/30" />
+              <div className="flex-1 min-w-0">
+                <p className="text-[13px] font-semibold text-[#888]">{n.label}</p>
+                <p className="text-[11px] text-[#3a3a3a]">{n.desc}</p>
               </div>
+              {/* Toggle — visual only */}
+              <button
+                type="button"
+                className="cursor-not-allowed flex-shrink-0"
+                onClick={() => toast("Notifications coming soon!")}
+              >
+                <div className="w-10 h-[22px] rounded-full bg-white/[0.04] border border-white/[0.08] relative">
+                  <div className="absolute top-[3px] left-[3px] w-4 h-4 rounded-full bg-white/20" />
+                </div>
+              </button>
             </div>
           ))}
         </div>
 
-        <p className="text-[11px] text-muted-foreground/60 mt-4 pt-4 border-t border-border">
-          Email notifications will be available when team invitations are enabled in Week 6.
+        <p className="text-[11px] text-[#252525] mt-5 pt-4 border-t border-white/[0.05] flex items-center gap-1.5">
+          <Mail size={10} />
+          Email notifications will be available when team invitations are enabled.
         </p>
-      </div>
+      </Card>
     </div>
   )
 }
 
-// ——— Main SettingsClient ———
+// ══════════════════════════════
+// ── Main ──
+// ══════════════════════════════
 export function SettingsClient({ user, workspace, members }: Props) {
   const [activeTab, setActiveTab] = useState("profile")
+  const [show, setShow]           = useState(true)
+
+  function switchTab(id: string) {
+    if (id === activeTab) return
+    setShow(false)
+    setTimeout(() => {
+      setActiveTab(id)
+      setShow(true)
+    }, 110)
+  }
 
   return (
     <div className="flex-1 overflow-auto">
@@ -567,44 +749,59 @@ export function SettingsClient({ user, workspace, members }: Props) {
       <div className="h-[50px] border-b border-border flex items-center pl-14 pr-5 md:px-5 bg-background sticky top-0 z-10">
         <div className="flex items-center gap-2">
           <span className="text-[13px] text-muted-foreground hidden sm:inline">Workspace /</span>
-          <span className="text-[13px] font-medium">Settings</span>
+          <span className="text-[13px] font-semibold">Settings</span>
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto p-4 sm:p-6">
+      <div className="max-w-3xl mx-auto p-4 sm:p-6 sm:pt-8">
 
         {/* Page header */}
-        <div className="mb-6">
-          <h1 className="text-[18px] font-semibold tracking-tight">Settings</h1>
-          <p className="text-[13px] text-muted-foreground mt-1">
-            Manage your account, workspace and preferences
+        <div className="mb-8">
+          <h1 className="text-[30px] font-bold tracking-tight text-white">Settings</h1>
+          <p className="text-[13.5px] text-[#3a3a3a] mt-1.5">
+            Manage your account, workspace, and preferences
           </p>
         </div>
 
-        {/* Tabs */}
-        <div className="flex items-center gap-1 border-b border-border mb-6 overflow-x-auto">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 text-[12px] sm:text-[13px] font-medium border-b-2 transition-colors -mb-px whitespace-nowrap flex-shrink-0 ${
-                activeTab === tab.id
-                  ? "border-primary text-primary"
-                  : "border-transparent text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <tab.icon size={14} />
-              {tab.label}
-            </button>
-          ))}
+        {/* Tab bar */}
+        <div className="flex items-center gap-1.5 mb-6 overflow-x-auto">
+          {tabs.map((tab) => {
+            const isActive = activeTab === tab.id
+            const tc       = TAB_COLORS[tab.color]
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => switchTab(tab.id)}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-[10px] text-[12.5px] font-semibold
+                  border whitespace-nowrap flex-shrink-0 transition-all duration-150
+                  ${isActive
+                    ? tc.active
+                    : "border-transparent text-[#3a3a3a] hover:text-[#777] hover:bg-white/[0.03]"
+                  }`}
+              >
+                <div className={`w-5 h-5 rounded-[5px] flex items-center justify-center transition-colors ${isActive ? tc.icon : ""}`}>
+                  <tab.icon size={12} />
+                </div>
+                {tab.label}
+              </button>
+            )
+          })}
         </div>
 
-        {/* Tab content */}
-        {activeTab === "profile"       && <ProfileTab user={user} />}
-        {activeTab === "workspace"     && <WorkspaceTab workspace={workspace} members={members} />}
-        {activeTab === "appearance"    && <AppearanceTab />}
-        {activeTab === "notifications" && <NotificationsTab />}
+        {/* Animated tab content */}
+        <div
+          style={{
+            opacity:    show ? 1 : 0,
+            transform:  show ? "translateY(0)" : "translateY(8px)",
+            transition: "opacity 0.15s ease, transform 0.15s ease",
+          }}
+        >
+          {activeTab === "profile"       && <ProfileTab user={user} />}
+          {activeTab === "workspace"     && <WorkspaceTab workspace={workspace} members={members} />}
+          {activeTab === "appearance"    && <AppearanceTab />}
+          {activeTab === "notifications" && <NotificationsTab />}
+        </div>
 
       </div>
     </div>
