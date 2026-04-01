@@ -134,8 +134,9 @@ export function OnboardingTour() {
 
       {/* Card */}
       <div
-        className="relative w-full max-w-[480px] rounded-[22px] border border-white/[0.08] bg-[#0d0d0d] overflow-hidden"
+        className="relative w-full max-w-[480px] rounded-[22px] border border-white/[0.08] bg-[#0d0d0d] overflow-hidden flex flex-col"
         style={{
+          height:     "500px",
           boxShadow: "0 40px 100px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.05)",
           opacity:    mounted ? 1 : 0,
           transform:  mounted ? "scale(1) translateY(0)" : "scale(0.95) translateY(16px)",
@@ -176,8 +177,8 @@ export function OnboardingTour() {
         </button>
 
         {/* ── Main content ── */}
-        <div className="relative px-7 pt-6 pb-7">
-          <div style={contentStyle}>
+        <div className="relative px-7 pt-6 pb-7 flex flex-col flex-1">
+          <div style={contentStyle} className="flex-1 min-h-0">
 
             {/* Icon */}
             <div className="relative w-fit mb-6">
@@ -208,7 +209,7 @@ export function OnboardingTour() {
             </h2>
 
             {/* Description */}
-            <p className="text-[13.5px] text-[#666] leading-[1.75] mb-5">
+            <p className="text-[13.5px] text-[#666] leading-[1.75] mb-5 min-h-[88px]">
               {cur.description}
             </p>
 
