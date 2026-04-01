@@ -6,7 +6,7 @@ type Props = { searchParams: Promise<Record<string, string>> }
 
 export default async function RegisterPage({ searchParams }: Props) {
   const params = await searchParams
-  const redirectUrl = params.redirect_url ?? "/dashboard"
+  const redirectUrl = params.redirect_url ?? "/onboarding"
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center p-4 gap-6">
