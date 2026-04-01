@@ -1,24 +1,29 @@
 // app/layout.tsx
 import type { Metadata } from "next"
-import { Manrope, Inter_Tight, Bricolage_Grotesque } from "next/font/google"
+import { Inter_Tight, Raleway, Bricolage_Grotesque } from "next/font/google"
 import "./globals.css"
 import { ClerkProvider } from "@clerk/nextjs"
 import { Toaster } from "sonner"
 import { ThemeProvider } from "next-themes"
 import { CheckCircle2, XCircle, AlertTriangle, Info, Loader2 } from "lucide-react"
 
-const manrope = Manrope({
-  subsets: ["latin"],
-  variable: "--font-manrope",
-  display: "swap",
-})
-
+// Primary — UI, body, labels, inputs, buttons
 const interTight = Inter_Tight({
   subsets: ["latin"],
   variable: "--font-inter-tight",
   display: "swap",
+  weight: ["400", "500", "600", "700"],
 })
 
+// Secondary — headings, page titles, section headers
+const raleway = Raleway({
+  subsets: ["latin"],
+  variable: "--font-raleway",
+  display: "swap",
+  weight: ["500", "600", "700", "800"],
+})
+
+// Logo only
 const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
   variable: "--font-bricolage",
@@ -41,9 +46,9 @@ export default function RootLayout({
       <html
         lang="en"
         suppressHydrationWarning
-        className={`${manrope.variable} ${interTight.variable} ${bricolage.variable}`}
+        className={`${interTight.variable} ${raleway.variable} ${bricolage.variable}`}
       >
-        <body className={manrope.className}>
+        <body className={interTight.className}>
           <ThemeProvider
             attribute="class"
             defaultTheme="dark"
