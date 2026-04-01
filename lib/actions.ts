@@ -6,6 +6,7 @@ import { requireAuth } from "@/lib/session"
 import { revalidatePath } from "next/cache"
 import { eq, inArray } from "drizzle-orm"
 import { logActivity, getWorkspaceId } from "@/lib/activity"
+import { createNotification } from "@/lib/notify"
 import Anthropic from "@anthropic-ai/sdk"
 
 // ——— Create a task ———
@@ -72,12 +73,29 @@ export async function updateTaskStatus(taskId: string, status: string) {
     DONE:        "Done",
   }
 
+  // Fetch current task to get title + assignee
+  const [currentTask] = await db
+    .select({ title: tasks.title, assigneeId: tasks.assigneeId })
+    .from(tasks)
+    .where(eq(tasks.id, taskId))
+    .limit(1)
+
   const workspaceId = await getWorkspaceId(session.user.id!)
 
   await db
     .update(tasks)
     .set({ status: status as "TODO" | "IN_PROGRESS" | "IN_REVIEW" | "DONE" })
     .where(eq(tasks.id, taskId))
+
+  // Notify assignee of status change (skip if they made the change themselves)
+  if (currentTask?.assigneeId && currentTask.assigneeId !== session.user.id) {
+    await createNotification({
+      userId:  currentTask.assigneeId,
+      type:    "STATUS_CHANGE",
+      message: `${session.user.name} moved "${currentTask.title}" to ${statusLabels[status] ?? status}`,
+      taskId,
+    })
+  }
 
   if (workspaceId) {
     await logActivity({
@@ -95,22 +113,60 @@ export async function updateTaskStatus(taskId: string, status: string) {
 
 // ——— Update task detail ———
 export async function updateTask(taskId: string, formData: FormData) {
-  const session   = await requireAuth()
-  const title     = formData.get("title") as string
+  const session     = await requireAuth()
+  const title       = formData.get("title")       as string
   const description = formData.get("description") as string
-  const status    = formData.get("status") as string
-  const priority  = formData.get("priority") as string
+  const status      = formData.get("status")      as string
+  const priority    = formData.get("priority")    as string
+  const dueDate     = formData.get("dueDate")     as string
+  const assigneeId  = formData.get("assigneeId")  as string | null
   const workspaceId = await getWorkspaceId(session.user.id!)
+
+  const statusLabels: Record<string, string> = {
+    TODO: "Todo", IN_PROGRESS: "In Progress", IN_REVIEW: "In Review", DONE: "Done",
+  }
+
+  // Fetch current state for diffing
+  const [prev] = await db
+    .select({ status: tasks.status, assigneeId: tasks.assigneeId })
+    .from(tasks)
+    .where(eq(tasks.id, taskId))
+    .limit(1)
 
   await db
     .update(tasks)
     .set({
       title,
       description: description || null,
-      status:   status   as "TODO" | "IN_PROGRESS" | "IN_REVIEW" | "DONE",
-      priority: priority as "LOW" | "MEDIUM" | "HIGH" | "URGENT",
+      status:      status   as "TODO" | "IN_PROGRESS" | "IN_REVIEW" | "DONE",
+      priority:    priority as "LOW" | "MEDIUM" | "HIGH" | "URGENT",
+      dueDate:     dueDate ? new Date(dueDate) : null,
+      assigneeId:  assigneeId || null,
     })
     .where(eq(tasks.id, taskId))
+
+  // Notify new assignee (if changed + not self)
+  if (assigneeId && assigneeId !== prev?.assigneeId && assigneeId !== session.user.id) {
+    await createNotification({
+      userId:  assigneeId,
+      type:    "TASK_ASSIGNED",
+      message: `${session.user.name} assigned you to "${title}"`,
+      taskId,
+    })
+  }
+
+  // Notify assignee of status change (if status changed + assignee != actor)
+  if (prev && prev.status !== status) {
+    const notifyId = assigneeId || prev.assigneeId
+    if (notifyId && notifyId !== session.user.id) {
+      await createNotification({
+        userId:  notifyId,
+        type:    "STATUS_CHANGE",
+        message: `${session.user.name} moved "${title}" to ${statusLabels[status] ?? status}`,
+        taskId,
+      })
+    }
+  }
 
   if (workspaceId) {
     await logActivity({

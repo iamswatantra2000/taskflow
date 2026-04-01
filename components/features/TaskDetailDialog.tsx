@@ -21,6 +21,7 @@ type Task = {
   status:      string
   priority:    string
   dueDate:     Date | null
+  assigneeId:  string | null
 }
 
 type Props = {
@@ -44,6 +45,7 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId }
       ? new Date(task.dueDate).toISOString().split("T")[0]
       : ""
   )
+  const [assigneeId, setAssigneeId]   = useState(task.assigneeId ?? "")
 
   async function handleSave() {
     setLoading(true)
@@ -53,7 +55,8 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId }
       formData.set("description", description)
       formData.set("status",      status)
       formData.set("priority",    priority)
-      if (dueDate) formData.set("dueDate", dueDate)
+      if (dueDate)     formData.set("dueDate",    dueDate)
+      if (assigneeId)  formData.set("assigneeId", assigneeId)
       await updateTask(task.id, formData)
       toast.success("Task updated")
       onClose()
@@ -129,6 +132,22 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId }
                 <option value="URGENT">Urgent</option>
               </select>
             </div>
+          </div>
+
+          {/* Assignee */}
+          <div className="space-y-1.5">
+            {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
+            <label className="text-[12px] font-medium text-[#888]">Assignee</label>
+            <select
+              value={assigneeId}
+              onChange={(e) => setAssigneeId(e.target.value)}
+              className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-[#e0e0e0] outline-none focus:border-indigo-500 transition-colors"
+            >
+              <option value="">Unassigned</option>
+              {members.map((m) => (
+                <option key={m.id} value={m.id}>{m.name}</option>
+              ))}
+            </select>
           </div>
 
           {/* Due date — full width */}

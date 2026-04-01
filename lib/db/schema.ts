@@ -94,7 +94,7 @@ export const invitations = pgTable("invitations", {
   createdAt:   timestamp("created_at").defaultNow().notNull(),
 })
 
-export const notificationTypeEnum = pgEnum("notification_type", ["MENTION", "REPLY"])
+export const notificationTypeEnum = pgEnum("notification_type", ["MENTION", "REPLY", "TASK_ASSIGNED", "STATUS_CHANGE", "DUE_DATE"])
 
 export const comments = pgTable("comments", {
   id:        text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),

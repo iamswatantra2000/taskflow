@@ -14,7 +14,8 @@ import { SignOutButton } from "./SignOutButton";
 import { ProfileDropdown } from "./ProfileDropdown";
 import { toast } from "sonner";
 import { AnimatedCounter } from "./AnimatedCounter"
-import { NotificationBell } from "./NotificationBell";
+import { NotificationBell } from "./NotificationBell"
+import { checkDueDateReminders } from "@/lib/notification-actions";
 
 type Task = {
 	id: string;
@@ -167,6 +168,10 @@ export function DashboardClient({
 			})
 		}
 	}, [invited]);
+
+	useEffect(() => {
+		checkDueDateReminders().catch(() => {})
+	}, []);
 
 	const totalTasks = columns.reduce((sum, col) => sum + col.tasks.length, 0);
 
