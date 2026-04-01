@@ -79,15 +79,14 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId }
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-[#111] border-[#1f1f1f] text-[#e0e0e0] max-w-xl max-h-[90vh] flex flex-col p-0 gap-0">
-        <DialogHeader className="px-6 pt-5 pb-0 flex-shrink-0">
+      <DialogContent className="bg-[#111] border-[#1f1f1f] text-[#e0e0e0] max-w-xl">
+        <DialogHeader>
           <DialogTitle className="text-[15px] font-semibold text-[#f0f0f0]">
             Task detail
           </DialogTitle>
         </DialogHeader>
 
-        <div className="flex-1 overflow-y-auto px-6 pb-6">
-        <div className="space-y-4 mt-4">
+        <div className="space-y-4 mt-2">
 
           {/* Title */}
           <div className="space-y-1.5">
@@ -210,7 +209,6 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId }
           members={members}
           currentUserId={currentUserId}
         />
-        </div>
 
       </DialogContent>
     </Dialog>

@@ -352,7 +352,7 @@ export function CommentSection({ taskId, taskTitle, members, currentUserId }: Pr
       ) : topLevel.length === 0 ? (
         <p className="text-[12px] text-[#2a2a2a]">No comments yet. Supports **markdown** and @mentions.</p>
       ) : (
-        <div className="space-y-4 max-h-[280px] overflow-y-auto pr-0.5">
+        <div className="space-y-4 max-h-[180px] overflow-y-auto pr-1 scrollbar-thin">
           {topLevel.map((c) => (
             <CommentThread
               key={c.id}
