@@ -116,6 +116,17 @@ export const notifications = pgTable("notifications", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 })
 
+export const notificationPreferences = pgTable("notification_preferences", {
+  id:              text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId:          text("user_id").notNull().unique().references(() => users.id, { onDelete: "cascade" }),
+  taskAssigned:    boolean("task_assigned").default(true).notNull(),
+  statusChange:    boolean("status_change").default(true).notNull(),
+  dueDateReminder: boolean("due_date_reminder").default(true).notNull(),
+  mentions:        boolean("mentions").default(true).notNull(),
+  replies:         boolean("replies").default(true).notNull(),
+  updatedAt:       timestamp("updated_at").defaultNow().notNull(),
+})
+
 export const activities = pgTable("activities", {
   id:          text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   type:        activityTypeEnum("type").notNull(),

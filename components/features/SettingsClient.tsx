@@ -14,6 +14,7 @@ import {
   Clock, MessageSquare, UserPlus, ArrowUpRight,
 } from "lucide-react"
 import { InviteModal } from "./InviteModal"
+import { saveNotificationPreferences, type NotifPrefs } from "@/lib/notification-prefs-actions"
 
 type Invitation = {
   id: string; email: string; role: string
@@ -26,6 +27,7 @@ type Props = {
   members:        { id: string; name: string; email: string; role: string; joinedAt: Date }[]
   userRole:       string
   pendingInvites: Invitation[]
+  notifPrefs:     NotifPrefs
 }
 
 const tabs = [
@@ -694,14 +696,38 @@ function AppearanceTab() {
 // ══════════════════════════════
 // ── Notifications Tab ──
 // ══════════════════════════════
-function NotificationsTab() {
-  const notifications = [
-    { id: "task_assigned", label: "Task assigned to you",  desc: "When someone assigns a task to you",      icon: User,          iconBg: "bg-indigo-500/[0.1]",  iconColor: "text-indigo-400"  },
-    { id: "task_moved",    label: "Task status changed",   desc: "When a task is moved to a new column",    icon: CheckCircle,   iconBg: "bg-emerald-500/[0.1]", iconColor: "text-emerald-400" },
-    { id: "due_date",      label: "Due date reminder",     desc: "24 hours before a task is due",           icon: Clock,         iconBg: "bg-amber-500/[0.1]",   iconColor: "text-amber-400"   },
-    { id: "new_member",    label: "New member joined",     desc: "When someone joins your workspace",       icon: UserPlus,      iconBg: "bg-violet-500/[0.1]",  iconColor: "text-violet-400"  },
-    { id: "comment",       label: "New comment on task",   desc: "When someone comments on your task",     icon: MessageSquare, iconBg: "bg-sky-500/[0.1]",     iconColor: "text-sky-400"     },
+function NotificationsTab({ initialPrefs }: { initialPrefs: NotifPrefs }) {
+  const [prefs, setPrefs]   = useState<NotifPrefs>(initialPrefs)
+  const [saving, setSaving] = useState(false)
+
+  const ITEMS: {
+    key:      keyof NotifPrefs
+    label:    string
+    desc:     string
+    icon:     React.ElementType
+    iconBg:   string
+    iconColor: string
+  }[] = [
+    { key: "taskAssigned",    label: "Task assigned to you", desc: "When someone assigns a task to you",   icon: User,          iconBg: "bg-indigo-500/[0.1]",  iconColor: "text-indigo-400"  },
+    { key: "statusChange",    label: "Task status changed",  desc: "When a task is moved to a new column", icon: CheckCircle,   iconBg: "bg-emerald-500/[0.1]", iconColor: "text-emerald-400" },
+    { key: "dueDateReminder", label: "Due date reminder",    desc: "24 hours before a task is due",        icon: Clock,         iconBg: "bg-amber-500/[0.1]",   iconColor: "text-amber-400"   },
+    { key: "mentions",        label: "Mentions",             desc: "When someone @mentions you",           icon: UserPlus,      iconBg: "bg-violet-500/[0.1]",  iconColor: "text-violet-400"  },
+    { key: "replies",         label: "Comment replies",      desc: "When someone replies to your comment", icon: MessageSquare, iconBg: "bg-sky-500/[0.1]",     iconColor: "text-sky-400"     },
   ]
+
+  async function toggle(key: keyof NotifPrefs) {
+    const next = { ...prefs, [key]: !prefs[key] }
+    setPrefs(next)
+    setSaving(true)
+    try {
+      await saveNotificationPreferences(next)
+    } catch {
+      setPrefs(prefs) // revert
+      toast.error("Failed to save preference")
+    } finally {
+      setSaving(false)
+    }
+  }
 
   return (
     <div className="space-y-4">
@@ -713,38 +739,52 @@ function NotificationsTab() {
           iconBg="bg-amber-500/[0.1]"
           iconColor="text-amber-400"
           right={
-            <span className="text-[10px] font-bold uppercase tracking-[0.06em] bg-amber-500/[0.1] text-amber-400 border border-amber-500/20 px-2.5 py-1 rounded-full">
-              Coming soon
-            </span>
+            saving
+              ? <Loader2 size={13} className="animate-spin text-[#333]" />
+              : null
           }
         />
 
         <div className="space-y-2">
-          {notifications.map((n) => (
-            <div
-              key={n.id}
-              className="flex items-center gap-3.5 p-3.5 rounded-[12px] bg-white/[0.01] border border-white/[0.04]
-                hover:border-white/[0.07] hover:bg-white/[0.02] transition-all duration-150 opacity-55"
-            >
-              <div className={`w-8 h-8 rounded-[9px] ${n.iconBg} border border-white/[0.07] flex items-center justify-center flex-shrink-0`}>
-                <n.icon size={13} className={n.iconColor} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-semibold text-[#888]">{n.label}</p>
-                <p className="text-[11px] text-[#3a3a3a]">{n.desc}</p>
-              </div>
-              {/* Toggle — visual only */}
-              <button
-                type="button"
-                className="cursor-not-allowed flex-shrink-0"
-                onClick={() => toast("Notifications coming soon!")}
+          {ITEMS.map((item) => {
+            const on = prefs[item.key]
+            return (
+              <div
+                key={item.key}
+                className="flex items-center gap-3.5 p-3.5 rounded-[12px] bg-white/[0.01] border border-white/[0.04]
+                  hover:border-white/[0.07] hover:bg-white/[0.02] transition-all duration-150"
               >
-                <div className="w-10 h-[22px] rounded-full bg-white/[0.04] border border-white/[0.08] relative">
-                  <div className="absolute top-[3px] left-[3px] w-4 h-4 rounded-full bg-white/20" />
+                <div className={`w-8 h-8 rounded-[9px] ${item.iconBg} border border-white/[0.07] flex items-center justify-center flex-shrink-0`}>
+                  <item.icon size={13} className={item.iconColor} />
                 </div>
-              </button>
-            </div>
-          ))}
+                <div className="flex-1 min-w-0">
+                  <p className={`text-[13px] font-semibold ${on ? "text-[#ccc]" : "text-[#444]"}`}>{item.label}</p>
+                  <p className="text-[11px] text-[#3a3a3a]">{item.desc}</p>
+                </div>
+                {/* Toggle */}
+                <button
+                  type="button"
+                  onClick={() => toggle(item.key)}
+                  className="flex-shrink-0 focus:outline-none"
+                  aria-label={on ? "Disable" : "Enable"}
+                >
+                  <div className={`w-10 h-[22px] rounded-full border relative transition-colors duration-200
+                    ${on
+                      ? "bg-indigo-600 border-indigo-500/50"
+                      : "bg-white/[0.04] border-white/[0.08]"
+                    }`}
+                  >
+                    <div className={`absolute top-[3px] w-4 h-4 rounded-full transition-all duration-200
+                      ${on
+                        ? "left-[calc(100%-19px)] bg-white"
+                        : "left-[3px] bg-white/20"
+                      }`}
+                    />
+                  </div>
+                </button>
+              </div>
+            )
+          })}
         </div>
 
         <p className="text-[11px] text-[#252525] mt-5 pt-4 border-t border-white/[0.05] flex items-center gap-1.5">
@@ -759,7 +799,7 @@ function NotificationsTab() {
 // ══════════════════════════════
 // ── Main ──
 // ══════════════════════════════
-export function SettingsClient({ user, workspace, members, userRole, pendingInvites }: Props) {
+export function SettingsClient({ user, workspace, members, userRole, pendingInvites, notifPrefs }: Props) {
   const [activeTab, setActiveTab] = useState("profile")
   const [show, setShow]           = useState(true)
 
@@ -830,7 +870,7 @@ export function SettingsClient({ user, workspace, members, userRole, pendingInvi
           {activeTab === "profile"       && <ProfileTab user={user} />}
           {activeTab === "workspace"     && <WorkspaceTab workspace={workspace} members={members} userRole={userRole} pendingInvites={pendingInvites} />}
           {activeTab === "appearance"    && <AppearanceTab />}
-          {activeTab === "notifications" && <NotificationsTab />}
+          {activeTab === "notifications" && <NotificationsTab initialPrefs={notifPrefs} />}
         </div>
 
       </div>

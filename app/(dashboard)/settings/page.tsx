@@ -3,6 +3,7 @@ import { requireAuth } from "@/lib/session"
 import { db, workspaces, workspaceMembers, users, invitations } from "@/lib/db"
 import { eq, and } from "drizzle-orm"
 import { SettingsClient } from "../../../components/features/SettingsClient"
+import { getNotificationPreferences } from "@/lib/notification-prefs-actions"
 
 export default async function SettingsPage() {
   const session = await requireAuth()
@@ -42,6 +43,8 @@ export default async function SettingsPage() {
     .leftJoin(users, eq(workspaceMembers.userId, users.id))
     .where(eq(workspaceMembers.workspaceId, membership?.workspaceId ?? ""))
 
+  const notifPrefs = await getNotificationPreferences()
+
   // Get pending invitations for this workspace
   const pendingInvites = membership
     ? await db
@@ -76,6 +79,7 @@ export default async function SettingsPage() {
         joinedAt: m.joinedAt,
       }))}
       userRole={membership?.role ?? "MEMBER"}
+      notifPrefs={notifPrefs}
       pendingInvites={pendingInvites.map((inv) => ({
         id:        inv.id,
         email:     inv.email,
