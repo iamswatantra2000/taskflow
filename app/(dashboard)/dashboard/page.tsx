@@ -1,6 +1,6 @@
 // app/(dashboard)/dashboard/page.tsx
 import { requireAuth } from "@/lib/session"
-import { db, tasks, projects, workspaceMembers } from "@/lib/db"
+import { db, tasks, projects, workspaceMembers, users } from "@/lib/db"
 import { eq, inArray } from "drizzle-orm"
 import { DashboardClient } from "@/components/features/DashboardClient"
 
@@ -30,6 +30,16 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     : []
 
   const firstProject = userProjects[0] ?? null
+
+  // Fetch workspace members for @mentions
+  const members = membership
+    ? await db
+        .select({ id: users.id, name: users.name })
+        .from(workspaceMembers)
+        .leftJoin(users, eq(workspaceMembers.userId, users.id))
+        .where(eq(workspaceMembers.workspaceId, membership.workspaceId))
+        .then((rows) => rows.map((r) => ({ id: r.id ?? "", name: r.name ?? "Unknown" })))
+    : []
 
   // ← Explicitly select all fields including dueDate
   const allTasks = userProjects.length > 0
@@ -80,6 +90,8 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       workspaceId={membership?.workspaceId ?? ""}
       plan={session.user.plan ?? "free"}
       invited={invited}
+      members={members}
+      currentUserId={session.user.id}
     />
   )
 }

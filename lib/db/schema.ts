@@ -94,6 +94,27 @@ export const invitations = pgTable("invitations", {
   createdAt:   timestamp("created_at").defaultNow().notNull(),
 })
 
+export const notificationTypeEnum = pgEnum("notification_type", ["MENTION"])
+
+export const comments = pgTable("comments", {
+  id:        text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  taskId:    text("task_id").notNull().references(() => tasks.id, { onDelete: "cascade" }),
+  userId:    text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  content:   text("content").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+})
+
+export const notifications = pgTable("notifications", {
+  id:        text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId:    text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  type:      notificationTypeEnum("type").notNull(),
+  message:   text("message").notNull(),
+  taskId:    text("task_id").references(() => tasks.id, { onDelete: "cascade" }),
+  commentId: text("comment_id"),
+  isRead:    boolean("is_read").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+})
+
 export const activities = pgTable("activities", {
   id:          text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   type:        activityTypeEnum("type").notNull(),

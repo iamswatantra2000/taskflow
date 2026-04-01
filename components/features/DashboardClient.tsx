@@ -13,7 +13,8 @@ import { NewTaskDialog } from "./NewTaskDialog";
 import { SignOutButton } from "./SignOutButton";
 import { ProfileDropdown } from "./ProfileDropdown";
 import { toast } from "sonner";
-import { AnimatedCounter } from "./AnimatedCounter";
+import { AnimatedCounter } from "./AnimatedCounter"
+import { NotificationBell } from "./NotificationBell";
 
 type Task = {
 	id: string;
@@ -48,9 +49,11 @@ type Props = {
 	stats: { label: string; value: number; sub: string; valueColor: string }[];
 	firstName: string;
 	user: { name?: string | null; email?: string | null };
-	workspaceId: string;
-	plan: string;
-	invited?: boolean;
+	workspaceId:   string;
+	plan:          string;
+	invited?:      boolean;
+	members:       { id: string; name: string }[];
+	currentUserId: string;
 };
 
 // Per-stat visual config — icon, accent bar, icon chip colors
@@ -149,6 +152,8 @@ export function DashboardClient({
 	user,
 	plan,
 	invited,
+	members,
+	currentUserId,
 }: Props) {
 	const [filters, setFilters] = useState<FilterState>({
 		priority: [],
@@ -217,7 +222,8 @@ export function DashboardClient({
 						</>
 					)}
 
-					<ProfileDropdown user={user} />
+					<NotificationBell />
+				<ProfileDropdown user={user} />
 				</div>
 			</div>
 
@@ -325,6 +331,8 @@ export function DashboardClient({
 							filters={filters}
 							projects={projects}
 							workspaceId={workspaceId}
+						members={members}
+						currentUserId={currentUserId}
 						/>
 					</div>
 

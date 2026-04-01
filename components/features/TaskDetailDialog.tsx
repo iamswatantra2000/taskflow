@@ -10,6 +10,9 @@ import {
   DialogHeader, DialogTitle
 } from "@/components/ui/dialog"
 import { toast } from "sonner"
+import { CommentSection } from "./CommentSection"
+
+type Member = { id: string; name: string }
 
 type Task = {
   id:          string
@@ -17,16 +20,18 @@ type Task = {
   description: string | null
   status:      string
   priority:    string
-  dueDate:     Date | null  // ← add
+  dueDate:     Date | null
 }
 
 type Props = {
-  task:    Task
-  open:    boolean
-  onClose: () => void
+  task:          Task
+  open:          boolean
+  onClose:       () => void
+  members:       Member[]
+  currentUserId: string
 }
 
-export function TaskDetailDialog({ task, open, onClose }: Props) {
+export function TaskDetailDialog({ task, open, onClose, members, currentUserId }: Props) {
   const [title, setTitle]             = useState(task.title)
   const [description, setDescription] = useState(task.description ?? "")
   const [status, setStatus]           = useState(task.status)
@@ -74,7 +79,7 @@ export function TaskDetailDialog({ task, open, onClose }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-[#111] border-[#1f1f1f] text-[#e0e0e0] max-w-lg">
+      <DialogContent className="bg-[#111] border-[#1f1f1f] text-[#e0e0e0] max-w-xl">
         <DialogHeader>
           <DialogTitle className="text-[15px] font-semibold text-[#f0f0f0]">
             Task detail
@@ -197,6 +202,14 @@ export function TaskDetailDialog({ task, open, onClose }: Props) {
           </div>
 
         </div>
+
+        <CommentSection
+          taskId={task.id}
+          taskTitle={task.title}
+          members={members}
+          currentUserId={currentUserId}
+        />
+
       </DialogContent>
     </Dialog>
   )

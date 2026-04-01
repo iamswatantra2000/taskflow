@@ -43,11 +43,13 @@ type Column = {
 }
 
 type Props = {
-  columns:     Column[]
-  userName:    string
-  filters:     FilterState
-  workspaceId: string
-  projects:    { id: string; name: string; color: string }[]
+  columns:       Column[]
+  userName:      string
+  filters:       FilterState
+  workspaceId:   string
+  projects:      { id: string; name: string; color: string }[]
+  members:       { id: string; name: string }[]
+  currentUserId: string
 }
 
 export function TaskBoardWrapper({
@@ -56,6 +58,8 @@ export function TaskBoardWrapper({
   filters,
   workspaceId,
   projects,
+  members,
+  currentUserId,
 }: Props) {
   const boardKey = columns.map((c) => `${c.id}:${c.tasks.length}`).join(",")
 
@@ -67,6 +71,8 @@ export function TaskBoardWrapper({
       filters={filters}
       workspaceId={workspaceId}
       projects={projects}
+      members={members}
+      currentUserId={currentUserId}
     />
   )
 }

@@ -49,11 +49,13 @@ type Column = {
 }
 
 type Props = {
-  columns:     Column[]
-  userName:    string
-  filters:     FilterState
-  workspaceId: string
-  projects:    { id: string; name: string; color: string }[]
+  columns:       Column[]
+  userName:      string
+  filters:       FilterState
+  workspaceId:   string
+  projects:      { id: string; name: string; color: string }[]
+  members:       { id: string; name: string }[]
+  currentUserId: string
 }
 
 const priorityConfig = {
@@ -250,7 +252,7 @@ function DroppableColumn({
 }
 
 // ——— Main board ———
-export function TaskBoard({ columns, userName, filters, workspaceId, projects }: Props) {
+export function TaskBoard({ columns, userName, filters, workspaceId, projects, members, currentUserId }: Props) {
   const [selectedTask, setSelectedTask]     = useState<Task | null>(null)
   const [activeTask, setActiveTask]         = useState<Task | null>(null)
   const [boardColumns, setBoardColumns]     = useState<Column[]>(columns)
@@ -466,6 +468,8 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects }:
           task={selectedTask}
           open={!!selectedTask}
           onClose={() => setSelectedTask(null)}
+          members={members}
+          currentUserId={currentUserId}
         />
       )}
     </>
