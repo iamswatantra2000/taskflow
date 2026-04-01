@@ -1,7 +1,7 @@
 // components/features/DashboardClient.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   Search, Sparkles, Lock,
   ListTodo, Zap, CheckCircle2, Circle,
@@ -78,17 +78,40 @@ function ProGate({
 	tooltipDir?: "top" | "bottom";
 }) {
 	const isPro = plan === "pro" || plan === "enterprise";
+	const [show, setShow] = useState(false);
+	const hideRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+
 	if (isPro) return <>{children}</>;
+
 	const isTop = tooltipDir === "top";
+
+	function clearHide() {
+		if (hideRef.current) clearTimeout(hideRef.current);
+	}
+	function scheduleHide() {
+		hideRef.current = setTimeout(() => setShow(false), 150);
+	}
+
 	return (
-		<div className="relative group/gate">
+		<div
+			className="relative"
+			onMouseEnter={() => { clearHide(); setShow(true); }}
+			onMouseLeave={scheduleHide}
+		>
 			<div className="pointer-events-none opacity-50 select-none">{children}</div>
 			<div className="absolute inset-0 cursor-not-allowed rounded-[inherit]" />
+
+			{/* Tooltip */}
 			<div
-				className={`absolute left-1/2 -translate-x-1/2 z-[200] pointer-events-none
-					opacity-0 group-hover/gate:opacity-100 transition-opacity duration-150
-					${isTop ? "-top-9" : "top-full mt-2"}`}
+				className={`absolute left-1/2 -translate-x-1/2 z-[200] transition-all duration-150
+					${show ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}
+					${isTop ? "-top-11" : "top-full mt-2"}`}
+				onMouseEnter={clearHide}
+				onMouseLeave={scheduleHide}
 			>
+				{isTop && (
+					<div className="w-2 h-2 bg-[#1c1c1c] border-white/10 border-r border-b rotate-45 mx-auto mb-[-4px] relative z-[-1]" />
+				)}
 				<div className="bg-[#1c1c1c] border border-white/10 rounded-[8px] px-3 py-1.5 flex items-center gap-2 whitespace-nowrap shadow-xl">
 					<Lock size={9} className="text-amber-400 flex-shrink-0" />
 					<span className="text-[11px] text-[#ccc]">{label}</span>
@@ -96,10 +119,9 @@ function ProGate({
 						Upgrade →
 					</a>
 				</div>
-				<div
-					className={`w-2 h-2 bg-[#1c1c1c] border-white/10 rotate-45 mx-auto
-						${isTop ? "border-r border-b -mt-1" : "border-l border-t -mb-1 order-first"}`}
-				/>
+				{!isTop && (
+					<div className="w-2 h-2 bg-[#1c1c1c] border-white/10 border-l border-t rotate-45 mx-auto mt-[-4px] relative z-[-1]" />
+				)}
 			</div>
 		</div>
 	);
