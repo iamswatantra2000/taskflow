@@ -79,14 +79,15 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId }
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-[#111] border-[#1f1f1f] text-[#e0e0e0] max-w-xl">
-        <DialogHeader>
+      <DialogContent className="bg-[#111] border-[#1f1f1f] text-[#e0e0e0] max-w-xl max-h-[90vh] flex flex-col p-0 gap-0">
+        <DialogHeader className="px-6 pt-5 pb-0 flex-shrink-0">
           <DialogTitle className="text-[15px] font-semibold text-[#f0f0f0]">
             Task detail
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4 mt-2">
+        <div className="flex-1 overflow-y-auto px-6 pb-6">
+        <div className="space-y-4 mt-4">
 
           {/* Title */}
           <div className="space-y-1.5">
@@ -171,7 +172,7 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId }
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              rows={4}
+              rows={3}
               placeholder="Add a description..."
               className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-[#e0e0e0] placeholder-[#444] outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors resize-none"
             />
@@ -209,6 +210,7 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId }
           members={members}
           currentUserId={currentUserId}
         />
+        </div>
 
       </DialogContent>
     </Dialog>
