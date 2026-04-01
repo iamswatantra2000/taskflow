@@ -2,7 +2,12 @@
 import { SignUp } from "@clerk/nextjs"
 import { LogoMark } from "@/components/ui/LogoMark"
 
-export default function RegisterPage() {
+type Props = { searchParams: Promise<Record<string, string>> }
+
+export default async function RegisterPage({ searchParams }: Props) {
+  const params = await searchParams
+  const redirectUrl = params.redirect_url ?? "/dashboard"
+
   return (
     <main className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center p-4 gap-6">
 
@@ -16,6 +21,7 @@ export default function RegisterPage() {
       </div>
 
       <SignUp
+        forceRedirectUrl={redirectUrl}
         appearance={{
           variables: {
             colorPrimary:        "#4f46e5",
