@@ -1,9 +1,9 @@
 // lib/invite-actions.ts
 "use server"
 
-import { db, invitations, workspaceMembers, workspaces, users } from "@/lib/db"
+import { db, invitations, workspaceMembers, workspaces, users, projects, tasks } from "@/lib/db"
 import { requireAuth } from "@/lib/session"
-import { eq, and } from "drizzle-orm"
+import { eq, and, count } from "drizzle-orm"
 import { revalidatePath } from "next/cache"
 import { sendInviteEmail } from "@/lib/email"
 
@@ -159,6 +159,39 @@ export async function acceptInvitation(token: string, userId: string) {
     .limit(1)
 
   if (!alreadyMember) {
+    // Before joining, find and clean up the user's auto-created empty workspace
+    const [ownedMembership] = await db
+      .select({ workspaceId: workspaceMembers.workspaceId })
+      .from(workspaceMembers)
+      .where(
+        and(
+          eq(workspaceMembers.userId, userId),
+          eq(workspaceMembers.role, "OWNER"),
+        )
+      )
+      .limit(1)
+
+    if (ownedMembership && ownedMembership.workspaceId !== invite.workspaceId) {
+      // Count tasks in their owned workspace — delete it only if empty
+      const [projectRows] = await db
+        .select({ id: projects.id })
+        .from(projects)
+        .where(eq(projects.workspaceId, ownedMembership.workspaceId))
+        .limit(1)
+
+      const taskCount = projectRows
+        ? await db
+            .select({ count: count() })
+            .from(tasks)
+            .where(eq(tasks.projectId, projectRows.id))
+            .then((r) => r[0]?.count ?? 0)
+        : 0
+
+      if (taskCount === 0) {
+        await db.delete(workspaces).where(eq(workspaces.id, ownedMembership.workspaceId))
+      }
+    }
+
     await db.insert(workspaceMembers).values({
       userId,
       workspaceId: invite.workspaceId,
