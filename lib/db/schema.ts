@@ -12,13 +12,14 @@ export const priorityEnum = pgEnum("priority", ["LOW", "MEDIUM", "HIGH", "URGENT
 
 // ——— Users (identity managed by Clerk; id = Clerk userId) ———
 export const users = pgTable("users", {
-  id:        text("id").primaryKey(),               // Clerk userId (user_xxx)
-  name:      text("name"),
-  email:     text("email").notNull().unique(),
-  image:     text("image"),
-  plan:      text("plan").default("free").notNull(), // "free" | "pro" | "enterprise"
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  id:                   text("id").primaryKey(),               // Clerk userId (user_xxx)
+  name:                 text("name"),
+  email:                text("email").notNull().unique(),
+  image:                text("image"),
+  plan:                 text("plan").default("free").notNull(), // "free" | "pro" | "enterprise"
+  onboardingCompleted:  boolean("onboarding_completed").default(false).notNull(),
+  createdAt:            timestamp("created_at").defaultNow().notNull(),
+  updatedAt:            timestamp("updated_at").defaultNow().notNull(),
 })
 
 // ——— Workspaces ———

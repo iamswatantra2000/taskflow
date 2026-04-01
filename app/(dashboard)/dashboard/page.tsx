@@ -2,6 +2,7 @@
 import { requireAuth } from "@/lib/session"
 import { db, tasks, projects, workspaceMembers, users } from "@/lib/db"
 import { eq, inArray } from "drizzle-orm"
+import { redirect } from "next/navigation"
 import { DashboardClient } from "@/components/features/DashboardClient"
 
 function getInitials(name: string) {
@@ -14,6 +15,10 @@ export default async function DashboardPage({ searchParams }: PageProps) {
   const params = await searchParams
   const invited = params.invited === "1"
   const session   = await requireAuth()
+
+  // Redirect new users to onboarding wizard
+  if (!session.user.onboardingCompleted) redirect("/onboarding")
+
   const firstName = session.user.name?.split(" ")[0] ?? "there"
 
   const [membership] = await db

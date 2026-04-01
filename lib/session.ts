@@ -12,7 +12,7 @@ type ClerkUser = {
 
 /**
  * On first Clerk login, create the user row + workspace + default project.
- * On subsequent logins, just return the stored name/email.
+ * On subsequent logins, just return the stored name/email/plan/onboardingCompleted.
  */
 async function ensureUserInDb(clerkUser: ClerkUser) {
   const { id: clerkId, fullName, username, emailAddresses } = clerkUser
@@ -20,15 +20,18 @@ async function ensureUserInDb(clerkUser: ClerkUser) {
   const name  = fullName ?? username ?? email.split("@")[0] ?? "User"
 
   const [existing] = await db
-    .select({ name: users.name, email: users.email, plan: users.plan })
+    .select({ name: users.name, email: users.email, plan: users.plan, onboardingCompleted: users.onboardingCompleted })
     .from(users)
     .where(eq(users.id, clerkId))
     .limit(1)
 
+  // Existing user — mark onboarding complete if they registered before the wizard was added
+  // (i.e. they already have workspace data — treat them as onboarded)
   if (existing) return existing
 
   // First login — create user + workspace + default project
-  await db.insert(users).values({ id: clerkId, name, email, plan: "free" })
+  // onboardingCompleted defaults to false → triggers wizard on next dashboard visit
+  await db.insert(users).values({ id: clerkId, name, email, plan: "free", onboardingCompleted: false })
 
   const slug = `${name.toLowerCase().replace(/\s+/g, "-")}-${clerkId.slice(-6)}`
 
@@ -50,11 +53,11 @@ async function ensureUserInDb(clerkUser: ClerkUser) {
     workspaceId: workspace.id,
   })
 
-  return { name, email, plan: "free" as const }
+  return { name, email, plan: "free" as const, onboardingCompleted: false }
 }
 
 /**
- * Require authentication. Returns { user: { id, name, email, plan } }.
+ * Require authentication. Returns { user: { id, name, email, plan, onboardingCompleted } }.
  * Redirects to /login if unauthenticated.
  */
 export async function requireAuth() {
@@ -64,14 +67,15 @@ export async function requireAuth() {
   const clerkUser = await currentUser()
   if (!clerkUser) redirect("/login")
 
-  const { name, email, plan } = await ensureUserInDb(clerkUser as ClerkUser)
+  const { name, email, plan, onboardingCompleted } = await ensureUserInDb(clerkUser as ClerkUser)
 
   return {
     user: {
-      id:    userId,
-      name:  name  ?? "User",
-      email: email ?? "",
-      plan:  plan  ?? "free",
+      id:                  userId,
+      name:                name  ?? "User",
+      email:               email ?? "",
+      plan:                plan  ?? "free",
+      onboardingCompleted: onboardingCompleted ?? true,
     },
   }
 }

@@ -10,6 +10,7 @@ import {
 import { LogoMark } from "@/components/ui/LogoMark"
 import { updateWorkspaceName, createProject } from "@/lib/actions"
 import { sendInvitation } from "@/lib/invite-actions"
+import { completeOnboarding } from "@/lib/onboarding-actions"
 import { toast } from "sonner"
 
 type Props = {
@@ -50,16 +51,14 @@ export function OnboardingWizard({ userId, firstName, workspaceId, workspaceName
   const [inviteEmail, setInviteEmail] = useState("")
   const [inviteRole,  setInviteRole]  = useState<"MEMBER" | "ADMIN">("MEMBER")
 
-  useEffect(() => {
-    setMounted(true)
-    if (typeof window !== "undefined") {
-      const flag = localStorage.getItem(STORAGE_KEY(userId))
-      if (flag) router.replace("/dashboard")
-    }
-  }, [userId, router])
+  useEffect(() => { setMounted(true) }, [])
 
-  function finish() {
-    localStorage.setItem(STORAGE_KEY(userId), "1")
+  async function finish() {
+    // Mark in DB (source of truth) + localStorage (UI cache)
+    try { await completeOnboarding() } catch {}
+    if (typeof window !== "undefined") {
+      localStorage.setItem(STORAGE_KEY(userId), "1")
+    }
     setDone(true)
     setTimeout(() => router.push("/dashboard"), 1200)
   }
