@@ -78,7 +78,7 @@ export function UpgradeClient({ userId, currentPlan }: Props) {
           <ArrowLeft size={13} />
           Back
         </button>
-        <span className="text-[#2a2a2a]">/</span>
+        <span className="text-slate-300 dark:text-[#2a2a2a]">/</span>
         <span className="text-[13px] font-semibold text-foreground">Upgrade plan</span>
       </div>
 
@@ -88,20 +88,20 @@ export function UpgradeClient({ userId, currentPlan }: Props) {
           {/* ── Hero ── */}
           <div className="text-center mb-12">
             {/* Current plan badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/[0.08] bg-white/[0.03] text-[11.5px] font-medium text-[#666] mb-5">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-slate-200 dark:border-white/[0.08] bg-slate-50 dark:bg-white/[0.03] text-[11.5px] font-medium text-slate-500 dark:text-[#666] mb-5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
               Currently on
-              <span className="text-[#aaa] capitalize font-semibold">{currentPlan} plan</span>
+              <span className="text-slate-700 dark:text-[#aaa] capitalize font-semibold">{currentPlan} plan</span>
             </div>
 
-            <h1 className="text-[32px] sm:text-[40px] font-bold tracking-tight text-white leading-tight mb-3">
+            <h1 className="text-[32px] sm:text-[40px] font-bold tracking-tight text-slate-900 dark:text-white leading-tight mb-3">
               Unlock the full{" "}
               <span className="bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
                 TaskFlow
               </span>{" "}
               experience
             </h1>
-            <p className="text-[14px] sm:text-[15px] text-[#555] max-w-[480px] mx-auto leading-relaxed">
+            <p className="text-[14px] sm:text-[15px] text-slate-500 dark:text-[#555] max-w-[480px] mx-auto leading-relaxed">
               Upgrade to Pro and get unlimited projects, AI-powered tasks, advanced analytics, and more — in one click.
             </p>
           </div>
@@ -110,14 +110,14 @@ export function UpgradeClient({ userId, currentPlan }: Props) {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
 
             {/* Free */}
-            <div className="relative rounded-[16px] border border-white/[0.07] bg-white/[0.02] p-6 flex flex-col">
+            <div className="relative rounded-[16px] border border-slate-100 dark:border-white/[0.07] bg-slate-50 dark:bg-white/[0.02] p-6 flex flex-col">
               <div className="mb-5">
-                <p className="text-[11px] font-semibold text-[#555] uppercase tracking-[0.1em] mb-2">Free</p>
+                <p className="text-[11px] font-semibold text-slate-500 dark:text-[#555] uppercase tracking-[0.1em] mb-2">Free</p>
                 <div className="flex items-end gap-1 mb-1">
-                  <span className="text-[36px] font-bold text-white leading-none">$0</span>
-                  <span className="text-[13px] text-[#555] mb-1.5">/ month</span>
+                  <span className="text-[36px] font-bold text-slate-900 dark:text-white leading-none">$0</span>
+                  <span className="text-[13px] text-slate-500 dark:text-[#555] mb-1.5">/ month</span>
                 </div>
-                <p className="text-[12px] text-[#444]">Perfect to get started</p>
+                <p className="text-[12px] text-slate-400 dark:text-[#444]">Perfect to get started</p>
               </div>
 
               <ul className="space-y-2.5 flex-1 mb-6">
@@ -126,9 +126,9 @@ export function UpgradeClient({ userId, currentPlan }: Props) {
                     {f.included ? (
                       <Check size={13} className="text-emerald-500 flex-shrink-0" />
                     ) : (
-                      <Lock size={11} className="text-[#333] flex-shrink-0 ml-[1px]" />
+                      <Lock size={11} className="text-slate-300 dark:text-[#333] flex-shrink-0 ml-[1px]" />
                     )}
-                    <span className={`text-[12.5px] ${f.included ? "text-[#888]" : "text-[#383838]"}`}>
+                    <span className={`text-[12.5px] ${f.included ? "text-slate-500 dark:text-[#888]" : "text-slate-300 dark:text-[#383838]"}`}>
                       {f.text}
                     </span>
                   </li>
@@ -136,11 +136,11 @@ export function UpgradeClient({ userId, currentPlan }: Props) {
               </ul>
 
               {isPro ? (
-                <div className="h-10 flex items-center justify-center rounded-[9px] border border-white/[0.06] text-[12.5px] font-medium text-[#333]">
+                <div className="h-10 flex items-center justify-center rounded-[9px] border border-slate-100 dark:border-white/[0.06] text-[12.5px] font-medium text-slate-300 dark:text-[#333]">
                   Previous plan
                 </div>
               ) : (
-                <div className="h-10 flex items-center justify-center rounded-[9px] border border-white/[0.08] text-[12.5px] font-semibold text-[#555] bg-white/[0.02]">
+                <div className="h-10 flex items-center justify-center rounded-[9px] border border-slate-200 dark:border-white/[0.08] text-[12.5px] font-semibold text-slate-500 dark:text-[#555] bg-slate-50 dark:bg-white/[0.02]">
                   Current plan
                 </div>
               )}
@@ -159,17 +159,17 @@ export function UpgradeClient({ userId, currentPlan }: Props) {
               <div className="mb-5">
                 <p className="text-[11px] font-semibold text-indigo-400 uppercase tracking-[0.1em] mb-2">Pro</p>
                 <div className="flex items-end gap-1 mb-1">
-                  <span className="text-[36px] font-bold text-white leading-none">$12</span>
-                  <span className="text-[13px] text-[#555] mb-1.5">/ month</span>
+                  <span className="text-[36px] font-bold text-slate-900 dark:text-white leading-none">$12</span>
+                  <span className="text-[13px] text-slate-500 dark:text-[#555] mb-1.5">/ month</span>
                 </div>
-                <p className="text-[12px] text-[#555]">Billed monthly · cancel anytime</p>
+                <p className="text-[12px] text-slate-500 dark:text-[#555]">Billed monthly · cancel anytime</p>
               </div>
 
               <ul className="space-y-2.5 flex-1 mb-6">
                 {PRO_FEATURES.map((f) => (
                   <li key={f.text} className="flex items-center gap-2.5">
                     <Check size={13} className={f.highlight ? "text-indigo-400 flex-shrink-0" : "text-emerald-500/60 flex-shrink-0"} />
-                    <span className={`text-[12.5px] ${f.highlight ? "text-[#ccc] font-medium" : "text-[#777]"}`}>
+                    <span className={`text-[12.5px] ${f.highlight ? "text-slate-700 dark:text-[#ccc] font-medium" : "text-slate-500 dark:text-[#777]"}`}>
                       {f.text}
                     </span>
                   </li>
@@ -194,20 +194,20 @@ export function UpgradeClient({ userId, currentPlan }: Props) {
             </div>
 
             {/* Enterprise */}
-            <div className="relative rounded-[16px] border border-white/[0.07] bg-white/[0.02] p-6 flex flex-col">
+            <div className="relative rounded-[16px] border border-slate-100 dark:border-white/[0.07] bg-slate-50 dark:bg-white/[0.02] p-6 flex flex-col">
               <div className="mb-5">
                 <p className="text-[11px] font-semibold text-violet-400 uppercase tracking-[0.1em] mb-2">Enterprise</p>
                 <div className="flex items-end gap-1 mb-1">
-                  <span className="text-[36px] font-bold text-white leading-none">Custom</span>
+                  <span className="text-[36px] font-bold text-slate-900 dark:text-white leading-none">Custom</span>
                 </div>
-                <p className="text-[12px] text-[#444]">For teams of all sizes</p>
+                <p className="text-[12px] text-slate-400 dark:text-[#444]">For teams of all sizes</p>
               </div>
 
               <ul className="space-y-2.5 flex-1 mb-6">
                 {ENTERPRISE_FEATURES.map((f) => (
                   <li key={f.text} className="flex items-center gap-2.5">
                     <Check size={13} className="text-violet-400/70 flex-shrink-0" />
-                    <span className="text-[12.5px] text-[#888]">{f.text}</span>
+                    <span className="text-[12.5px] text-slate-500 dark:text-[#888]">{f.text}</span>
                   </li>
                 ))}
               </ul>
@@ -220,7 +220,7 @@ export function UpgradeClient({ userId, currentPlan }: Props) {
                 <button
                   type="button"
                   onClick={() => setConOpen(true)}
-                  className="h-10 w-full flex items-center justify-center gap-2 rounded-[9px] border border-white/[0.1] bg-white/[0.03] hover:bg-white/[0.06] text-white text-[13px] font-semibold transition-all"
+                  className="h-10 w-full flex items-center justify-center gap-2 rounded-[9px] border border-slate-200 dark:border-white/[0.1] bg-slate-50 dark:bg-white/[0.03] hover:bg-slate-100 dark:hover:bg-white/[0.06] text-slate-900 dark:text-white text-[13px] font-semibold transition-all"
                 >
                   <Building2 size={13} />
                   Contact sales
@@ -239,26 +239,26 @@ export function UpgradeClient({ userId, currentPlan }: Props) {
             ].map((item) => (
               <div
                 key={item.title}
-                className="rounded-[12px] border border-white/[0.06] bg-white/[0.02] p-4 hover:border-indigo-500/20 hover:bg-indigo-500/[0.03] transition-all group"
+                className="rounded-[12px] border border-slate-100 dark:border-white/[0.06] bg-slate-50 dark:bg-white/[0.02] p-4 hover:border-indigo-500/20 hover:bg-indigo-500/[0.03] transition-all group"
               >
                 <div className="w-8 h-8 rounded-[8px] bg-indigo-500/[0.08] border border-indigo-500/15 flex items-center justify-center mb-3 group-hover:bg-indigo-500/[0.12] transition-colors">
                   <item.icon size={15} className="text-indigo-400" />
                 </div>
-                <p className="text-[12.5px] font-semibold text-[#ddd] mb-1">{item.title}</p>
-                <p className="text-[11px] text-[#444] leading-relaxed">{item.sub}</p>
+                <p className="text-[12.5px] font-semibold text-slate-800 dark:text-[#ddd] mb-1">{item.title}</p>
+                <p className="text-[11px] text-slate-400 dark:text-[#444] leading-relaxed">{item.sub}</p>
               </div>
             ))}
           </div>
 
           {/* ── Trust bar ── */}
-          <div className="rounded-[14px] border border-white/[0.06] bg-white/[0.02] px-6 py-5">
+          <div className="rounded-[14px] border border-slate-100 dark:border-white/[0.06] bg-slate-50 dark:bg-white/[0.02] px-6 py-5">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {TRUST_ITEMS.map(({ icon: Icon, text }) => (
                 <div key={text} className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded-[7px] bg-white/[0.04] border border-white/[0.06] flex items-center justify-center flex-shrink-0">
-                    <Icon size={13} className="text-[#666]" />
+                  <div className="w-7 h-7 rounded-[7px] bg-slate-100 dark:bg-white/[0.04] border border-slate-200 dark:border-white/[0.06] flex items-center justify-center flex-shrink-0">
+                    <Icon size={13} className="text-slate-500 dark:text-[#666]" />
                   </div>
-                  <span className="text-[11.5px] text-[#555] leading-snug">{text}</span>
+                  <span className="text-[11.5px] text-slate-500 dark:text-[#555] leading-snug">{text}</span>
                 </div>
               ))}
             </div>
@@ -266,7 +266,7 @@ export function UpgradeClient({ userId, currentPlan }: Props) {
 
           {/* ── FAQ ── */}
           <div className="mt-10 text-center">
-            <p className="text-[12.5px] text-[#444]">
+            <p className="text-[12.5px] text-slate-400 dark:text-[#444]">
               Questions? Email us at{" "}
               <a href="mailto:hello@taskflow.app" className="text-indigo-400 hover:text-indigo-300 transition-colors font-medium">
                 hello@taskflow.app

@@ -17,12 +17,12 @@ async function Navbar() {
   const isLoggedIn = !!session?.user
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 h-14 border-b border-white/[0.06] bg-[#080808]/85 backdrop-blur-xl">
+    <nav className="fixed top-0 left-0 right-0 z-50 h-14 border-b border-slate-200/80 dark:border-white/[0.06] bg-white/90 dark:bg-[#080808]/85 backdrop-blur-xl">
       <div className="max-w-6xl mx-auto px-5 sm:px-6 h-full flex items-center justify-between">
 
         <div className="flex items-center gap-2">
           <LogoMark height={22} />
-          <span className="text-white font-bricolage" style={{ fontWeight: 900, fontSize: 14 }}>TaskFlow</span>
+          <span className="text-slate-900 dark:text-white font-bricolage" style={{ fontWeight: 900, fontSize: 14 }}>TaskFlow</span>
         </div>
 
         <NavLinks />
@@ -31,7 +31,7 @@ async function Navbar() {
           {isLoggedIn ? (
             <>
               {/* Greeting chip — desktop only */}
-              <span className="hidden sm:block text-[12.5px] text-[#444]">
+              <span className="hidden sm:block text-[12.5px] text-slate-500 dark:text-[#444]">
                 Hey, {session.user.name?.split(" ")[0] ?? "there"} 👋
               </span>
               <Link
@@ -46,7 +46,7 @@ async function Navbar() {
             <>
               <Link
                 href="/login"
-                className="hidden sm:block text-[12.5px] text-[#555] hover:text-white transition-colors"
+                className="hidden sm:block text-[12.5px] text-slate-500 hover:text-slate-900 dark:text-[#555] dark:hover:text-white transition-colors"
               >
                 Sign in
               </Link>
@@ -70,9 +70,18 @@ function Hero() {
     <section className="relative min-h-screen flex items-center justify-center px-5 sm:px-6 overflow-hidden pt-14">
 
       {/* Background */}
-      <div className="absolute inset-0 bg-[#080808]">
+      <div className="absolute inset-0 bg-slate-50 dark:bg-[#080808]">
+        {/* Light mode grid */}
         <div
-          className="absolute inset-0 opacity-[0.025]"
+          className="block dark:hidden absolute inset-0 opacity-[0.06]"
+          style={{
+            backgroundImage: "linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)",
+            backgroundSize: "64px 64px",
+          }}
+        />
+        {/* Dark mode grid */}
+        <div
+          className="hidden dark:block absolute inset-0 opacity-[0.025]"
           style={{
             backgroundImage: "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
             backgroundSize: "64px 64px",
@@ -90,7 +99,7 @@ function Hero() {
           className="inline-flex items-center gap-2 border border-indigo-500/25 bg-indigo-500/[0.07] rounded-full px-3.5 py-1.5 mb-7"
         >
           <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse flex-shrink-0" />
-          <span className="text-[11.5px] font-medium text-indigo-300">
+          <span className="text-[11.5px] font-medium text-indigo-600 dark:text-indigo-300">
             Now in beta — free for everyone
           </span>
         </div>
@@ -98,17 +107,17 @@ function Hero() {
         {/* Headline */}
         <h1
           style={{ animation: "fade-in-up 0.65s ease 0.15s both" }}
-          className="text-[40px] sm:text-[62px] md:text-[78px] font-bold text-white leading-[1.04] mb-5 sm:mb-6"
+          className="text-[40px] sm:text-[62px] md:text-[78px] font-bold text-slate-900 dark:text-white leading-[1.04] mb-5 sm:mb-6"
         >
           The workspace where<br className="hidden sm:block" />{" "}
-          <span className="bg-gradient-to-r from-indigo-400 via-violet-300 to-indigo-400 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-indigo-500 via-violet-500 to-indigo-500 dark:from-indigo-400 dark:via-violet-300 dark:to-indigo-400 bg-clip-text text-transparent">
             great teams ship
           </span>
         </h1>
 
         <p
           style={{ animation: "fade-in-up 0.65s ease 0.3s both" }}
-          className="text-[15px] sm:text-[17px] text-[#666] max-w-[520px] mx-auto leading-relaxed mb-9 sm:mb-10"
+          className="text-[15px] sm:text-[17px] text-slate-500 dark:text-[#666] max-w-[520px] mx-auto leading-relaxed mb-9 sm:mb-10"
         >
           Organize projects, track tasks, and collaborate seamlessly — all in one beautiful workspace built for speed.
         </p>
@@ -127,7 +136,7 @@ function Hero() {
           </Link>
           <Link
             href="/login"
-            className="w-full sm:w-auto inline-flex items-center justify-center h-10 px-6 text-[13.5px] font-medium border border-white/10 hover:border-white/18 text-[#888] hover:text-white rounded-[9px] bg-white/[0.03] hover:bg-white/[0.05] shadow-[0_4px_0_0_rgba(0,0,0,0.4)] active:translate-y-[4px] active:shadow-none transition-all duration-150 whitespace-nowrap"
+            className="w-full sm:w-auto inline-flex items-center justify-center h-10 px-6 text-[13.5px] font-medium border border-slate-200 hover:border-slate-300 dark:border-white/10 dark:hover:border-white/18 text-slate-600 hover:text-slate-900 dark:text-[#888] dark:hover:text-white rounded-[9px] bg-white/70 hover:bg-white dark:bg-white/[0.03] dark:hover:bg-white/[0.05] shadow-[0_4px_0_0_rgba(0,0,0,0.06)] dark:shadow-[0_4px_0_0_rgba(0,0,0,0.4)] active:translate-y-[4px] active:shadow-none transition-all duration-150 whitespace-nowrap"
           >
             Sign in
           </Link>
@@ -135,7 +144,7 @@ function Hero() {
 
         <p
           style={{ animation: "fade-in-up 0.5s ease 0.55s both" }}
-          className="mt-5 text-[12px] text-[#3a3a3a]"
+          className="mt-5 text-[12px] text-slate-400 dark:text-[#3a3a3a]"
         >
           No credit card · Free forever plan · 2-minute setup
         </p>
@@ -151,17 +160,17 @@ function Hero() {
             { value: "99.9%", label: "Uptime" },
           ].map((m) => (
             <div key={m.label} className="text-center">
-              <p className="text-[24px] sm:text-[30px] font-bold text-white">{m.value}</p>
-              <p className="text-[11px] text-[#444] mt-0.5">{m.label}</p>
+              <p className="text-[24px] sm:text-[30px] font-bold text-slate-900 dark:text-white">{m.value}</p>
+              <p className="text-[11px] text-slate-500 dark:text-[#444] mt-0.5">{m.label}</p>
             </div>
           ))}
         </div>
 
-        {/* App preview */}
+        {/* App preview — always rendered in dark style (product screenshot aesthetic) */}
         <div style={{ animation: "fade-in-up 0.8s ease 0.75s both" }} className="relative">
-          <div className="absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-b from-transparent to-[#080808] z-10 pointer-events-none" />
+          <div className="absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-b from-transparent to-slate-50 dark:to-[#080808] z-10 pointer-events-none" />
           <div className="absolute -inset-px bg-gradient-to-r from-indigo-500/15 via-violet-500/10 to-indigo-500/15 rounded-[20px] blur-sm" />
-          <div className="relative border border-white/[0.07] rounded-[16px] sm:rounded-[20px] overflow-hidden bg-[#0c0c0c] shadow-2xl shadow-black/60">
+          <div className="relative border border-slate-900/10 dark:border-white/[0.07] rounded-[16px] sm:rounded-[20px] overflow-hidden bg-[#0c0c0c] shadow-2xl shadow-black/20 dark:shadow-black/60">
 
             {/* Browser bar */}
             <div className="bg-[#111] border-b border-white/[0.05] px-4 py-3 flex items-center gap-2">
@@ -254,60 +263,60 @@ function Features() {
   const features = [
     {
       icon: CheckSquare,
-      color: "text-indigo-400",
-      bg: "bg-indigo-500/10 border-indigo-500/20",
+      color: "text-indigo-500 dark:text-indigo-400",
+      bg: "bg-indigo-50 border-indigo-200 dark:bg-indigo-500/10 dark:border-indigo-500/20",
       title: "Task management",
       description: "Create tasks with priorities, due dates, and statuses. Everything your team needs to stay on track.",
     },
     {
       icon: Zap,
-      color: "text-violet-400",
-      bg: "bg-violet-500/10 border-violet-500/20",
+      color: "text-violet-500 dark:text-violet-400",
+      bg: "bg-violet-50 border-violet-200 dark:bg-violet-500/10 dark:border-violet-500/20",
       title: "Drag & drop board",
       description: "Move tasks between columns with a smooth Kanban board. Status syncs instantly for your whole team.",
     },
     {
       icon: Users,
-      color: "text-blue-400",
-      bg: "bg-blue-500/10 border-blue-500/20",
+      color: "text-blue-500 dark:text-blue-400",
+      bg: "bg-blue-50 border-blue-200 dark:bg-blue-500/10 dark:border-blue-500/20",
       title: "Team workspaces",
       description: "Invite teammates, assign tasks, and collaborate in shared workspaces. Everyone stays aligned.",
     },
     {
       icon: BarChart2,
-      color: "text-emerald-400",
-      bg: "bg-emerald-500/10 border-emerald-500/20",
+      color: "text-emerald-500 dark:text-emerald-400",
+      bg: "bg-emerald-50 border-emerald-200 dark:bg-emerald-500/10 dark:border-emerald-500/20",
       title: "Analytics & insights",
       description: "Track completion rates, team velocity, and project health. Make decisions backed by real data.",
     },
     {
       icon: Clock,
-      color: "text-amber-400",
-      bg: "bg-amber-500/10 border-amber-500/20",
+      color: "text-amber-500 dark:text-amber-400",
+      bg: "bg-amber-50 border-amber-200 dark:bg-amber-500/10 dark:border-amber-500/20",
       title: "Activity feed",
       description: "See everything happening across your workspace in real time. Never miss a task update again.",
     },
     {
       icon: Shield,
-      color: "text-rose-400",
-      bg: "bg-rose-500/10 border-rose-500/20",
+      color: "text-rose-500 dark:text-rose-400",
+      bg: "bg-rose-50 border-rose-200 dark:bg-rose-500/10 dark:border-rose-500/20",
       title: "Secure by default",
       description: "bcrypt auth, JWT sessions, and route-level protection. Your data is private, encrypted, and yours.",
     },
   ]
 
   return (
-    <section id="features" className="py-20 sm:py-28 px-5 sm:px-6 border-t border-white/[0.06]">
+    <section id="features" className="py-20 sm:py-28 px-5 sm:px-6 border-t border-slate-200 dark:border-white/[0.06]">
       <div className="max-w-6xl mx-auto">
 
         <AnimateOnView className="text-center mb-12 sm:mb-16">
-          <div className="inline-flex items-center gap-2 border border-white/8 bg-white/[0.02] rounded-full px-4 py-1.5 mb-5">
-            <span className="text-[11.5px] font-medium text-[#555]">Features</span>
+          <div className="inline-flex items-center gap-2 border border-slate-200 dark:border-white/8 bg-slate-100/50 dark:bg-white/[0.02] rounded-full px-4 py-1.5 mb-5">
+            <span className="text-[11.5px] font-medium text-slate-500 dark:text-[#555]">Features</span>
           </div>
-          <h2 className="text-[28px] sm:text-[44px] font-bold text-white mb-3 sm:mb-4">
+          <h2 className="text-[28px] sm:text-[44px] font-bold text-slate-900 dark:text-white mb-3 sm:mb-4">
             Everything your team needs
           </h2>
-          <p className="text-[14px] sm:text-[16px] text-[#555] max-w-[420px] mx-auto leading-relaxed">
+          <p className="text-[14px] sm:text-[16px] text-slate-500 dark:text-[#555] max-w-[420px] mx-auto leading-relaxed">
             Built for modern teams who want to move fast without the complexity.
           </p>
         </AnimateOnView>
@@ -316,13 +325,13 @@ function Features() {
           {features.map((f, index) => (
             <AnimateOnView key={f.title} delay={index * 70}>
             <div
-              className="group p-5 sm:p-6 border border-white/[0.06] bg-[#0c0c0c] hover:border-white/10 hover:bg-[#0e0e0e] rounded-[14px] sm:rounded-[16px] transition-all duration-200 h-full"
+              className="group p-5 sm:p-6 border border-slate-200 dark:border-white/[0.06] bg-white dark:bg-[#0c0c0c] hover:border-slate-300 dark:hover:border-white/10 hover:bg-slate-50 dark:hover:bg-[#0e0e0e] shadow-sm dark:shadow-none rounded-[14px] sm:rounded-[16px] transition-all duration-200 h-full"
             >
               <div className={`w-9 h-9 rounded-[10px] border flex items-center justify-center mb-4 ${f.bg}`}>
                 <f.icon size={15} className={f.color} />
               </div>
-              <h3 className="text-[14px] font-semibold text-white mb-1.5">{f.title}</h3>
-              <p className="text-[13px] text-[#555] leading-relaxed">{f.description}</p>
+              <h3 className="text-[14px] font-semibold text-slate-900 dark:text-white mb-1.5">{f.title}</h3>
+              <p className="text-[13px] text-slate-500 dark:text-[#555] leading-relaxed">{f.description}</p>
             </div>
             </AnimateOnView>
           ))}
@@ -359,17 +368,17 @@ function HowItWorks() {
   ]
 
   return (
-    <section id="how-it-works" className="py-20 sm:py-28 px-5 sm:px-6 border-t border-white/[0.06]">
+    <section id="how-it-works" className="py-20 sm:py-28 px-5 sm:px-6 border-t border-slate-200 dark:border-white/[0.06]">
       <div className="max-w-6xl mx-auto">
 
         <AnimateOnView className="text-center mb-12 sm:mb-16">
-          <div className="inline-flex items-center gap-2 border border-white/8 bg-white/[0.02] rounded-full px-4 py-1.5 mb-5">
-            <span className="text-[11.5px] font-medium text-[#555]">How it works</span>
+          <div className="inline-flex items-center gap-2 border border-slate-200 dark:border-white/8 bg-slate-100/50 dark:bg-white/[0.02] rounded-full px-4 py-1.5 mb-5">
+            <span className="text-[11.5px] font-medium text-slate-500 dark:text-[#555]">How it works</span>
           </div>
-          <h2 className="text-[28px] sm:text-[44px] font-bold text-white mb-3 sm:mb-4">
+          <h2 className="text-[28px] sm:text-[44px] font-bold text-slate-900 dark:text-white mb-3 sm:mb-4">
             Up and running in minutes
           </h2>
-          <p className="text-[14px] sm:text-[16px] text-[#555] max-w-[420px] mx-auto leading-relaxed">
+          <p className="text-[14px] sm:text-[16px] text-slate-500 dark:text-[#555] max-w-[420px] mx-auto leading-relaxed">
             No lengthy onboarding. No overwhelming settings. Just a clean workspace ready to use.
           </p>
         </AnimateOnView>
@@ -378,14 +387,14 @@ function HowItWorks() {
           {steps.map((step, index) => (
             <AnimateOnView key={step.n} className="relative" delay={index * 80}>
               {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-[22px] left-[calc(50%+30px)] right-[-calc(50%-30px)] h-px bg-gradient-to-r from-white/8 to-transparent z-10" />
+                <div className="hidden md:block absolute top-[22px] left-[calc(50%+30px)] right-[-calc(50%-30px)] h-px bg-gradient-to-r from-slate-300 dark:from-white/8 to-transparent z-10" />
               )}
-              <div className="border border-white/[0.06] bg-[#0c0c0c] rounded-[14px] sm:rounded-[16px] p-5 h-full">
-                <div className="w-10 h-10 rounded-[11px] bg-indigo-600/12 border border-indigo-500/20 flex items-center justify-center mb-4">
-                  <span className="text-[13px] font-bold text-indigo-400">{step.n}</span>
+              <div className="border border-slate-200 dark:border-white/[0.06] bg-white dark:bg-[#0c0c0c] shadow-sm dark:shadow-none rounded-[14px] sm:rounded-[16px] p-5 h-full">
+                <div className="w-10 h-10 rounded-[11px] bg-indigo-50 dark:bg-indigo-600/12 border border-indigo-200 dark:border-indigo-500/20 flex items-center justify-center mb-4">
+                  <span className="text-[13px] font-bold text-indigo-600 dark:text-indigo-400">{step.n}</span>
                 </div>
-                <h3 className="text-[13.5px] font-semibold text-white mb-2">{step.title}</h3>
-                <p className="text-[12.5px] text-[#555] leading-relaxed">{step.desc}</p>
+                <h3 className="text-[13.5px] font-semibold text-slate-900 dark:text-white mb-2">{step.title}</h3>
+                <p className="text-[12.5px] text-slate-500 dark:text-[#555] leading-relaxed">{step.desc}</p>
               </div>
             </AnimateOnView>
           ))}
@@ -423,15 +432,15 @@ function Testimonials() {
   ]
 
   return (
-    <section className="py-20 sm:py-28 px-5 sm:px-6 border-t border-white/[0.06]">
+    <section className="py-20 sm:py-28 px-5 sm:px-6 border-t border-slate-200 dark:border-white/[0.06]">
       <div className="max-w-6xl mx-auto">
 
         <AnimateOnView className="text-center mb-12 sm:mb-16">
-          <div className="inline-flex items-center gap-2 border border-white/8 bg-white/[0.02] rounded-full px-4 py-1.5 mb-5">
+          <div className="inline-flex items-center gap-2 border border-slate-200 dark:border-white/8 bg-slate-100/50 dark:bg-white/[0.02] rounded-full px-4 py-1.5 mb-5">
             <Star size={10} className="text-amber-400 fill-amber-400" />
-            <span className="text-[11.5px] font-medium text-[#555]">Loved by teams</span>
+            <span className="text-[11.5px] font-medium text-slate-500 dark:text-[#555]">Loved by teams</span>
           </div>
-          <h2 className="text-[28px] sm:text-[44px] font-bold text-white">
+          <h2 className="text-[28px] sm:text-[44px] font-bold text-slate-900 dark:text-white">
             Teams that ship use TaskFlow
           </h2>
         </AnimateOnView>
@@ -440,7 +449,7 @@ function Testimonials() {
           {testimonials.map((t, index) => (
             <AnimateOnView key={t.name} delay={index * 80}>
             <div
-              className="border border-white/[0.06] bg-[#0c0c0c] rounded-[14px] sm:rounded-[16px] p-5 sm:p-6 flex flex-col gap-4 h-full"
+              className="border border-slate-200 dark:border-white/[0.06] bg-white dark:bg-[#0c0c0c] shadow-sm dark:shadow-none rounded-[14px] sm:rounded-[16px] p-5 sm:p-6 flex flex-col gap-4 h-full"
             >
               <div className="flex gap-0.5">
                 {[...Array(5)].map((_, i) => (
@@ -448,16 +457,16 @@ function Testimonials() {
                   <Star key={i} size={11} className="text-amber-400 fill-amber-400" />
                 ))}
               </div>
-              <p className="text-[13.5px] text-[#666] leading-[1.75] flex-1">
+              <p className="text-[13.5px] text-slate-500 dark:text-[#666] leading-[1.75] flex-1">
                 &ldquo;{t.quote}&rdquo;
               </p>
-              <div className="flex items-center gap-3 pt-3 border-t border-white/[0.06]">
+              <div className="flex items-center gap-3 pt-3 border-t border-slate-200 dark:border-white/[0.06]">
                 <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${t.color} flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0`}>
                   {t.avatar}
                 </div>
                 <div className="min-w-0">
-                  <p className="text-[13px] font-medium text-white">{t.name}</p>
-                  <p className="text-[11px] text-[#444]">{t.role}</p>
+                  <p className="text-[13px] font-medium text-slate-900 dark:text-white">{t.name}</p>
+                  <p className="text-[11px] text-slate-500 dark:text-[#444]">{t.role}</p>
                 </div>
               </div>
             </div>
@@ -474,16 +483,16 @@ function Testimonials() {
 // ——— CTA Banner ———
 function CTABanner() {
   return (
-    <section className="py-16 sm:py-24 px-5 sm:px-6 border-t border-white/[0.06]">
+    <section className="py-16 sm:py-24 px-5 sm:px-6 border-t border-slate-200 dark:border-white/[0.06]">
       <div className="max-w-3xl mx-auto">
         <AnimateOnView>
-        <div className="relative rounded-[20px] border border-indigo-500/20 bg-gradient-to-br from-indigo-950/30 via-[#0c0c0c] to-violet-950/20 p-8 sm:p-14 text-center overflow-hidden">
+        <div className="relative rounded-[20px] border border-indigo-200 dark:border-indigo-500/20 bg-gradient-to-br from-indigo-50 via-white to-violet-50 dark:from-indigo-950/30 dark:via-[#0c0c0c] dark:to-violet-950/20 p-8 sm:p-14 text-center overflow-hidden shadow-sm dark:shadow-none">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-80 h-40 bg-indigo-500/8 rounded-full blur-[80px] pointer-events-none" />
           <div className="relative">
-            <h2 className="text-[26px] sm:text-[40px] font-bold text-white mb-3 sm:mb-4">
+            <h2 className="text-[26px] sm:text-[40px] font-bold text-slate-900 dark:text-white mb-3 sm:mb-4">
               Ready to ship faster?
             </h2>
-            <p className="text-[14px] sm:text-[16px] text-[#555] mb-8 max-w-md mx-auto leading-relaxed">
+            <p className="text-[14px] sm:text-[16px] text-slate-500 dark:text-[#555] mb-8 max-w-md mx-auto leading-relaxed">
               Join thousands of teams already using TaskFlow to organize work and move with clarity.
             </p>
             <Link
@@ -493,7 +502,7 @@ function CTABanner() {
               Get started free
               <ArrowRight size={14} />
             </Link>
-            <p className="mt-4 text-[11.5px] text-[#333]">No credit card required · Cancel anytime</p>
+            <p className="mt-4 text-[11.5px] text-slate-500 dark:text-[#333]">No credit card required · Cancel anytime</p>
           </div>
         </div>
         </AnimateOnView>
@@ -511,7 +520,7 @@ function Footer() {
   ]
 
   return (
-    <footer className="border-t border-white/[0.06] py-10 sm:py-12 px-5 sm:px-6 bg-[#080808]">
+    <footer className="border-t border-slate-200 dark:border-white/[0.06] py-10 sm:py-12 px-5 sm:px-6 bg-slate-50 dark:bg-[#080808]">
       <div className="max-w-6xl mx-auto">
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10 sm:mb-12">
@@ -519,16 +528,16 @@ function Footer() {
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-3">
               <LogoMark height={20} />
-              <span className="text-white font-bricolage" style={{ fontWeight: 900, fontSize: 14 }}>TaskFlow</span>
+              <span className="text-slate-900 dark:text-white font-bricolage" style={{ fontWeight: 900, fontSize: 14 }}>TaskFlow</span>
             </div>
-            <p className="text-[12.5px] text-[#333] leading-relaxed max-w-[190px]">
+            <p className="text-[12.5px] text-slate-500 dark:text-[#333] leading-relaxed max-w-[190px]">
               The project management tool built for teams that care about speed.
             </p>
           </div>
 
           {cols.map((col) => (
             <div key={col.title}>
-              <p className="text-[10.5px] font-semibold text-[#333] uppercase tracking-[0.1em] mb-3">
+              <p className="text-[10.5px] font-semibold text-slate-500 dark:text-[#333] uppercase tracking-[0.1em] mb-3">
                 {col.title}
               </p>
               {col.links.map((link) => (
@@ -536,7 +545,7 @@ function Footer() {
                   key={link}
                   // biome-ignore lint/a11y/useValidAnchor: placeholder
                   href="#"
-                  className="block text-[12.5px] text-[#333] hover:text-[#777] transition-colors mb-2"
+                  className="block text-[12.5px] text-slate-500 dark:text-[#333] hover:text-slate-900 dark:hover:text-[#777] transition-colors mb-2"
                 >
                   {link}
                 </a>
@@ -545,9 +554,9 @@ function Footer() {
           ))}
         </div>
 
-        <div className="border-t border-white/[0.06] pt-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-[11.5px] text-[#2a2a2a]">© 2025 TaskFlow. All rights reserved.</p>
-          <p className="text-[11.5px] text-[#2a2a2a]">Built with Next.js · Drizzle · shadcn/ui</p>
+        <div className="border-t border-slate-200 dark:border-white/[0.06] pt-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-[11.5px] text-slate-400 dark:text-[#2a2a2a]">© 2025 TaskFlow. All rights reserved.</p>
+          <p className="text-[11.5px] text-slate-400 dark:text-[#2a2a2a]">Built with Next.js · Drizzle · shadcn/ui</p>
         </div>
 
       </div>
@@ -560,7 +569,7 @@ export default async function LandingPage() {
   const session = await getSession()
 
   return (
-    <div className="min-h-screen bg-[#080808] text-white">
+    <div className="min-h-screen bg-white dark:bg-[#080808] text-slate-900 dark:text-white">
       <OnboardingTour />
       <Navbar />
       <main className="pt-14">

@@ -30,10 +30,10 @@ export function BoardFilters({ onFilterChange, compact = false }: Props) {
 	};
 
 	const priorityColors: Record<string, string> = {
-		LOW: "bg-emerald-950 text-emerald-400 border-emerald-900",
-		MEDIUM: "bg-amber-950 text-amber-400 border-amber-900",
-		HIGH: "bg-red-950 text-red-400 border-red-900",
-		URGENT: "bg-red-950 text-red-400 border-red-900",
+		LOW: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-400 dark:border-emerald-900",
+		MEDIUM: "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-400 dark:border-amber-900",
+		HIGH: "bg-red-50 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-400 dark:border-red-900",
+		URGENT: "bg-red-50 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-400 dark:border-red-900",
 	};
 
 	function togglePriority(p: string) {
@@ -73,7 +73,7 @@ export function BoardFilters({ onFilterChange, compact = false }: Props) {
 					className={`w-8 h-8 flex items-center justify-center rounded-[7px] border transition-colors ${
 						search
 							? "bg-indigo-950 border-indigo-800 text-indigo-400"
-							: "border-[#2a2a2a] text-[#888] hover:border-[#3a3a3a] hover:text-[#ccc]"
+							: "border-slate-200 dark:border-[#2a2a2a] text-slate-500 dark:text-[#888] hover:border-slate-300 dark:hover:border-[#3a3a3a] hover:text-slate-900 dark:hover:text-[#ccc]"
 					}`}
 				>
 					{search ? <X size={13} /> : <Search size={13} />}
@@ -87,7 +87,7 @@ export function BoardFilters({ onFilterChange, compact = false }: Props) {
 						value={search}
 						onChange={(e) => handleSearch(e.target.value)}
 						placeholder="Search tasks..."
-						className="w-[140px] bg-[#111] border border-[#2a2a2a] rounded-[7px] px-2.5 py-1.5 text-[12px] text-[#e0e0e0] placeholder-[#444] outline-none focus:border-indigo-500 transition-all"
+						className="w-[140px] bg-white dark:bg-[#111] border border-slate-200 dark:border-[#2a2a2a] rounded-[7px] px-2.5 py-1.5 text-[12px] text-slate-800 dark:text-[#e0e0e0] placeholder-slate-300 dark:placeholder-[#444] outline-none focus:border-indigo-500 transition-all"
 					/>
 				)}
 
@@ -98,7 +98,7 @@ export function BoardFilters({ onFilterChange, compact = false }: Props) {
 					className={`w-8 h-8 flex items-center justify-center rounded-[7px] border transition-colors relative ${
 						priorities.length > 0
 							? "bg-indigo-950 border-indigo-800 text-indigo-400"
-							: "border-[#2a2a2a] text-[#888] hover:border-[#3a3a3a] hover:text-[#ccc]"
+							: "border-slate-200 dark:border-[#2a2a2a] text-slate-500 dark:text-[#888] hover:border-slate-300 dark:hover:border-[#3a3a3a] hover:text-slate-900 dark:hover:text-[#ccc]"
 					}`}
 				>
 					<SlidersHorizontal size={13} />
@@ -114,7 +114,7 @@ export function BoardFilters({ onFilterChange, compact = false }: Props) {
 					<button
 						type="button"
 						onClick={clearAll}
-						className="w-8 h-8 flex items-center justify-center rounded-[7px] border border-[#2a2a2a] text-[#555] hover:text-red-400 hover:border-red-900 transition-colors"
+						className="w-8 h-8 flex items-center justify-center rounded-[7px] border border-slate-200 dark:border-[#2a2a2a] text-slate-400 dark:text-[#555] hover:text-red-500 dark:hover:text-red-400 hover:border-red-300 dark:hover:border-red-900 transition-colors"
 					>
 						<X size={13} />
 					</button>
@@ -122,8 +122,8 @@ export function BoardFilters({ onFilterChange, compact = false }: Props) {
 
 				{/* Filter dropdown */}
 				{open && (
-					<div className="absolute top-10 left-0 bg-[#161616] border border-[#2a2a2a] rounded-[10px] p-3 z-50 w-[200px] shadow-xl">
-						<p className="text-[11px] font-medium text-[#555] uppercase tracking-wider mb-2">
+					<div className="absolute top-10 left-0 bg-white dark:bg-[#161616] border border-slate-200 dark:border-[#2a2a2a] rounded-[10px] p-3 z-50 w-[200px] shadow-xl">
+						<p className="text-[11px] font-medium text-slate-400 dark:text-[#555] uppercase tracking-wider mb-2">
 							Priority
 						</p>
 						<div className="space-y-1">
@@ -133,14 +133,14 @@ export function BoardFilters({ onFilterChange, compact = false }: Props) {
 									type="button"
 									onClick={() => togglePriority(p)}
 									className={`w-full flex items-center justify-between px-2 py-1.5 rounded-[6px] transition-colors ${
-										priorities.includes(p) ? "bg-[#1e1e2e]" : "hover:bg-[#1f1f1f]"
+										priorities.includes(p) ? "bg-indigo-50 dark:bg-[#1e1e2e]" : "hover:bg-slate-50 dark:hover:bg-[#1f1f1f]"
 									}`}
 								>
 									<span className={`text-[11px] font-medium px-2 py-0.5 rounded-[4px] border ${priorityColors[p]}`}>
 										{priorityLabels[p]}
 									</span>
 									{priorities.includes(p) && (
-										<span className="text-indigo-400 text-[10px]">✓</span>
+										<span className="text-indigo-500 dark:text-indigo-400 text-[10px]">✓</span>
 									)}
 								</button>
 							))}
@@ -161,13 +161,13 @@ export function BoardFilters({ onFilterChange, compact = false }: Props) {
 						value={search}
 						onChange={(e) => handleSearch(e.target.value)}
 						placeholder="Search..."
-						className="w-[180px] bg-[#111] border border-[#2a2a2a] rounded-[7px] px-3 py-1.5 text-[12px] text-[#e0e0e0] placeholder-[#444] outline-none focus:border-indigo-500 transition-colors"
+						className="w-[180px] bg-white dark:bg-[#111] border border-slate-200 dark:border-[#2a2a2a] rounded-[7px] px-3 py-1.5 text-[12px] text-slate-800 dark:text-[#e0e0e0] placeholder-slate-300 dark:placeholder-[#444] outline-none focus:border-indigo-500 transition-colors"
 					/>
 					{search && (
 						<button
 							type="button"
 							onClick={() => handleSearch("")}
-							className="absolute right-2 top-1/2 -translate-y-1/2 text-[#555] hover:text-[#999]"
+							className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 dark:text-[#555] hover:text-slate-700 dark:hover:text-[#999]"
 						>
 							<X size={11} />
 						</button>
@@ -181,7 +181,7 @@ export function BoardFilters({ onFilterChange, compact = false }: Props) {
 					className={`flex items-center gap-1.5 h-7 px-3 text-[12px] rounded-[7px] border transition-colors ${
 						activeCount > 0
 							? "bg-indigo-950 border-indigo-800 text-indigo-400"
-							: "bg-transparent border-[#2a2a2a] text-[#888] hover:border-[#3a3a3a] hover:text-[#ccc]"
+							: "bg-transparent border-slate-200 dark:border-[#2a2a2a] text-slate-500 dark:text-[#888] hover:border-slate-300 dark:hover:border-[#3a3a3a] hover:text-slate-900 dark:hover:text-[#ccc]"
 					}`}
 				>
 					<SlidersHorizontal size={12} />
@@ -198,7 +198,7 @@ export function BoardFilters({ onFilterChange, compact = false }: Props) {
 					<button
 						type="button"
 						onClick={clearAll}
-						className="text-[11px] text-[#555] hover:text-[#999] transition-colors flex items-center gap-1"
+						className="text-[11px] text-slate-400 dark:text-[#555] hover:text-slate-700 dark:hover:text-[#999] transition-colors flex items-center gap-1"
 					>
 						<X size={10} />
 						Clear
@@ -208,8 +208,8 @@ export function BoardFilters({ onFilterChange, compact = false }: Props) {
 
 			{/* Filter dropdown */}
 			{open && (
-				<div className="absolute top-10 right-0 bg-[#161616] border border-[#2a2a2a] rounded-[10px] p-3 z-50 w-[200px] shadow-xl">
-					<p className="text-[11px] font-medium text-[#555] uppercase tracking-wider mb-2">
+				<div className="absolute top-10 right-0 bg-white dark:bg-[#161616] border border-slate-200 dark:border-[#2a2a2a] rounded-[10px] p-3 z-50 w-[200px] shadow-xl">
+					<p className="text-[11px] font-medium text-slate-400 dark:text-[#555] uppercase tracking-wider mb-2">
 						Priority
 					</p>
 					<div className="space-y-1">
@@ -219,14 +219,14 @@ export function BoardFilters({ onFilterChange, compact = false }: Props) {
 								type="button"
 								onClick={() => togglePriority(p)}
 								className={`w-full flex items-center justify-between px-2 py-1.5 rounded-[6px] transition-colors ${
-									priorities.includes(p) ? "bg-[#1e1e2e]" : "hover:bg-[#1f1f1f]"
+									priorities.includes(p) ? "bg-indigo-50 dark:bg-[#1e1e2e]" : "hover:bg-slate-50 dark:hover:bg-[#1f1f1f]"
 								}`}
 							>
 								<span className={`text-[11px] font-medium px-2 py-0.5 rounded-[4px] border ${priorityColors[p]}`}>
 									{priorityLabels[p]}
 								</span>
 								{priorities.includes(p) && (
-									<span className="text-indigo-400 text-[10px]">✓</span>
+									<span className="text-indigo-500 dark:text-indigo-400 text-[10px]">✓</span>
 								)}
 							</button>
 						))}

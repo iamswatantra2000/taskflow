@@ -69,14 +69,14 @@ export default async function DashboardPage({ searchParams }: PageProps) {
   const doneTasks       = allTasks.filter((t) => t.status === "DONE")
 
   const columns = [
-    { id: "TODO",        label: "Todo",        tasks: todoTasks,       dot: "bg-[#555]"      },
+    { id: "TODO",        label: "Todo",        tasks: todoTasks,       dot: "bg-slate-400 dark:bg-[#555]"      },
     { id: "IN_PROGRESS", label: "In progress", tasks: inProgressTasks, dot: "bg-indigo-500"  },
     { id: "IN_REVIEW",   label: "In review",   tasks: inReviewTasks,   dot: "bg-amber-500"   },
     { id: "DONE",        label: "Done",        tasks: doneTasks,       dot: "bg-emerald-500" },
   ]
 
  const stats = [
-  { label: "Total tasks", value: allTasks.length,        sub: "across all projects", valueColor: "text-[#e0e0e0]"   },
+  { label: "Total tasks", value: allTasks.length,        sub: "across all projects", valueColor: "text-slate-800 dark:text-[#e0e0e0]"   },
   { label: "In progress", value: inProgressTasks.length, sub: "currently active",    valueColor: "text-indigo-400"  },
   { label: "Completed",   value: doneTasks.length,       sub: "great work!",         valueColor: "text-emerald-400" },
   { label: "Todo",        value: todoTasks.length,       sub: "up next",             valueColor: "text-amber-400"   },

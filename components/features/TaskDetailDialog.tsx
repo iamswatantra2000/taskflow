@@ -82,9 +82,9 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId }
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-[#111] border-[#1f1f1f] text-[#e0e0e0] max-w-xl">
+      <DialogContent className="bg-white dark:bg-[#111] border-slate-200 dark:border-[#1f1f1f] text-slate-800 dark:text-[#e0e0e0] max-w-xl">
         <DialogHeader>
-          <DialogTitle className="text-[15px] font-semibold text-[#f0f0f0]">
+          <DialogTitle className="text-[15px] font-semibold text-slate-900 dark:text-[#f0f0f0]">
             Task detail
           </DialogTitle>
         </DialogHeader>
@@ -94,11 +94,11 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId }
           {/* Title */}
           <div className="space-y-1.5">
             {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
-            <label className="text-[12px] font-medium text-[#888]">Title</label>
+            <label className="text-[12px] font-medium text-slate-500 dark:text-[#888]">Title</label>
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-[#e0e0e0] outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
+              className="w-full bg-white dark:bg-[#0d0d0d] border border-slate-200 dark:border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-slate-800 dark:text-[#e0e0e0] outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
             />
           </div>
 
@@ -106,11 +106,11 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId }
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
-              <label className="text-[12px] font-medium text-[#888]">Status</label>
+              <label className="text-[12px] font-medium text-slate-500 dark:text-[#888]">Status</label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
-                className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-[#e0e0e0] outline-none focus:border-indigo-500 transition-colors"
+                className="w-full bg-white dark:bg-[#0d0d0d] border border-slate-200 dark:border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-slate-800 dark:text-[#e0e0e0] outline-none focus:border-indigo-500 transition-colors"
               >
                 <option value="TODO">Todo</option>
                 <option value="IN_PROGRESS">In progress</option>
@@ -120,11 +120,11 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId }
             </div>
             <div className="space-y-1.5">
               {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
-              <label className="text-[12px] font-medium text-[#888]">Priority</label>
+              <label className="text-[12px] font-medium text-slate-500 dark:text-[#888]">Priority</label>
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value)}
-                className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-[#e0e0e0] outline-none focus:border-indigo-500 transition-colors"
+                className="w-full bg-white dark:bg-[#0d0d0d] border border-slate-200 dark:border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-slate-800 dark:text-[#e0e0e0] outline-none focus:border-indigo-500 transition-colors"
               >
                 <option value="LOW">Low</option>
                 <option value="MEDIUM">Medium</option>
@@ -137,11 +137,11 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId }
           {/* Assignee */}
           <div className="space-y-1.5">
             {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
-            <label className="text-[12px] font-medium text-[#888]">Assignee</label>
+            <label className="text-[12px] font-medium text-slate-500 dark:text-[#888]">Assignee</label>
             <select
               value={assigneeId}
               onChange={(e) => setAssigneeId(e.target.value)}
-              className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-[#e0e0e0] outline-none focus:border-indigo-500 transition-colors"
+              className="w-full bg-white dark:bg-[#0d0d0d] border border-slate-200 dark:border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-slate-800 dark:text-[#e0e0e0] outline-none focus:border-indigo-500 transition-colors"
             >
               <option value="">Unassigned</option>
               {members.map((m) => (
@@ -153,14 +153,14 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId }
           {/* Due date — full width */}
           <div className="space-y-1.5">
             {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
-            <label className="text-[12px] font-medium text-[#888]">
-              Due date <span className="text-[#555]">(optional)</span>
+            <label className="text-[12px] font-medium text-slate-500 dark:text-[#888]">
+              Due date <span className="text-slate-400 dark:text-[#555]">(optional)</span>
             </label>
             <input
               type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
-              className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-[#e0e0e0] outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors [color-scheme:dark]"
+              className="w-full bg-white dark:bg-[#0d0d0d] border border-slate-200 dark:border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-slate-800 dark:text-[#e0e0e0] outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors [color-scheme:light] dark:[color-scheme:dark]"
             />
             {/* Show overdue warning */}
             {dueDate && new Date(dueDate) < new Date() && status !== "DONE" && (
@@ -174,7 +174,7 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId }
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
               {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
-              <label className="text-[12px] font-medium text-[#888]">Description</label>
+              <label className="text-[12px] font-medium text-slate-500 dark:text-[#888]">Description</label>
               <button
                 type="button"
                 onClick={handleImproveDescription}
@@ -192,7 +192,7 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId }
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
               placeholder="Add a description..."
-              className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-[#e0e0e0] placeholder-[#444] outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors resize-none"
+              className="w-full bg-white dark:bg-[#0d0d0d] border border-slate-200 dark:border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-slate-800 dark:text-[#e0e0e0] placeholder-slate-300 dark:placeholder-[#444] outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors resize-none"
             />
           </div>
 
@@ -205,7 +205,7 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId }
               <button
                 type="button"
                 onClick={onClose}
-                className="h-8 px-3.5 text-[12px] font-medium text-[#555] hover:text-[#888] bg-[#111] hover:bg-[#161616] border border-white/10 hover:border-white/15 rounded-[8px] shadow-[0_3px_0_0_rgba(0,0,0,0.5)] active:translate-y-[3px] active:shadow-none transition-all duration-100"
+                className="h-8 px-3.5 text-[12px] font-medium text-slate-500 dark:text-[#555] hover:text-slate-700 dark:hover:text-[#888] bg-slate-50 dark:bg-[#111] hover:bg-slate-100 dark:hover:bg-[#161616] border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/15 rounded-[8px] shadow-[0_3px_0_0_rgba(0,0,0,0.08)] dark:shadow-[0_3px_0_0_rgba(0,0,0,0.5)] active:translate-y-[3px] active:shadow-none transition-all duration-100"
               >
                 Close
               </button>

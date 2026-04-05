@@ -58,7 +58,7 @@ export function NavLinks() {
             onClick={(e) => handleClick(href, e)}
             className={`
               relative text-[13px] transition-all duration-200 select-none
-              ${isActive ? "text-white" : "text-[#555] hover:text-[#ccc]"}
+              ${isActive ? "text-slate-900 dark:text-white" : "text-slate-400 dark:text-[#555] hover:text-slate-700 dark:hover:text-[#ccc]"}
               ${isClicked ? "scale-90 opacity-60" : "scale-100 opacity-100"}
             `}
             style={{ transitionProperty: "color, transform, opacity" }}

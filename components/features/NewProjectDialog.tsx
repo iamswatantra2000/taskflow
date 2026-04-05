@@ -127,7 +127,7 @@ export function NewProjectDialog() {
 						<button
 							type="button"
 							onClick={() => setOpen(false)}
-							className="h-8 px-3.5 text-[12px] font-medium text-[#555] hover:text-[#888] bg-[#111] hover:bg-[#161616] border border-white/10 hover:border-white/15 rounded-[8px] shadow-[0_3px_0_0_rgba(0,0,0,0.5)] active:translate-y-[3px] active:shadow-none transition-all duration-100"
+							className="h-8 px-3.5 text-[12px] font-medium text-slate-500 dark:text-[#555] hover:text-slate-700 dark:hover:text-[#888] bg-slate-50 dark:bg-[#111] hover:bg-slate-100 dark:hover:bg-[#161616] border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/15 rounded-[8px] shadow-[0_3px_0_0_rgba(0,0,0,0.08)] dark:shadow-[0_3px_0_0_rgba(0,0,0,0.5)] active:translate-y-[3px] active:shadow-none transition-all duration-100"
 						>
 							Cancel
 						</button>

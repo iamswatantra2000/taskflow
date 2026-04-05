@@ -38,10 +38,10 @@ const tabs = [
 ]
 
 const TAB_COLORS: Record<string, { active: string; icon: string }> = {
-  indigo: { active: "bg-indigo-500/[0.1] text-indigo-300 border-indigo-500/25", icon: "bg-indigo-500/[0.12] text-indigo-400" },
-  violet: { active: "bg-violet-500/[0.1] text-violet-300 border-violet-500/25", icon: "bg-violet-500/[0.12] text-violet-400" },
-  sky:    { active: "bg-sky-500/[0.1]    text-sky-300    border-sky-500/25",    icon: "bg-sky-500/[0.12]    text-sky-400"    },
-  amber:  { active: "bg-amber-500/[0.1]  text-amber-300  border-amber-500/25",  icon: "bg-amber-500/[0.12]  text-amber-400"  },
+  indigo: { active: "bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-500/[0.1] dark:text-indigo-300 dark:border-indigo-500/25", icon: "bg-indigo-500/[0.12] text-indigo-400" },
+  violet: { active: "bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-500/[0.1] dark:text-violet-300 dark:border-violet-500/25", icon: "bg-violet-500/[0.12] text-violet-400" },
+  sky:    { active: "bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-500/[0.1] dark:text-sky-300 dark:border-sky-500/25",    icon: "bg-sky-500/[0.12]    text-sky-400"    },
+  amber:  { active: "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/[0.1] dark:text-amber-300 dark:border-amber-500/25",  icon: "bg-amber-500/[0.12]  text-amber-400"  },
 }
 
 function getInitials(name: string) {
@@ -51,8 +51,8 @@ function getInitials(name: string) {
 // ── Shared card wrapper ──
 function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={`bg-[#0d0d0d] border border-white/[0.07] rounded-[16px] p-6
-      hover:border-white/[0.11] hover:-translate-y-[1px] hover:shadow-[0_16px_48px_rgba(0,0,0,0.6)]
+    <div className={`bg-white dark:bg-[#0d0d0d] border border-slate-100 dark:border-white/[0.07] rounded-[16px] p-6
+      hover:border-slate-200 dark:hover:border-white/[0.11] hover:-translate-y-[1px] hover:shadow-[0_16px_48px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_16px_48px_rgba(0,0,0,0.6)]
       transition-all duration-200 ${className}`}>
       {children}
     </div>
@@ -69,12 +69,12 @@ function SectionHead({
   return (
     <div className="flex items-start justify-between mb-5">
       <div className="flex items-center gap-3">
-        <div className={`w-8 h-8 rounded-[9px] ${iconBg} border border-white/[0.07] flex items-center justify-center flex-shrink-0`}>
+        <div className={`w-8 h-8 rounded-[9px] ${iconBg} border border-slate-200 dark:border-white/[0.07] flex items-center justify-center flex-shrink-0`}>
           <Icon size={14} className={iconColor} />
         </div>
         <div>
-          <h3 className="text-[14px] font-bold text-white tracking-tight leading-none">{title}</h3>
-          {subtitle && <p className="text-[11.5px] text-[#3a3a3a] mt-1">{subtitle}</p>}
+          <h3 className="text-[14px] font-bold text-slate-900 dark:text-white tracking-tight leading-none">{title}</h3>
+          {subtitle && <p className="text-[11.5px] text-slate-400 dark:text-[#3a3a3a] mt-1">{subtitle}</p>}
         </div>
       </div>
       {right}
@@ -91,19 +91,19 @@ function Field({
 }) {
   return (
     <div className="space-y-1.5">
-      <p className="text-[11px] font-semibold text-[#3a3a3a] uppercase tracking-[0.08em]">{label}</p>
+      <p className="text-[11px] font-semibold text-slate-400 dark:text-[#3a3a3a] uppercase tracking-[0.08em]">{label}</p>
       <input
         value={value}
         onChange={onChange ? (e) => onChange(e.target.value) : undefined}
         disabled={disabled}
         className={`w-full rounded-[10px] px-3.5 py-2.5 text-[13px] outline-none transition-all duration-150 border
           ${disabled
-            ? "bg-white/[0.02] border-white/[0.04] text-[#333] cursor-not-allowed"
-            : "bg-white/[0.03] border-white/[0.08] text-[#ccc] placeholder-[#2a2a2a] " +
-              "hover:border-white/[0.13] focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/[0.1]"
+            ? "bg-slate-50 border-slate-100 text-slate-400 dark:bg-white/[0.02] dark:border-white/[0.04] dark:text-[#333] cursor-not-allowed"
+            : "bg-white border-slate-200 text-slate-800 placeholder-slate-300 dark:bg-white/[0.03] dark:border-white/[0.08] dark:text-[#ccc] dark:placeholder-[#2a2a2a] " +
+              "hover:border-slate-300 dark:hover:border-white/[0.13] focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/[0.1]"
           }`}
       />
-      {hint && <p className="text-[11px] text-[#2a2a2a]">{hint}</p>}
+      {hint && <p className="text-[11px] text-slate-400 dark:text-[#2a2a2a]">{hint}</p>}
     </div>
   )
 }
@@ -139,11 +139,11 @@ const PLAN_META: Record<string, {
 }> = {
   free: {
     label:    "Free",
-    badge:    "text-[#555]",
-    badgeBg:  "bg-white/[0.04]  border-white/[0.08]",
-    border:   "border-white/[0.07]",
+    badge:    "text-slate-400 dark:text-[#555]",
+    badgeBg:  "bg-slate-100 border-slate-200 dark:bg-white/[0.04] dark:border-white/[0.08]",
+    border:   "border-slate-200 dark:border-white/[0.07]",
     glow:     "rgba(255,255,255,0.015)",
-    cardBg:   "bg-[#0d0d0d]",
+    cardBg:   "bg-white dark:bg-[#0d0d0d]",
     features: ["Up to 3 projects", "Unlimited tasks", "Kanban board", "Basic search & filters"],
     PlanIcon: Zap,
   },
@@ -177,7 +177,7 @@ function PlanCard({ plan }: { plan: string }) {
     <div
       className={`relative rounded-[16px] p-6 border ${meta.border} ${meta.cardBg} overflow-hidden
         hover:-translate-y-[1px] transition-all duration-200`}
-      style={{ boxShadow: `0 0 80px ${meta.glow}, 0 16px 48px rgba(0,0,0,0.5)` }}
+      style={{ boxShadow: `0 0 80px ${meta.glow}, 0 4px 24px rgba(0,0,0,0.08)` }}
     >
       {/* Background glow blob */}
       <div
@@ -187,9 +187,9 @@ function PlanCard({ plan }: { plan: string }) {
 
       <div className="relative flex items-start justify-between mb-5">
         <div>
-          <p className="text-[10.5px] font-semibold text-[#2e2e2e] uppercase tracking-[0.1em] mb-2">Current plan</p>
+          <p className="text-[10.5px] font-semibold text-slate-400 dark:text-[#2e2e2e] uppercase tracking-[0.1em] mb-2">Current plan</p>
           <div className="flex items-center gap-2.5">
-            <span className="text-[30px] font-bold text-white tracking-tight leading-none">{meta.label}</span>
+            <span className="text-[30px] font-bold text-slate-900 dark:text-white tracking-tight leading-none">{meta.label}</span>
             <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${meta.badgeBg} ${meta.badge}`}>
               {plan === "free" ? "Forever free" : "Active"}
             </span>
@@ -202,9 +202,9 @@ function PlanCard({ plan }: { plan: string }) {
 
       <ul className="space-y-2 mb-5 relative">
         {meta.features.map((f) => (
-          <li key={f} className="flex items-center gap-2.5 text-[12.5px] text-[#444]">
-            <div className="w-[18px] h-[18px] rounded-full bg-white/[0.04] border border-white/[0.06] flex items-center justify-center flex-shrink-0">
-              <Check size={9} className="text-[#444]" />
+          <li key={f} className="flex items-center gap-2.5 text-[12.5px] text-slate-500 dark:text-[#444]">
+            <div className="w-[18px] h-[18px] rounded-full bg-slate-100 border border-slate-200 dark:bg-white/[0.04] dark:border-white/[0.06] flex items-center justify-center flex-shrink-0">
+              <Check size={9} className="text-slate-400 dark:text-[#444]" />
             </div>
             {f}
           </li>
@@ -224,7 +224,7 @@ function PlanCard({ plan }: { plan: string }) {
           </a>
         )}
         {plan === "pro" && (
-          <p className="text-[12px] text-[#444]">
+          <p className="text-[12px] text-slate-400 dark:text-[#444]">
             Need more?{" "}
             <a href="/upgrade" className="text-indigo-400 hover:text-indigo-300 inline-flex items-center gap-0.5 transition-colors">
               Contact sales for Enterprise <ArrowUpRight size={11} />
@@ -292,7 +292,7 @@ function ProfileTab({ user }: { user: Props["user"] }) {
         />
 
         {/* Avatar row */}
-        <div className="flex items-center gap-5 mb-6 p-4 rounded-[12px] bg-white/[0.02] border border-white/[0.05]">
+        <div className="flex items-center gap-5 mb-6 p-4 rounded-[12px] bg-slate-50 dark:bg-white/[0.02] border border-slate-100 dark:border-white/[0.05]">
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
@@ -301,7 +301,7 @@ function ProfileTab({ user }: { user: Props["user"] }) {
           >
             {/* Hover glow ring */}
             <div className="absolute -inset-[3px] rounded-full bg-gradient-to-br from-indigo-500/40 to-violet-600/40 opacity-0 group-hover:opacity-100 blur-sm transition-all duration-300" />
-            <Avatar className="relative h-[72px] w-[72px] ring-2 ring-white/[0.08] ring-offset-2 ring-offset-[#0d0d0d]">
+            <Avatar className="relative h-[72px] w-[72px] ring-2 ring-slate-200 dark:ring-white/[0.08] ring-offset-2 ring-offset-white dark:ring-offset-[#0d0d0d]">
               <AvatarImage src={clerkUser?.imageUrl} className="object-cover" />
               <AvatarFallback className="text-xl font-bold bg-gradient-to-br from-indigo-500 to-violet-600 text-white">
                 {getInitials(name || "User")}
@@ -317,8 +317,8 @@ function ProfileTab({ user }: { user: Props["user"] }) {
           <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
           <div>
             <p className="text-[15px] font-bold text-white tracking-tight">{user.name}</p>
-            <p className="text-[12.5px] text-[#444] mt-0.5">{user.email}</p>
-            <p className="text-[11px] text-[#2a2a2a] mt-2 flex items-center gap-1.5">
+            <p className="text-[12.5px] text-slate-500 dark:text-[#444] mt-0.5">{user.email}</p>
+            <p className="text-[11px] text-slate-400 dark:text-[#2a2a2a] mt-2 flex items-center gap-1.5">
               <Camera size={10} />
               Click avatar to change photo
             </p>
@@ -351,7 +351,7 @@ function ProfileTab({ user }: { user: Props["user"] }) {
           iconBg="bg-emerald-500/[0.1]"
           iconColor="text-emerald-400"
         />
-        <p className="text-[12.5px] text-[#3a3a3a] leading-relaxed">
+        <p className="text-[12.5px] text-slate-400 dark:text-[#3a3a3a] leading-relaxed">
           Password and 2FA settings are handled by your auth provider (Google, GitHub, or email).
           Sign out and sign back in to update your credentials.
         </p>
@@ -371,7 +371,7 @@ function ProfileTab({ user }: { user: Props["user"] }) {
           iconBg="bg-red-500/[0.1]"
           iconColor="text-red-400"
         />
-        <p className="text-[12.5px] text-[#3a3a3a] mb-5 leading-relaxed">
+        <p className="text-[12.5px] text-slate-400 dark:text-[#3a3a3a] mb-5 leading-relaxed">
           Permanently delete your account and all associated data. This action cannot be undone.
         </p>
         <button
@@ -426,7 +426,7 @@ function WorkspaceTab({
   const roleStyles: Record<string, { bg: string; text: string; border: string }> = {
     OWNER:  { bg: "bg-violet-500/[0.1]", text: "text-violet-300", border: "border-violet-500/25" },
     ADMIN:  { bg: "bg-indigo-500/[0.1]", text: "text-indigo-300", border: "border-indigo-500/25" },
-    MEMBER: { bg: "bg-white/[0.04]",     text: "text-[#555]",     border: "border-white/[0.08]"  },
+    MEMBER: { bg: "bg-slate-100 dark:bg-white/[0.04]",     text: "text-slate-500 dark:text-[#555]",     border: "border-slate-200 dark:border-white/[0.08]"  },
   }
 
   return (
@@ -478,7 +478,7 @@ function WorkspaceTab({
                 transition-all duration-100 active:translate-y-[2px] active:shadow-none
                 ${canInvite
                   ? "bg-indigo-600 hover:bg-indigo-500 text-white border-indigo-700/80"
-                  : "text-[#444] border-white/[0.07] opacity-50 cursor-not-allowed"
+                  : "text-slate-300 dark:text-[#444] border-slate-100 dark:border-white/[0.07] opacity-50 cursor-not-allowed"
                 }`}
             >
               <UserPlus size={12} />
@@ -494,7 +494,7 @@ function WorkspaceTab({
               <div
                 key={member.id}
                 className="flex items-center gap-3 p-3 rounded-[10px] border border-transparent
-                  hover:bg-white/[0.02] hover:border-white/[0.05] transition-all duration-150"
+                  hover:bg-slate-50 dark:hover:bg-white/[0.02] hover:border-slate-200 dark:hover:border-white/[0.05] transition-all duration-150"
               >
                 <Avatar className="h-9 w-9 flex-shrink-0">
                   <AvatarFallback className="text-[11px] font-bold bg-gradient-to-br from-indigo-500 to-violet-600 text-white">
@@ -502,8 +502,8 @@ function WorkspaceTab({
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-semibold text-[#bbb] truncate">{member.name}</p>
-                  <p className="text-[11px] text-[#3a3a3a] truncate">{member.email}</p>
+                  <p className="text-[13px] font-semibold text-slate-600 dark:text-[#bbb] truncate">{member.name}</p>
+                  <p className="text-[11px] text-slate-400 dark:text-[#3a3a3a] truncate">{member.email}</p>
                 </div>
                 <span className={`text-[10px] font-bold uppercase tracking-[0.06em] px-2.5 py-0.5 rounded-full border ${rs.bg} ${rs.border} ${rs.text}`}>
                   {member.role}
@@ -540,7 +540,7 @@ function AppearanceTab() {
       ),
     },
     {
-      id: "light", label: "Light", icon: Sun, desc: "Clean and bright", comingSoon: true,
+      id: "light", label: "Light", icon: Sun, desc: "Clean and bright", comingSoon: false,
       preview: (
         <div className="w-full h-11 rounded-[7px] bg-white border border-black/[0.08] overflow-hidden flex gap-1 p-1.5">
           <div className="w-5 bg-black/[0.05] rounded-[3px]" />
@@ -609,19 +609,19 @@ function AppearanceTab() {
                 }}
                 className={`w-full flex flex-col gap-2.5 p-3 rounded-[12px] border transition-all duration-150 text-left
                   ${t.comingSoon
-                    ? "border-white/[0.04] opacity-40 cursor-not-allowed"
+                    ? "border-slate-100 dark:border-white/[0.04] opacity-40 cursor-not-allowed"
                     : theme === t.id
                       ? "border-indigo-500/30 bg-indigo-500/[0.07] ring-1 ring-indigo-500/15"
-                      : "border-white/[0.07] hover:border-white/[0.12] hover:bg-white/[0.02]"
+                      : "border-slate-200 dark:border-white/[0.07] hover:border-slate-300 dark:hover:border-white/[0.12] hover:bg-slate-50 dark:hover:bg-white/[0.02]"
                   }`}
               >
                 {t.preview}
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className={`text-[12px] font-semibold ${!t.comingSoon && theme === t.id ? "text-indigo-300" : "text-[#666]"}`}>
+                    <p className={`text-[12px] font-semibold ${!t.comingSoon && theme === t.id ? "text-indigo-600 dark:text-indigo-300" : "text-slate-500 dark:text-[#666]"}`}>
                       {t.label}
                     </p>
-                    <p className="text-[10px] text-[#2e2e2e] mt-0.5">{t.desc}</p>
+                    <p className="text-[10px] text-slate-400 dark:text-[#2e2e2e] mt-0.5">{t.desc}</p>
                   </div>
                   {!t.comingSoon && theme === t.id && (
                     <div className="w-4 h-4 rounded-full bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center flex-shrink-0">
@@ -683,7 +683,7 @@ function AppearanceTab() {
                   )}
                 </div>
               </div>
-              <span className="text-[10.5px] text-[#3a3a3a] group-hover:text-[#555] transition-colors">{a.label}</span>
+              <span className="text-[10.5px] text-slate-400 dark:text-[#3a3a3a] group-hover:text-slate-500 dark:group-hover:text-[#555] transition-colors">{a.label}</span>
             </button>
           ))}
         </div>
@@ -740,7 +740,7 @@ function NotificationsTab({ initialPrefs }: { initialPrefs: NotifPrefs }) {
           iconColor="text-amber-400"
           right={
             saving
-              ? <Loader2 size={13} className="animate-spin text-[#333]" />
+              ? <Loader2 size={13} className="animate-spin text-slate-300 dark:text-[#333]" />
               : null
           }
         />
@@ -751,15 +751,15 @@ function NotificationsTab({ initialPrefs }: { initialPrefs: NotifPrefs }) {
             return (
               <div
                 key={item.key}
-                className="flex items-center gap-3.5 p-3.5 rounded-[12px] bg-white/[0.01] border border-white/[0.04]
-                  hover:border-white/[0.07] hover:bg-white/[0.02] transition-all duration-150"
+                className="flex items-center gap-3.5 p-3.5 rounded-[12px] bg-slate-50/50 dark:bg-white/[0.01] border border-slate-100 dark:border-white/[0.04]
+                  hover:border-slate-200 dark:hover:border-white/[0.07] hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-all duration-150"
               >
-                <div className={`w-8 h-8 rounded-[9px] ${item.iconBg} border border-white/[0.07] flex items-center justify-center flex-shrink-0`}>
+                <div className={`w-8 h-8 rounded-[9px] ${item.iconBg} border border-slate-200 dark:border-white/[0.07] flex items-center justify-center flex-shrink-0`}>
                   <item.icon size={13} className={item.iconColor} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className={`text-[13px] font-semibold ${on ? "text-[#ccc]" : "text-[#444]"}`}>{item.label}</p>
-                  <p className="text-[11px] text-[#3a3a3a]">{item.desc}</p>
+                  <p className={`text-[13px] font-semibold ${on ? "text-slate-700 dark:text-[#ccc]" : "text-slate-400 dark:text-[#444]"}`}>{item.label}</p>
+                  <p className="text-[11px] text-slate-400 dark:text-[#3a3a3a]">{item.desc}</p>
                 </div>
                 {/* Toggle */}
                 <button
@@ -771,13 +771,13 @@ function NotificationsTab({ initialPrefs }: { initialPrefs: NotifPrefs }) {
                   <div className={`w-10 h-[22px] rounded-full border relative transition-colors duration-200
                     ${on
                       ? "bg-indigo-600 border-indigo-500/50"
-                      : "bg-white/[0.04] border-white/[0.08]"
+                      : "bg-slate-200 border-slate-300 dark:bg-white/[0.04] dark:border-white/[0.08]"
                     }`}
                   >
                     <div className={`absolute top-[3px] w-4 h-4 rounded-full transition-all duration-200
                       ${on
                         ? "left-[calc(100%-19px)] bg-white"
-                        : "left-[3px] bg-white/20"
+                        : "left-[3px] bg-slate-400/50 dark:bg-white/20"
                       }`}
                     />
                   </div>
@@ -787,7 +787,7 @@ function NotificationsTab({ initialPrefs }: { initialPrefs: NotifPrefs }) {
           })}
         </div>
 
-        <p className="text-[11px] text-[#252525] mt-5 pt-4 border-t border-white/[0.05] flex items-center gap-1.5">
+        <p className="text-[11px] text-slate-300 dark:text-[#252525] mt-5 pt-4 border-t border-slate-100 dark:border-white/[0.05] flex items-center gap-1.5">
           <Mail size={10} />
           Email notifications will be available when team invitations are enabled.
         </p>
@@ -828,7 +828,7 @@ export function SettingsClient({ user, workspace, members, userRole, pendingInvi
         {/* Page header */}
         <div className="mb-8">
           <h1 className="text-[30px] font-bold tracking-tight text-white">Settings</h1>
-          <p className="text-[13.5px] text-[#3a3a3a] mt-1.5">
+          <p className="text-[13.5px] text-slate-400 dark:text-[#3a3a3a] mt-1.5">
             Manage your account, workspace, and preferences
           </p>
         </div>
@@ -847,7 +847,7 @@ export function SettingsClient({ user, workspace, members, userRole, pendingInvi
                   border whitespace-nowrap flex-shrink-0 transition-all duration-150
                   ${isActive
                     ? tc.active
-                    : "border-transparent text-[#3a3a3a] hover:text-[#777] hover:bg-white/[0.03]"
+                    : "border-transparent text-slate-400 dark:text-[#3a3a3a] hover:text-slate-600 dark:hover:text-[#777] hover:bg-slate-50 dark:hover:bg-white/[0.03]"
                   }`}
               >
                 <div className={`w-5 h-5 rounded-[5px] flex items-center justify-center transition-colors ${isActive ? tc.icon : ""}`}>

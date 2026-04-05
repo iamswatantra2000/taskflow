@@ -56,7 +56,7 @@ export function DeleteTaskButton({ taskId }: { taskId: string }) {
         type="button"
         onPointerDown={(e) => e.stopPropagation()}
         onClick={handleCancel}
-        className="p-1 rounded-md text-[#555] hover:bg-[#2a2a2a] transition-all"
+        className="p-1 rounded-md text-slate-400 dark:text-[#555] hover:bg-slate-100 dark:hover:bg-[#2a2a2a] transition-all"
       >
         <X size={11} />
       </button>
@@ -71,7 +71,7 @@ export function DeleteTaskButton({ taskId }: { taskId: string }) {
       onPointerDown={(e) => e.stopPropagation()}  // ← KEY FIX: stops dnd-kit capturing
       onClick={handleClickDelete}
       disabled={loading}
-      className="opacity-0 group-hover:opacity-100 p-1 rounded-md text-[#555] hover:text-red-400 hover:bg-red-950 transition-all disabled:opacity-50 flex-shrink-0"
+      className="opacity-0 group-hover:opacity-100 p-1 rounded-md text-slate-400 dark:text-[#555] hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950 transition-all disabled:opacity-50 flex-shrink-0"
     >
       <Trash2 size={11} />
     </button>

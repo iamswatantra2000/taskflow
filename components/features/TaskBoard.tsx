@@ -59,10 +59,10 @@ type Props = {
 }
 
 const priorityConfig = {
-  URGENT: { label: "Urgent", dot: "bg-red-500",    pill: "bg-red-500/[0.08] text-red-400 border-red-500/20"       },
-  HIGH:   { label: "High",   dot: "bg-orange-500", pill: "bg-orange-500/[0.08] text-orange-400 border-orange-500/20" },
-  MEDIUM: { label: "Medium", dot: "bg-amber-500",  pill: "bg-amber-500/[0.08] text-amber-400 border-amber-500/20"  },
-  LOW:    { label: "Low",    dot: "bg-sky-500",    pill: "bg-sky-500/[0.08] text-sky-400 border-sky-500/20"       },
+  URGENT: { label: "Urgent", dot: "bg-red-500",    pill: "bg-red-50 text-red-600 border-red-200 dark:bg-red-500/[0.08] dark:text-red-400 dark:border-red-500/20"             },
+  HIGH:   { label: "High",   dot: "bg-orange-500", pill: "bg-orange-50 text-orange-600 border-orange-200 dark:bg-orange-500/[0.08] dark:text-orange-400 dark:border-orange-500/20" },
+  MEDIUM: { label: "Medium", dot: "bg-amber-500",  pill: "bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-500/[0.08] dark:text-amber-400 dark:border-amber-500/20"   },
+  LOW:    { label: "Low",    dot: "bg-sky-500",    pill: "bg-sky-50 text-sky-600 border-sky-200 dark:bg-sky-500/[0.08] dark:text-sky-400 dark:border-sky-500/20"             },
 }
 
 function getDateMeta(dueDate: Date, status: string) {
@@ -72,7 +72,7 @@ function getDateMeta(dueDate: Date, status: string) {
   const done  = status === "DONE"
   if (!done && diff < 0)  return { color: "text-red-400",   label: new Date(dueDate).toLocaleDateString("en-US", { month: "short", day: "numeric" }) }
   if (!done && diff === 0) return { color: "text-amber-400", label: "Today" }
-  return { color: "text-[#555]", label: new Date(dueDate).toLocaleDateString("en-US", { month: "short", day: "numeric" }) }
+  return { color: "text-slate-400 dark:text-[#555]", label: new Date(dueDate).toLocaleDateString("en-US", { month: "short", day: "numeric" }) }
 }
 
 // Per-column color treatment
@@ -82,10 +82,10 @@ const columnStyles: Record<string, {
   labelColor:  string
   countStyle:  string
 }> = {
-  TODO:        { bg: "bg-[#0f0f0f]",           borderColor: "border-white/[0.07]",    labelColor: "text-[#777]",    countStyle: "text-[#3a3a3a] border-white/[0.08] bg-white/[0.03]"           },
-  IN_PROGRESS: { bg: "bg-indigo-950/[0.15]",   borderColor: "border-indigo-500/20",   labelColor: "text-indigo-400", countStyle: "text-indigo-400/60 border-indigo-500/20 bg-indigo-500/[0.07]" },
-  IN_REVIEW:   { bg: "bg-amber-950/[0.12]",    borderColor: "border-amber-500/20",    labelColor: "text-amber-400",  countStyle: "text-amber-400/60 border-amber-500/20 bg-amber-500/[0.07]"   },
-  DONE:        { bg: "bg-emerald-950/[0.10]",  borderColor: "border-emerald-500/15",  labelColor: "text-emerald-400",countStyle: "text-emerald-400/60 border-emerald-500/20 bg-emerald-500/[0.07]" },
+  TODO:        { bg: "bg-slate-50 dark:bg-[#0f0f0f]",                   borderColor: "border-slate-200 dark:border-white/[0.07]",    labelColor: "text-slate-500 dark:text-[#777]",    countStyle: "text-slate-400 border-slate-200 bg-white dark:text-[#3a3a3a] dark:border-white/[0.08] dark:bg-white/[0.03]"           },
+  IN_PROGRESS: { bg: "bg-indigo-50/40 dark:bg-indigo-950/[0.15]",       borderColor: "border-indigo-200 dark:border-indigo-500/20",   labelColor: "text-indigo-600 dark:text-indigo-400", countStyle: "text-indigo-600/70 border-indigo-200 bg-indigo-50 dark:text-indigo-400/60 dark:border-indigo-500/20 dark:bg-indigo-500/[0.07]" },
+  IN_REVIEW:   { bg: "bg-amber-50/40 dark:bg-amber-950/[0.12]",         borderColor: "border-amber-200 dark:border-amber-500/20",    labelColor: "text-amber-600 dark:text-amber-400",  countStyle: "text-amber-600/70 border-amber-200 bg-amber-50 dark:text-amber-400/60 dark:border-amber-500/20 dark:bg-amber-500/[0.07]"   },
+  DONE:        { bg: "bg-emerald-50/30 dark:bg-emerald-950/[0.10]",     borderColor: "border-emerald-200 dark:border-emerald-500/15",  labelColor: "text-emerald-600 dark:text-emerald-400", countStyle: "text-emerald-600/70 border-emerald-200 bg-emerald-50 dark:text-emerald-400/60 dark:border-emerald-500/20 dark:bg-emerald-500/[0.07]" },
 }
 
 // ——— Single draggable task card ———
@@ -127,9 +127,9 @@ function TaskCard({
     <div
       ref={setNodeRef}
       style={style}
-      className={`group relative bg-[#111] border border-white/[0.07] rounded-[10px] p-3.5
-        hover:border-white/[0.13] hover:bg-[#141414]
-        hover:-translate-y-[1px] hover:shadow-[0_6px_20px_rgba(0,0,0,0.45)]
+      className={`group relative bg-white dark:bg-[#111] border border-slate-100 dark:border-white/[0.07] rounded-[10px] p-3.5
+        hover:border-slate-200 dark:hover:border-white/[0.13] hover:bg-slate-50 dark:hover:bg-[#141414]
+        hover:-translate-y-[1px] hover:shadow-[0_6px_20px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_6px_20px_rgba(0,0,0,0.45)]
         transition-all duration-150
         ${leftAccent}
         ${isDone ? "opacity-55" : ""}
@@ -150,7 +150,7 @@ function TaskCard({
           {...attributes}
           {...listeners}
           style={{ touchAction: "none" }}
-          className="flex-shrink-0 mt-[3px] cursor-grab active:cursor-grabbing text-[#333] hover:text-[#666] opacity-0 group-hover:opacity-100 transition-all"
+          className="flex-shrink-0 mt-[3px] cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-500 dark:text-[#333] dark:hover:text-[#666] opacity-0 group-hover:opacity-100 transition-all"
         >
           {/** biome-ignore lint/a11y/noSvgWithoutTitle: drag handle */}
           <svg width="9" height="13" viewBox="0 0 10 14" fill="none">
@@ -168,8 +168,8 @@ function TaskCard({
           onClick={() => onSelect(task)}
           className={`flex-1 text-[13px] font-semibold leading-snug cursor-pointer transition-colors
             ${isDone
-              ? "text-[#555] line-through decoration-[#444]"
-              : "text-[#ddd] hover:text-white"
+              ? "text-slate-400 dark:text-[#555] line-through decoration-slate-300 dark:decoration-[#444]"
+              : "text-slate-800 hover:text-slate-950 dark:text-[#ddd] dark:hover:text-white"
             }`}
         >
           {task.title}
@@ -213,8 +213,8 @@ function TaskCard({
 function DragOverlayCard({ task }: { task: Task }) {
   const priority = priorityConfig[task.priority as keyof typeof priorityConfig]
   return (
-    <div className="bg-[#141414] border border-indigo-500/60 rounded-[10px] p-3.5 w-[230px] rotate-[1.5deg] shadow-[0_20px_60px_rgba(0,0,0,0.7)] ring-1 ring-indigo-500/20">
-      <p className="text-[13px] font-semibold text-white leading-snug mb-3 pl-[17px]">{task.title}</p>
+    <div className="bg-white dark:bg-[#141414] border border-indigo-300 dark:border-indigo-500/60 rounded-[10px] p-3.5 w-[230px] rotate-[1.5deg] shadow-[0_20px_60px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.7)] ring-1 ring-indigo-200 dark:ring-indigo-500/20">
+      <p className="text-[13px] font-semibold text-slate-900 dark:text-white leading-snug mb-3 pl-[17px]">{task.title}</p>
       <div className="pl-[17px]">
         <div className={`inline-flex items-center gap-1.5 text-[10.5px] font-semibold px-2 py-[3px] rounded-full border ${priority.pill}`}>
           <span className={`w-[5px] h-[5px] rounded-full flex-shrink-0 ${priority.dot}`} />
@@ -439,11 +439,11 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects, m
 
                   {/* Empty state */}
                   {col.tasks.length === 0 && (
-                    <div className="flex-1 flex flex-col items-center justify-center py-10 gap-3 border border-dashed border-white/[0.05] rounded-[10px]">
-                      <div className="w-9 h-9 rounded-full border-2 border-dashed border-white/[0.08] flex items-center justify-center">
-                        <ArrowDownToLine size={13} className="text-[#2a2a2a]" />
+                    <div className="flex-1 flex flex-col items-center justify-center py-10 gap-3 border border-dashed border-slate-200 dark:border-white/[0.05] rounded-[10px]">
+                      <div className="w-9 h-9 rounded-full border-2 border-dashed border-slate-200 dark:border-white/[0.08] flex items-center justify-center">
+                        <ArrowDownToLine size={13} className="text-slate-300 dark:text-[#2a2a2a]" />
                       </div>
-                      <p className="text-[11.5px] font-medium text-[#2d2d2d]">
+                      <p className="text-[11.5px] font-medium text-slate-400 dark:text-[#2d2d2d]">
                         {filters.priority.length > 0 || filters.search
                           ? "No matching tasks"
                           : "Drop tasks here"

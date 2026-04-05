@@ -106,20 +106,20 @@ export function MentionInput({
         onKeyDown={handleKeyDown}
         rows={rows}
         placeholder={placeholder}
-        className={`w-full bg-[#0d0d0d] border border-white/[0.08] rounded-[10px] px-3 py-2.5
-          text-[13px] text-[#ccc] placeholder-[#333] outline-none
-          hover:border-white/[0.12] focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/[0.08]
+        className={`w-full bg-white dark:bg-[#0d0d0d] border border-slate-200 dark:border-white/[0.08] rounded-[10px] px-3 py-2.5
+          text-[13px] text-slate-700 dark:text-[#ccc] placeholder-slate-300 dark:placeholder-[#333] outline-none
+          hover:border-slate-300 dark:hover:border-white/[0.12] focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/[0.08]
           transition-all duration-150 resize-none ${className}`}
       />
 
       {/* Mention dropdown */}
       {mentionQuery !== null && filtered.length > 0 && (
         <div
-          className="absolute left-0 bottom-full mb-1.5 w-[220px] bg-[#0d0d0d] border border-white/[0.1] rounded-[12px] overflow-hidden z-50"
-          style={{ boxShadow: "0 16px 48px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.04)" }}
+          className="absolute left-0 bottom-full mb-1.5 w-[220px] bg-white dark:bg-[#0d0d0d] border border-slate-200 dark:border-white/[0.1] rounded-[12px] overflow-hidden z-50"
+          style={{ boxShadow: "0 16px 48px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.04)" }}
         >
-          <div className="px-3 py-2 border-b border-white/[0.06]">
-            <p className="text-[10px] font-semibold text-[#333] uppercase tracking-[0.08em]">Mention</p>
+          <div className="px-3 py-2 border-b border-slate-100 dark:border-white/[0.06]">
+            <p className="text-[10px] font-semibold text-slate-400 dark:text-[#333] uppercase tracking-[0.08em]">Mention</p>
           </div>
           {filtered.map((m, i) => (
             <button
@@ -127,12 +127,12 @@ export function MentionInput({
               type="button"
               onMouseDown={(e) => { e.preventDefault(); selectMember(m) }}
               className={`flex items-center gap-2.5 w-full px-3 py-2 text-left transition-colors duration-75
-                ${i === dropdownIdx ? "bg-indigo-500/[0.1]" : "hover:bg-white/[0.04]"}`}
+                ${i === dropdownIdx ? "bg-indigo-50 dark:bg-indigo-500/[0.1]" : "hover:bg-slate-50 dark:hover:bg-white/[0.04]"}`}
             >
               <div className="w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500/60 to-violet-600/60 flex items-center justify-center flex-shrink-0">
                 <span className="text-[9px] font-bold text-white">{getInitials(m.name)}</span>
               </div>
-              <span className={`text-[12.5px] font-medium truncate ${i === dropdownIdx ? "text-indigo-300" : "text-[#777]"}`}>
+              <span className={`text-[12.5px] font-medium truncate ${i === dropdownIdx ? "text-indigo-600 dark:text-indigo-300" : "text-slate-500 dark:text-[#777]"}`}>
                 {m.name}
               </span>
             </button>

@@ -13,11 +13,11 @@ const TaskBoard = dynamic(
         {["Todo", "In progress", "In review", "Done"].map((col) => (
           <div
             key={col}
-            className="bg-[#111] border border-[#1a1a1a] rounded-[10px] p-3 min-h-[200px] animate-pulse"
+            className="bg-white dark:bg-[#111] border border-slate-100 dark:border-[#1a1a1a] rounded-[10px] p-3 min-h-[200px] animate-pulse"
           >
             <div className="flex items-center gap-1.5 mb-3">
-              <div className="w-[7px] h-[7px] rounded-full bg-[#2a2a2a]" />
-              <div className="h-3 w-16 bg-[#1f1f1f] rounded" />
+              <div className="w-[7px] h-[7px] rounded-full bg-slate-200 dark:bg-[#2a2a2a]" />
+              <div className="h-3 w-16 bg-slate-100 dark:bg-[#1f1f1f] rounded" />
             </div>
           </div>
         ))}

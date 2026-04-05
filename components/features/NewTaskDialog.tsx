@@ -53,9 +53,9 @@ export function NewTaskDialog({ projectId, children }: Props) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger>{children}</DialogTrigger>
-      <DialogContent className="bg-[#111] border-[#1f1f1f] text-[#e0e0e0] sm:max-w-md max-sm:top-auto max-sm:bottom-0 max-sm:left-0 max-sm:right-0 max-sm:translate-x-0 max-sm:translate-y-0 max-sm:w-full max-sm:max-w-full max-sm:rounded-b-none max-sm:rounded-t-2xl max-sm:max-h-[90vh] max-sm:overflow-y-auto">
+      <DialogContent className="bg-white dark:bg-[#111] border-slate-200 dark:border-[#1f1f1f] text-slate-800 dark:text-[#e0e0e0] sm:max-w-md max-sm:top-auto max-sm:bottom-0 max-sm:left-0 max-sm:right-0 max-sm:translate-x-0 max-sm:translate-y-0 max-sm:w-full max-sm:max-w-full max-sm:rounded-b-none max-sm:rounded-t-2xl max-sm:max-h-[90vh] max-sm:overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-[15px] font-semibold text-[#f0f0f0]">
+          <DialogTitle className="text-[15px] font-semibold text-slate-900 dark:text-[#f0f0f0]">
             New task
           </DialogTitle>
         </DialogHeader>
@@ -65,13 +65,13 @@ export function NewTaskDialog({ projectId, children }: Props) {
           {/* Title */}
           <div className="space-y-1.5">
             {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
-            <label className="text-[12px] font-medium text-[#888]">Title</label>
+            <label className="text-[12px] font-medium text-slate-500 dark:text-[#888]">Title</label>
             <input
               name="title"
               placeholder="What needs to be done?"
               required
               autoFocus
-              className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-[#e0e0e0] placeholder-[#444] outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
+              className="w-full bg-white dark:bg-[#0d0d0d] border border-slate-200 dark:border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-slate-800 dark:text-[#e0e0e0] placeholder-slate-300 dark:placeholder-[#444] outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
             />
           </div>
 
@@ -79,11 +79,11 @@ export function NewTaskDialog({ projectId, children }: Props) {
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
-              <label className="text-[12px] font-medium text-[#888]">Status</label>
+              <label className="text-[12px] font-medium text-slate-500 dark:text-[#888]">Status</label>
               <select
                 name="status"
                 defaultValue="TODO"
-                className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-[#e0e0e0] outline-none focus:border-indigo-500 transition-colors"
+                className="w-full bg-white dark:bg-[#0d0d0d] border border-slate-200 dark:border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-slate-800 dark:text-[#e0e0e0] outline-none focus:border-indigo-500 transition-colors"
               >
                 <option value="TODO">Todo</option>
                 <option value="IN_PROGRESS">In progress</option>
@@ -94,11 +94,11 @@ export function NewTaskDialog({ projectId, children }: Props) {
 
             <div className="space-y-1.5">
               {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
-              <label className="text-[12px] font-medium text-[#888]">Priority</label>
+              <label className="text-[12px] font-medium text-slate-500 dark:text-[#888]">Priority</label>
               <select
                 name="priority"
                 defaultValue="MEDIUM"
-                className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-[#e0e0e0] outline-none focus:border-indigo-500 transition-colors"
+                className="w-full bg-white dark:bg-[#0d0d0d] border border-slate-200 dark:border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-slate-800 dark:text-[#e0e0e0] outline-none focus:border-indigo-500 transition-colors"
               >
                 <option value="LOW">Low</option>
                 <option value="MEDIUM">Medium</option>
@@ -111,28 +111,28 @@ export function NewTaskDialog({ projectId, children }: Props) {
           {/* Due date — full width */}
           <div className="space-y-1.5">
             {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
-            <label className="text-[12px] font-medium text-[#888]">
-              Due date <span className="text-[#555]">(optional)</span>
+            <label className="text-[12px] font-medium text-slate-500 dark:text-[#888]">
+              Due date <span className="text-slate-400 dark:text-[#555]">(optional)</span>
             </label>
             <input
               type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
-              className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-[#e0e0e0] outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors [color-scheme:dark]"
+              className="w-full bg-white dark:bg-[#0d0d0d] border border-slate-200 dark:border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-slate-800 dark:text-[#e0e0e0] outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors [color-scheme:light] dark:[color-scheme:dark]"
             />
           </div>
 
           {/* Description */}
           <div className="space-y-1.5">
             {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
-            <label className="text-[12px] font-medium text-[#888]">
-              Description <span className="text-[#444]">(optional)</span>
+            <label className="text-[12px] font-medium text-slate-500 dark:text-[#888]">
+              Description <span className="text-slate-400 dark:text-[#444]">(optional)</span>
             </label>
             <textarea
               name="description"
               placeholder="Add more context..."
               rows={3}
-              className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-[#e0e0e0] placeholder-[#444] outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors resize-none"
+              className="w-full bg-white dark:bg-[#0d0d0d] border border-slate-200 dark:border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-slate-800 dark:text-[#e0e0e0] placeholder-slate-300 dark:placeholder-[#444] outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors resize-none"
             />
           </div>
 
@@ -141,7 +141,7 @@ export function NewTaskDialog({ projectId, children }: Props) {
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="h-8 px-3.5 text-[12px] font-medium text-[#555] hover:text-[#888] bg-[#111] hover:bg-[#161616] border border-white/8 hover:border-white/15 rounded-[8px] shadow-[0_3px_0_0_rgba(0,0,0,0.5)] active:translate-y-[3px] active:shadow-none transition-all duration-100"
+              className="h-8 px-3.5 text-[12px] font-medium text-slate-500 dark:text-[#555] hover:text-slate-700 dark:hover:text-[#888] bg-slate-50 dark:bg-[#111] hover:bg-slate-100 dark:hover:bg-[#161616] border border-slate-200 dark:border-white/8 hover:border-slate-300 dark:hover:border-white/15 rounded-[8px] shadow-[0_3px_0_0_rgba(0,0,0,0.08)] dark:shadow-[0_3px_0_0_rgba(0,0,0,0.5)] active:translate-y-[3px] active:shadow-none transition-all duration-100"
             >
               Cancel
             </button>

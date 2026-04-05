@@ -36,14 +36,14 @@ type Props = {
 type ViewType = "board" | "calendar" | "timeline"
 
 const priorityConfig = {
-  HIGH:   { label: "High",   class: "bg-red-950 text-red-400 border-red-900"             },
-  URGENT: { label: "Urgent", class: "bg-red-950 text-red-400 border-red-900"             },
-  MEDIUM: { label: "Medium", class: "bg-amber-950 text-amber-400 border-amber-900"       },
-  LOW:    { label: "Low",    class: "bg-emerald-950 text-emerald-400 border-emerald-900" },
+  HIGH:   { label: "High",   class: "bg-red-50 text-red-600 border-red-200 dark:bg-red-950 dark:text-red-400 dark:border-red-900"             },
+  URGENT: { label: "Urgent", class: "bg-red-50 text-red-600 border-red-200 dark:bg-red-950 dark:text-red-400 dark:border-red-900"             },
+  MEDIUM: { label: "Medium", class: "bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-950 dark:text-amber-400 dark:border-amber-900"       },
+  LOW:    { label: "Low",    class: "bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-400 dark:border-emerald-900" },
 }
 
 const statusConfig: Record<string, { label: string; dot: string; border: string }> = {
-  TODO:        { label: "Todo",        dot: "bg-[#555]",      border: "border-[#555]"      },
+  TODO:        { label: "Todo",        dot: "bg-slate-400 dark:bg-[#555]",      border: "border-slate-400 dark:border-[#555]"      },
   IN_PROGRESS: { label: "In Progress", dot: "bg-indigo-500",  border: "border-indigo-500"  },
   IN_REVIEW:   { label: "In Review",   dot: "bg-amber-500",   border: "border-amber-500"   },
   DONE:        { label: "Done",        dot: "bg-emerald-500", border: "border-emerald-500" },
@@ -69,7 +69,7 @@ function isOverdue(date: Date | null) {
 // ——— Board View ———
 function BoardView({ tasks, project }: { tasks: Task[]; project: Project }) {
   const columns = [
-    { id: "TODO",        label: "Todo",        dot: "bg-[#555]"      },
+    { id: "TODO",        label: "Todo",        dot: "bg-slate-400 dark:bg-[#555]"      },
     { id: "IN_PROGRESS", label: "In progress", dot: "bg-indigo-500"  },
     { id: "IN_REVIEW",   label: "In review",   dot: "bg-amber-500"   },
     { id: "DONE",        label: "Done",        dot: "bg-emerald-500" },
@@ -82,14 +82,14 @@ function BoardView({ tasks, project }: { tasks: Task[]; project: Project }) {
         return (
           <div
             key={col.id}
-            className="bg-[#111] border border-[#1a1a1a] rounded-[10px] p-3 flex flex-col gap-2 min-h-[120px]"
+            className="bg-white dark:bg-[#111] border border-slate-100 dark:border-[#1a1a1a] rounded-[10px] p-3 flex flex-col gap-2 min-h-[120px]"
           >
             <div className="flex items-center justify-between mb-1">
               <div className="flex items-center gap-1.5">
                 <div className={`w-[7px] h-[7px] rounded-full ${col.dot}`} />
-                <span className="text-[11px] font-medium text-[#666]">{col.label}</span>
+                <span className="text-[11px] font-medium text-slate-500 dark:text-[#666]">{col.label}</span>
               </div>
-              <span className="text-[10px] text-[#444] bg-[#1a1a1a] rounded-full px-2 py-0.5">
+              <span className="text-[10px] text-slate-400 dark:text-[#444] bg-slate-100 dark:bg-[#1a1a1a] rounded-full px-2 py-0.5">
                 {colTasks.length}
               </span>
             </div>
@@ -100,13 +100,13 @@ function BoardView({ tasks, project }: { tasks: Task[]; project: Project }) {
               return (
                 <div
                   key={task.id}
-                  className={`group bg-[#161616] border border-[#222] rounded-[8px] p-3 hover:border-[#333] transition-all
+                  className={`group bg-white dark:bg-[#161616] border border-slate-100 dark:border-[#222] rounded-[8px] p-3 hover:border-slate-200 dark:hover:border-[#333] transition-all
                     ${task.status === "IN_PROGRESS" ? "border-l-2 border-l-indigo-500" : ""}
                     ${task.status === "DONE" ? "opacity-50" : ""}
                   `}
                 >
                   <div className="flex items-start justify-between gap-2 mb-2">
-                    <p className="text-[12px] text-[#ccc] leading-[1.45] flex-1">{task.title}</p>
+                    <p className="text-[12px] text-slate-700 dark:text-[#ccc] leading-[1.45] flex-1">{task.title}</p>
                     <DeleteTaskButton taskId={task.id} />
                   </div>
                   <div className="flex items-center justify-between">
@@ -114,7 +114,7 @@ function BoardView({ tasks, project }: { tasks: Task[]; project: Project }) {
                       {priority?.label}
                     </span>
                     {task.dueDate && (
-                      <span className={`text-[10px] ${overdue ? "text-red-400" : "text-[#555]"}`}>
+                      <span className={`text-[10px] ${overdue ? "text-red-400" : "text-slate-400 dark:text-[#555]"}`}>
                         {formatDate(task.dueDate)}
                       </span>
                     )}
@@ -125,7 +125,7 @@ function BoardView({ tasks, project }: { tasks: Task[]; project: Project }) {
 
             {colTasks.length === 0 && (
               <div className="flex-1 flex items-center justify-center py-6">
-                <p className="text-[11px] text-[#333]">No tasks</p>
+                <p className="text-[11px] text-slate-300 dark:text-[#333]">No tasks</p>
               </div>
             )}
           </div>
@@ -176,32 +176,32 @@ function CalendarView({ tasks }: { tasks: Task[] }) {
   const dayNums = Array.from({ length: daysInMonth }, (_, i) => i + 1)
 
   return (
-    <div className="bg-[#111] border border-[#1a1a1a] rounded-[12px] overflow-hidden">
+    <div className="bg-white dark:bg-[#111] border border-slate-100 dark:border-[#1a1a1a] rounded-[12px] overflow-hidden">
 
       {/* Calendar header */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-[#1a1a1a]">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-[#1a1a1a]">
         <button
           type="button"
           onClick={prevMonth}
-          className="w-7 h-7 rounded-[6px] border border-[#2a2a2a] flex items-center justify-center text-[#555] hover:text-[#ccc] hover:border-[#3a3a3a] transition-colors"
+          className="w-7 h-7 rounded-[6px] border border-slate-200 dark:border-[#2a2a2a] flex items-center justify-center text-slate-400 dark:text-[#555] hover:text-slate-700 dark:hover:text-[#ccc] hover:border-slate-300 dark:hover:border-[#3a3a3a] transition-colors"
         >
           ‹
         </button>
-        <h3 className="text-[13px] font-semibold text-[#e0e0e0]">{monthName}</h3>
+        <h3 className="text-[13px] font-semibold text-slate-800 dark:text-[#e0e0e0]">{monthName}</h3>
         <button
           type="button"
           onClick={nextMonth}
-          className="w-7 h-7 rounded-[6px] border border-[#2a2a2a] flex items-center justify-center text-[#555] hover:text-[#ccc] hover:border-[#3a3a3a] transition-colors"
+          className="w-7 h-7 rounded-[6px] border border-slate-200 dark:border-[#2a2a2a] flex items-center justify-center text-slate-400 dark:text-[#555] hover:text-slate-700 dark:hover:text-[#ccc] hover:border-slate-300 dark:hover:border-[#3a3a3a] transition-colors"
         >
           ›
         </button>
       </div>
 
       {/* Day headers */}
-      <div className="grid grid-cols-7 border-b border-[#1a1a1a]">
+      <div className="grid grid-cols-7 border-b border-slate-100 dark:border-[#1a1a1a]">
         {days.map((day) => (
           <div key={day} className="px-2 py-2 text-center">
-            <span className="text-[10px] font-medium text-[#555]">{day}</span>
+            <span className="text-[10px] font-medium text-slate-400 dark:text-[#555]">{day}</span>
           </div>
         ))}
       </div>
@@ -210,7 +210,7 @@ function CalendarView({ tasks }: { tasks: Task[] }) {
       <div className="grid grid-cols-7">
         {/* Blank cells */}
         {blanks.map((i) => (
-          <div key={`blank-${i}`} className="min-h-[90px] border-r border-b border-[#1a1a1a] p-1.5 bg-[#0d0d0d]" />
+          <div key={`blank-${i}`} className="min-h-[90px] border-r border-b border-slate-100 dark:border-[#1a1a1a] p-1.5 bg-slate-50 dark:bg-[#0d0d0d]" />
         ))}
 
         {/* Day cells */}
@@ -225,7 +225,7 @@ function CalendarView({ tasks }: { tasks: Task[] }) {
           return (
             <div
               key={day}
-              className={`min-h-[90px] border-r border-b border-[#1a1a1a] p-1.5 transition-colors hover:bg-[#141414] ${
+              className={`min-h-[90px] border-r border-b border-slate-100 dark:border-[#1a1a1a] p-1.5 transition-colors hover:bg-slate-50 dark:hover:bg-[#141414] ${
                 isToday ? "bg-indigo-950/20" : ""
               }`}
             >
@@ -235,7 +235,7 @@ function CalendarView({ tasks }: { tasks: Task[] }) {
                   "text-[11px] font-medium w-5 h-5 flex items-center justify-center rounded-full",
                   isToday
                     ? "bg-indigo-600 text-white"
-                    : "text-[#555]"
+                    : "text-slate-400 dark:text-[#555]"
                 )}>
                   {day}
                 </span>
@@ -263,7 +263,7 @@ function CalendarView({ tasks }: { tasks: Task[] }) {
                   )
                 })}
                 {dayTasks.length > 3 && (
-                  <p className="text-[9px] text-[#555] pl-1">
+                  <p className="text-[9px] text-slate-400 dark:text-[#555] pl-1">
                     +{dayTasks.length - 3} more
                   </p>
                 )}
@@ -275,8 +275,8 @@ function CalendarView({ tasks }: { tasks: Task[] }) {
 
       {/* No tasks with due dates message */}
       {tasks.filter((t) => t.dueDate).length === 0 && (
-        <div className="p-6 text-center border-t border-[#1a1a1a]">
-          <p className="text-[12px] text-[#444]">
+        <div className="p-6 text-center border-t border-slate-100 dark:border-[#1a1a1a]">
+          <p className="text-[12px] text-slate-400 dark:text-[#444]">
             No tasks with due dates yet. Add due dates when creating tasks to see them here.
           </p>
         </div>
@@ -291,10 +291,10 @@ function TimelineView({ tasks }: { tasks: Task[] }) {
 
   if (tasksWithDates.length === 0) {
     return (
-      <div className="bg-[#111] border border-[#1a1a1a] rounded-[12px] p-12 text-center">
-        <GitBranch size={32} className="text-[#333] mx-auto mb-3" />
-        <p className="text-[13px] text-[#555]">No tasks with due dates</p>
-        <p className="text-[11px] text-[#444] mt-1">
+      <div className="bg-white dark:bg-[#111] border border-slate-100 dark:border-[#1a1a1a] rounded-[12px] p-12 text-center">
+        <GitBranch size={32} className="text-slate-300 dark:text-[#333] mx-auto mb-3" />
+        <p className="text-[13px] text-slate-400 dark:text-[#555]">No tasks with due dates</p>
+        <p className="text-[11px] text-slate-400 dark:text-[#444] mt-1">
           Add due dates to tasks to see them on the timeline
         </p>
       </div>
@@ -344,12 +344,12 @@ function TimelineView({ tasks }: { tasks: Task[] }) {
   const todayLeft = (todayOffset / totalDays) * 100
 
   return (
-    <div className="bg-[#111] border border-[#1a1a1a] rounded-[12px] overflow-hidden">
+    <div className="bg-white dark:bg-[#111] border border-slate-100 dark:border-[#1a1a1a] rounded-[12px] overflow-hidden">
 
       {/* Timeline header */}
-      <div className="px-5 py-4 border-b border-[#1a1a1a]">
-        <h3 className="text-[13px] font-semibold text-[#e0e0e0]">Timeline</h3>
-        <p className="text-[11px] text-[#555] mt-0.5">
+      <div className="px-5 py-4 border-b border-slate-100 dark:border-[#1a1a1a]">
+        <h3 className="text-[13px] font-semibold text-slate-800 dark:text-[#e0e0e0]">Timeline</h3>
+        <p className="text-[11px] text-slate-400 dark:text-[#555] mt-0.5">
           Task duration from creation to due date
         </p>
       </div>
@@ -358,9 +358,9 @@ function TimelineView({ tasks }: { tasks: Task[] }) {
         <div className="min-w-[700px]">
 
           {/* Day headers */}
-          <div className="flex border-b border-[#1a1a1a] bg-[#0d0d0d]">
+          <div className="flex border-b border-slate-100 dark:border-[#1a1a1a] bg-slate-50 dark:bg-[#0d0d0d]">
             <div className="w-[200px] flex-shrink-0 px-4 py-2">
-              <span className="text-[10px] text-[#444]">Task</span>
+              <span className="text-[10px] text-slate-400 dark:text-[#444]">Task</span>
             </div>
             <div className="flex-1 relative h-8">
               {dayHeaders.map((date, i) => {
@@ -378,7 +378,7 @@ function TimelineView({ tasks }: { tasks: Task[] }) {
                   >
                     <span className={cn(
                       "text-[9px] font-medium",
-                      isToday ? "text-indigo-400" : "text-[#444]"
+                      isToday ? "text-indigo-400" : "text-slate-400 dark:text-[#444]"
                     )}>
                       {date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                     </span>
@@ -398,12 +398,12 @@ function TimelineView({ tasks }: { tasks: Task[] }) {
             return (
               <div
                 key={task.id}
-                className="flex items-center border-b border-[#1a1a1a] hover:bg-[#141414] transition-colors group"
+                className="flex items-center border-b border-slate-100 dark:border-[#1a1a1a] hover:bg-slate-50 dark:hover:bg-[#141414] transition-colors group"
               >
                 {/* Task name */}
                 <div className="w-[200px] flex-shrink-0 px-4 py-3 flex items-center gap-2">
                   <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${status?.dot}`} />
-                  <p className="text-[12px] text-[#ccc] truncate">{task.title}</p>
+                  <p className="text-[12px] text-slate-700 dark:text-[#ccc] truncate">{task.title}</p>
                 </div>
 
                 {/* Timeline bar */}
@@ -443,7 +443,7 @@ function TimelineView({ tasks }: { tasks: Task[] }) {
                     {priority?.label}
                   </span>
                   {task.dueDate && (
-                    <span className={`text-[10px] ${overdue ? "text-red-400" : "text-[#555]"}`}>
+                    <span className={`text-[10px] ${overdue ? "text-red-400" : "text-slate-400 dark:text-[#555]"}`}>
                       {formatDate(task.dueDate)}
                     </span>
                   )}
@@ -476,16 +476,16 @@ export function ProjectClient({ project, tasks, allProjects }: Props) {
     <div className="flex-1 overflow-auto">
 
       {/* Topbar */}
-      <div className="h-[50px] border-b border-[#1a1a1a] flex items-center justify-between pl-14 pr-4 md:px-5 bg-[#0d0d0d] sticky top-0 z-10">
+      <div className="h-[50px] border-b border-slate-100 dark:border-[#1a1a1a] flex items-center justify-between pl-14 pr-4 md:px-5 bg-white dark:bg-[#0d0d0d] sticky top-0 z-10">
         <div className="flex items-center gap-2 min-w-0">
-          <span className="text-[13px] text-[#555] hidden sm:inline">Projects /</span>
+          <span className="text-[13px] text-slate-400 dark:text-[#555] hidden sm:inline">Projects /</span>
           <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: project.color }} />
-          <span className="text-[13px] font-medium text-[#e0e0e0] truncate">{project.name}</span>
+          <span className="text-[13px] font-medium text-slate-800 dark:text-[#e0e0e0] truncate">{project.name}</span>
         </div>
 
         <div className="flex items-center gap-2 flex-shrink-0">
           {/* View switcher */}
-          <div className="flex items-center bg-[#161616] border border-[#2a2a2a] rounded-[8px] p-0.5">
+          <div className="flex items-center bg-slate-50 dark:bg-[#161616] border border-slate-200 dark:border-[#2a2a2a] rounded-[8px] p-0.5">
             {views.map((v) => (
               <button
                 key={v.id}
@@ -494,8 +494,8 @@ export function ProjectClient({ project, tasks, allProjects }: Props) {
                 className={cn(
                   "flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-[6px] text-[12px] font-medium transition-all",
                   view === v.id
-                    ? "bg-[#2a2a2a] text-[#e0e0e0]"
-                    : "text-[#555] hover:text-[#999]"
+                    ? "bg-slate-200 dark:bg-[#2a2a2a] text-slate-800 dark:text-[#e0e0e0]"
+                    : "text-slate-400 dark:text-[#555] hover:text-slate-700 dark:hover:text-[#999]"
                 )}
               >
                 <v.icon size={13} />
@@ -522,13 +522,13 @@ export function ProjectClient({ project, tasks, allProjects }: Props) {
             style={{ background: project.color }}
           />
           <div>
-            <h1 className="text-[18px] font-semibold text-[#f0f0f0] tracking-tight">
+            <h1 className="text-[18px] font-semibold text-slate-900 dark:text-[#f0f0f0] tracking-tight">
               {project.name}
             </h1>
             {project.description && (
-              <p className="text-[13px] text-[#555] mt-1">{project.description}</p>
+              <p className="text-[13px] text-slate-500 dark:text-[#555] mt-1">{project.description}</p>
             )}
-            <p className="text-[12px] text-[#444] mt-1">
+            <p className="text-[12px] text-slate-400 dark:text-[#444] mt-1">
               {tasks.length} task{tasks.length !== 1 ? "s" : ""}
             </p>
           </div>
@@ -537,13 +537,13 @@ export function ProjectClient({ project, tasks, allProjects }: Props) {
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
           {[
-            { label: "Total",       value: tasks.length,         color: "text-[#e0e0e0]"   },
+            { label: "Total",       value: tasks.length,         color: "text-slate-800 dark:text-[#e0e0e0]"   },
             { label: "In progress", value: inProgressTasks.length, color: "text-indigo-400"  },
             { label: "Completed",   value: doneTasks.length,     color: "text-emerald-400" },
             { label: "Todo",        value: todoTasks.length,     color: "text-amber-400"   },
           ].map((stat) => (
-            <div key={stat.label} className="bg-[#111] border border-[#1f1f1f] rounded-[10px] p-4">
-              <p className="text-[11px] font-medium text-[#555] mb-2">{stat.label}</p>
+            <div key={stat.label} className="bg-white dark:bg-[#111] border border-slate-100 dark:border-[#1f1f1f] rounded-[10px] p-4">
+              <p className="text-[11px] font-medium text-slate-400 dark:text-[#555] mb-2">{stat.label}</p>
               <p className={`text-[26px] font-semibold tracking-tight leading-none ${stat.color}`}>
                 {stat.value}
               </p>

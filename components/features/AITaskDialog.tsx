@@ -46,10 +46,10 @@ export function AITaskDialog({ projectId }: Props) {
   }
 
   const priorityColors: Record<string, string> = {
-    LOW:    "bg-emerald-950 text-emerald-400 border-emerald-900",
-    MEDIUM: "bg-amber-950 text-amber-400 border-amber-900",
-    HIGH:   "bg-red-950 text-red-400 border-red-900",
-    URGENT: "bg-red-950 text-red-400 border-red-900",
+    LOW:    "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-400 dark:border-emerald-900",
+    MEDIUM: "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-400 dark:border-amber-900",
+    HIGH:   "bg-red-50 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-400 dark:border-red-900",
+    URGENT: "bg-red-50 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-400 dark:border-red-900",
   }
 
   return (
@@ -61,9 +61,9 @@ export function AITaskDialog({ projectId }: Props) {
         </div>
       </DialogTrigger>
 
-      <DialogContent className="bg-[#111] border-[#1f1f1f] text-[#e0e0e0] max-w-lg">
+      <DialogContent className="bg-white dark:bg-[#111] border-slate-200 dark:border-[#1f1f1f] text-slate-800 dark:text-[#e0e0e0] max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-[15px] font-semibold text-[#f0f0f0] flex items-center gap-2">
+          <DialogTitle className="text-[15px] font-semibold text-slate-900 dark:text-[#f0f0f0] flex items-center gap-2">
             <Sparkles size={16} className="text-violet-400" />
             AI task generator
           </DialogTitle>
@@ -74,7 +74,7 @@ export function AITaskDialog({ projectId }: Props) {
           {/* Description input */}
           <div className="space-y-1.5">
             {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
-            <label className="text-[12px] font-medium text-[#888]">
+            <label className="text-[12px] font-medium text-slate-500 dark:text-[#888]">
               Describe a feature or goal
             </label>
             <textarea
@@ -82,16 +82,16 @@ export function AITaskDialog({ projectId }: Props) {
               onChange={(e) => setDescription(e.target.value)}
               placeholder="e.g. Build a user authentication system with login, register, and password reset"
               rows={3}
-              className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-[#e0e0e0] placeholder-[#444] outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-colors resize-none"
+              className="w-full bg-white dark:bg-[#0d0d0d] border border-slate-200 dark:border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-slate-800 dark:text-[#e0e0e0] placeholder-slate-300 dark:placeholder-[#444] outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-colors resize-none"
             />
-            <p className="text-[11px] text-[#555]">
+            <p className="text-[11px] text-slate-400 dark:text-[#555]">
               AI will break this into 3-6 actionable subtasks automatically
             </p>
           </div>
 
           {/* Example prompts */}
           <div className="space-y-1.5">
-            <p className="text-[11px] font-medium text-[#555]">Try these examples:</p>
+            <p className="text-[11px] font-medium text-slate-400 dark:text-[#555]">Try these examples:</p>
             <div className="flex flex-wrap gap-2">
               {[
                 "Build a REST API for products",
@@ -103,7 +103,7 @@ export function AITaskDialog({ projectId }: Props) {
                   key={example}
                   type="button"
                   onClick={() => setDescription(example)}
-                  className="text-[11px] px-2.5 py-1 rounded-full border border-[#2a2a2a] text-[#666] hover:border-violet-500 hover:text-violet-400 transition-colors"
+                  className="text-[11px] px-2.5 py-1 rounded-full border border-slate-200 dark:border-[#2a2a2a] text-slate-500 dark:text-[#666] hover:border-violet-500 hover:text-violet-400 transition-colors"
                 >
                   {example}
                 </button>
@@ -116,7 +116,7 @@ export function AITaskDialog({ projectId }: Props) {
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="px-4 py-2 text-[12px] font-medium text-[#666] hover:text-[#999] transition-colors"
+              className="px-4 py-2 text-[12px] font-medium text-slate-400 dark:text-[#666] hover:text-slate-600 dark:hover:text-[#999] transition-colors"
             >
               Cancel
             </button>
