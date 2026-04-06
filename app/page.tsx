@@ -166,21 +166,21 @@ function Hero() {
           ))}
         </div>
 
-        {/* App preview — always rendered in dark style (product screenshot aesthetic) */}
+        {/* App preview */}
         <div style={{ animation: "fade-in-up 0.8s ease 0.75s both" }} className="relative">
           <div className="absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-b from-transparent to-slate-50 dark:to-[#080808] z-10 pointer-events-none" />
           <div className="absolute -inset-px bg-gradient-to-r from-indigo-500/15 via-violet-500/10 to-indigo-500/15 rounded-[20px] blur-sm" />
-          <div className="relative border border-slate-900/10 dark:border-white/[0.07] rounded-[16px] sm:rounded-[20px] overflow-hidden bg-[#0c0c0c] shadow-2xl shadow-black/20 dark:shadow-black/60">
+          <div className="relative border border-slate-200 dark:border-white/[0.07] rounded-[16px] sm:rounded-[20px] overflow-hidden bg-white dark:bg-[#0c0c0c] shadow-[0_4px_24px_rgba(0,0,0,0.08)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.6)]">
 
             {/* Browser bar */}
-            <div className="bg-[#111] border-b border-white/[0.05] px-4 py-3 flex items-center gap-2">
+            <div className="bg-slate-100 dark:bg-[#111] border-b border-slate-200 dark:border-white/[0.05] px-4 py-3 flex items-center gap-2">
               <div className="flex gap-1.5 flex-shrink-0">
                 <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
                 <div className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
                 <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
               </div>
               <div className="flex-1 mx-4">
-                <div className="bg-[#1a1a1a] rounded-md px-3 py-1 text-[10px] text-[#3a3a3a] max-w-[200px] mx-auto text-center">
+                <div className="bg-slate-200 dark:bg-[#1a1a1a] rounded-md px-3 py-1 text-[10px] text-slate-500 dark:text-[#3a3a3a] max-w-[200px] mx-auto text-center">
                   app.taskflow.io/dashboard
                 </div>
               </div>
@@ -190,60 +190,60 @@ function Hero() {
             <div className="flex h-[220px] sm:h-[310px]">
 
               {/* Sidebar */}
-              <div className="hidden sm:flex w-[160px] border-r border-white/[0.05] p-3 flex-col gap-0.5 flex-shrink-0">
+              <div className="hidden sm:flex w-[160px] border-r border-slate-200 dark:border-white/[0.05] bg-white dark:bg-transparent p-3 flex-col gap-0.5 flex-shrink-0">
                 <div className="flex items-center gap-2 mb-3 px-1">
                   <div className="w-5 h-5 rounded-[5px] bg-gradient-to-br from-indigo-500 to-violet-600 flex-shrink-0" />
-                  <div className="h-2 w-14 bg-white/8 rounded" />
+                  <div className="h-2 w-14 bg-black/[0.08] dark:bg-white/[0.08] rounded" />
                 </div>
                 {[75, 58, 65].map((w, i) => (
                   // biome-ignore lint/suspicious/noArrayIndexKey: preview
                   <div key={i} className="flex items-center gap-2 px-2 py-1.5 rounded-lg">
-                    <div className="w-3 h-3 bg-white/8 rounded flex-shrink-0" />
-                    <div className="h-2 bg-white/8 rounded" style={{ width: `${w}%` }} />
+                    <div className="w-3 h-3 bg-black/[0.07] dark:bg-white/[0.08] rounded flex-shrink-0" />
+                    <div className="h-2 bg-black/[0.07] dark:bg-white/[0.08] rounded" style={{ width: `${w}%` }} />
                   </div>
                 ))}
                 <div className="mt-3 px-2 space-y-1.5">
-                  <div className="h-1.5 w-10 bg-white/[0.04] rounded mb-2" />
+                  <div className="h-1.5 w-10 bg-black/[0.06] dark:bg-white/[0.04] rounded mb-2" />
                   {["#6366f1", "#0ea5e9", "#10b981"].map((color, i) => (
                     // biome-ignore lint/suspicious/noArrayIndexKey: preview
                     <div key={i} className="flex items-center gap-2">
                       <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: color }} />
-                      <div className="h-1.5 w-14 bg-white/6 rounded" />
+                      <div className="h-1.5 w-14 bg-black/[0.06] dark:bg-white/[0.06] rounded" />
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* Main */}
-              <div className="flex-1 p-3 sm:p-4">
+              <div className="flex-1 p-3 sm:p-4 bg-slate-50 dark:bg-transparent">
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3 sm:mb-4">
                   {[
-                    { n: "24", c: "text-white",       l: "Total"  },
-                    { n: "8",  c: "text-indigo-400",  l: "Active" },
-                    { n: "12", c: "text-emerald-400", l: "Done"   },
-                    { n: "4",  c: "text-amber-400",   l: "Todo"   },
+                    { n: "24", c: "text-slate-900 dark:text-white",           l: "Total"  },
+                    { n: "8",  c: "text-indigo-600 dark:text-indigo-400",     l: "Active" },
+                    { n: "12", c: "text-emerald-600 dark:text-emerald-400",   l: "Done"   },
+                    { n: "4",  c: "text-amber-600 dark:text-amber-400",       l: "Todo"   },
                   ].map((s) => (
-                    <div key={s.l} className="bg-[#111] border border-white/[0.05] rounded-[8px] p-2.5">
-                      <div className="text-[9px] text-[#3a3a3a] mb-1">{s.l}</div>
+                    <div key={s.l} className="bg-white dark:bg-[#111] border border-slate-200 dark:border-white/[0.05] rounded-[8px] p-2.5">
+                      <div className="text-[9px] text-slate-400 dark:text-[#3a3a3a] mb-1">{s.l}</div>
                       <div className={`text-[15px] sm:text-[20px] font-bold ${s.c}`}>{s.n}</div>
                     </div>
                   ))}
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {[
-                    { l: "Todo",        dot: "#333",    t: ["Write docs", "Add tests"] },
+                    { l: "Todo",        dot: "#94a3b8", t: ["Write docs", "Add tests"] },
                     { l: "In progress", dot: "#6366f1", t: ["Build API", "Fix auth"]   },
                     { l: "In review",   dot: "#f59e0b", t: ["PR review"]               },
                     { l: "Done",        dot: "#10b981", t: ["Deploy v1"]               },
                   ].map((col) => (
-                    <div key={col.l} className="bg-[#111] border border-white/[0.05] rounded-[8px] p-2">
+                    <div key={col.l} className="bg-white dark:bg-[#111] border border-slate-200 dark:border-white/[0.05] rounded-[8px] p-2">
                       <div className="flex items-center gap-1 mb-2">
                         <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: col.dot }} />
-                        <span className="text-[8.5px] sm:text-[10px] text-[#3a3a3a] truncate">{col.l}</span>
+                        <span className="text-[8.5px] sm:text-[10px] text-slate-500 dark:text-[#3a3a3a] truncate">{col.l}</span>
                       </div>
                       {col.t.map((t) => (
-                        <div key={t} className="bg-[#161616] border border-white/[0.04] rounded-[5px] p-1.5 mb-1">
-                          <div className="text-[8.5px] sm:text-[10px] text-[#777] truncate">{t}</div>
+                        <div key={t} className="bg-slate-50 dark:bg-[#161616] border border-slate-200 dark:border-white/[0.04] rounded-[5px] p-1.5 mb-1">
+                          <div className="text-[8.5px] sm:text-[10px] text-slate-500 dark:text-[#777] truncate">{t}</div>
                         </div>
                       ))}
                     </div>
