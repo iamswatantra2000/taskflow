@@ -152,6 +152,9 @@ Pro gates: Activity feed, Analytics, AI tasks button, some settings
       25-min work / 5-min break cycle with circular SVG progress ring (color shifts indigo→amber→red
       as time runs low). Space to start/pause, Esc to exit. Session notes scratchpad. "Mark as done"
       button closes the session and updates task status. Phase auto-advances with toast on timer end.
+      Sessions persisted to DB (`focus_sessions` table): duration, completed flag, notes.
+      Auto-saves on exit if > 10s elapsed. Manual "Save now" button mid-session.
+      Session history shown in TaskDetailDialog with total focused time summary.
 
 - [x] **Task Decay Indicators** — tasks untouched for 3+ days surface a visual decay signal.
       Level 1 (3–7d): subtle amber border + `🕐 Xd` badge. Level 2 (7–14d): stronger amber.
@@ -184,7 +187,10 @@ Pro gates: Activity feed, Analytics, AI tasks button, some settings
 | `components/features/WorkloadBalancer.tsx` | **Created** — team workload view with reassign |
 | `components/features/DashboardClient.tsx` | Board/People tab toggle; WorkloadBalancer wired in |
 | `lib/actions.ts` | Added `reassignTask()` server action |
-| `components/features/FocusMode.tsx` | **Created** — full-screen Pomodoro focus overlay |
+| `components/features/FocusMode.tsx` | Elapsed tracking + auto-save on exit + "Save now" button |
+| `components/features/TaskDetailDialog.tsx` | Added FocusSessionHistory panel |
+| `app/api/focus-sessions/[taskId]/route.ts` | **Created** — GET sessions for a task |
+| `lib/db/schema.ts` | Added `focusSessions` table (taskId, userId, duration, completed, notes) |
 | `lib/decay.ts` | **Created** — getDecayLevel / getDecayDays / Tailwind class maps |
 | `components/features/TaskBoard.tsx` | Decay border + stale badge on cards; stale count in column headers |
 | `components/features/TaskBoardWrapper.tsx` | Added `updatedAt` to task type |
