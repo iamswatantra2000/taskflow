@@ -3,6 +3,7 @@ import { requireAuth } from "../../../lib/session"
 import { db, tasks, projects } from "@/lib/db"
 import { eq } from "drizzle-orm"
 import { DeleteTaskButton } from "@/components/features/DeleteTaskButton"
+import { ThemeToggle } from "@/components/ui/ThemeToggle"
 
 const statusConfig = {
   TODO:        { label: "Todo",        class: "bg-slate-100 text-slate-500 border-slate-200 dark:bg-[#1a1a1a] dark:text-[#888] dark:border-[#2a2a2a]"            },
@@ -48,11 +49,12 @@ const myTasks = await db
     <div className="flex-1 overflow-auto">
 
       {/* Topbar */}
-      <div className="h-[50px] border-b border-slate-100 dark:border-[#1a1a1a] flex items-center pl-14 pr-5 md:px-5 bg-white dark:bg-[#0d0d0d]">
+      <div className="h-[50px] border-b border-slate-100 dark:border-[#1a1a1a] flex items-center justify-between pl-14 pr-5 md:px-5 bg-white dark:bg-[#0d0d0d]">
         <div className="flex items-center gap-2">
           <span className="text-[13px] text-slate-400 dark:text-[#555] hidden sm:inline">Workspace /</span>
           <span className="text-[13px] font-medium text-slate-800 dark:text-[#e0e0e0]">My tasks</span>
         </div>
+        <ThemeToggle />
       </div>
 
       <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">

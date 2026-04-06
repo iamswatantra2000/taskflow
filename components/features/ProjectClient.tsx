@@ -3,6 +3,7 @@
 
 import { useState } from "react"
 import { LayoutGrid, List, Calendar, GitBranch } from "lucide-react"
+import { ThemeToggle } from "@/components/ui/ThemeToggle"
 import { cn } from "@/lib/utils"
 import { NewTaskDialog } from "./NewTaskDialog"
 import { DeleteTaskButton } from "./DeleteTaskButton"
@@ -510,6 +511,7 @@ export function ProjectClient({ project, tasks, allProjects }: Props) {
               <span className="sm:hidden">+</span>
             </div>
           </NewTaskDialog>
+          <ThemeToggle />
         </div>
       </div>
 

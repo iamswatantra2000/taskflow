@@ -9,6 +9,7 @@ import { PricingSection } from "@/components/features/PricingSection"
 import { AnimateOnView } from "@/components/ui/AnimateOnView"
 import { NavLinks } from "@/components/ui/NavLinks"
 import { LogoMark } from "@/components/ui/LogoMark"
+import { ThemeToggle } from "@/components/ui/ThemeToggle"
 import { getSession } from "@/lib/session"
 
 // ——— Navbar ———
@@ -28,6 +29,7 @@ async function Navbar() {
         <NavLinks />
 
         <div className="flex items-center gap-2 sm:gap-3">
+          <ThemeToggle />
           {isLoggedIn ? (
             <>
               {/* Greeting chip — desktop only */}

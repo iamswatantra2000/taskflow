@@ -7,6 +7,7 @@ import {
   CheckSquare, Trash2, MoveRight,
   FolderPlus, UserPlus, Pencil
 } from "lucide-react"
+import { ThemeToggle } from "@/components/ui/ThemeToggle"
 
 function getInitials(name: string) {
   return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
@@ -76,11 +77,12 @@ export default async function ActivityPage() {
     <div className="flex-1 overflow-auto">
 
       {/* Topbar */}
-      <div className="h-[50px] border-b border-border flex items-center pl-14 pr-5 md:px-5 bg-background sticky top-0 z-10">
+      <div className="h-[50px] border-b border-border flex items-center justify-between pl-14 pr-5 md:px-5 bg-background sticky top-0 z-10">
         <div className="flex items-center gap-2">
           <span className="text-[13px] text-muted-foreground hidden sm:inline">Workspace /</span>
           <span className="text-[13px] font-medium">Activity</span>
         </div>
+        <ThemeToggle />
       </div>
 
       <div className="max-w-2xl mx-auto p-4 sm:p-6 space-y-6 sm:space-y-8">

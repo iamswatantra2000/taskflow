@@ -7,6 +7,7 @@ import { useUser } from "@clerk/nextjs"
 import { toast } from "sonner"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { updateDisplayName, updateWorkspaceName } from "@/lib/actions"
+import { ThemeToggle } from "@/components/ui/ThemeToggle"
 import {
   User, Building2, Palette, Bell, Sun, Moon, Monitor,
   Save, Loader2, Camera, Zap, CheckCircle, Shield,
@@ -816,11 +817,12 @@ export function SettingsClient({ user, workspace, members, userRole, pendingInvi
     <div className="flex-1 overflow-auto">
 
       {/* Topbar */}
-      <div className="h-[50px] border-b border-border flex items-center pl-14 pr-5 md:px-5 bg-background sticky top-0 z-10">
+      <div className="h-[50px] border-b border-border flex items-center justify-between pl-14 pr-5 md:px-5 bg-background sticky top-0 z-10">
         <div className="flex items-center gap-2">
           <span className="text-[13px] text-muted-foreground hidden sm:inline">Workspace /</span>
           <span className="text-[13px] font-semibold">Settings</span>
         </div>
+        <ThemeToggle />
       </div>
 
       <div className="max-w-3xl mx-auto p-4 sm:p-6 sm:pt-8">

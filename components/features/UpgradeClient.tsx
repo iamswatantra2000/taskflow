@@ -8,6 +8,7 @@ import {
   BarChart3, Activity, Lock, Star,
 } from "lucide-react"
 import { PaymentModal } from "./PaymentModal"
+import { ThemeToggle } from "@/components/ui/ThemeToggle"
 import { ContactSalesModal } from "./ContactSalesModal"
 
 interface Props {
@@ -69,17 +70,20 @@ export function UpgradeClient({ userId, currentPlan }: Props) {
     <div className="flex-1 flex flex-col min-h-0 overflow-auto">
 
       {/* ── Top bar ── */}
-      <div className="h-[50px] border-b border-border flex items-center gap-3 pl-14 pr-4 md:px-5 flex-shrink-0 bg-background z-10">
-        <button
-          type="button"
-          onClick={() => router.back()}
-          className="flex items-center gap-1.5 text-[12px] text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <ArrowLeft size={13} />
-          Back
-        </button>
-        <span className="text-slate-300 dark:text-[#2a2a2a]">/</span>
-        <span className="text-[13px] font-semibold text-foreground">Upgrade plan</span>
+      <div className="h-[50px] border-b border-border flex items-center justify-between pl-14 pr-4 md:px-5 flex-shrink-0 bg-background z-10">
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="flex items-center gap-1.5 text-[12px] text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft size={13} />
+            Back
+          </button>
+          <span className="text-slate-300 dark:text-[#2a2a2a]">/</span>
+          <span className="text-[13px] font-semibold text-foreground">Upgrade plan</span>
+        </div>
+        <ThemeToggle />
       </div>
 
       <div className="flex-1 overflow-auto">

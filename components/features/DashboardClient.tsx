@@ -15,6 +15,7 @@ import { ProfileDropdown } from "./ProfileDropdown";
 import { toast } from "sonner";
 import { AnimatedCounter } from "./AnimatedCounter"
 import { NotificationBell } from "./NotificationBell"
+import { ThemeToggle } from "@/components/ui/ThemeToggle"
 import { checkDueDateReminders } from "@/lib/notification-actions";
 
 type Task = {
@@ -228,6 +229,7 @@ export function DashboardClient({
 					)}
 
 					<NotificationBell />
+				<ThemeToggle />
 				<ProfileDropdown user={user} />
 				</div>
 			</div>
