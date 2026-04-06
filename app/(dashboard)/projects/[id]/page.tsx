@@ -59,6 +59,7 @@ export default async function ProjectPage({
       project={project}
       tasks={projectTasks}
       allProjects={allProjects}
+      currentUser={{ userId: session.user.id, name: session.user.name }}
     />
   )
 }

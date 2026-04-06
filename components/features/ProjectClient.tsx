@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils"
 import { NewTaskDialog } from "./NewTaskDialog"
 import { DeleteTaskButton } from "./DeleteTaskButton"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { PresenceAvatars } from "./PresenceAvatars"
 
 type Task = {
   id:          string
@@ -32,6 +33,7 @@ type Props = {
   project:     Project
   tasks:       Task[]
   allProjects: { id: string; name: string; color: string }[]
+  currentUser: { userId: string; name: string }
 }
 
 type ViewType = "board" | "calendar" | "timeline"
@@ -460,7 +462,7 @@ function TimelineView({ tasks }: { tasks: Task[] }) {
 }
 
 // ——— Main ProjectClient ———
-export function ProjectClient({ project, tasks, allProjects }: Props) {
+export function ProjectClient({ project, tasks, allProjects, currentUser }: Props) {
   const [view, setView] = useState<ViewType>("board")
 
   const views = [
@@ -504,6 +506,8 @@ export function ProjectClient({ project, tasks, allProjects }: Props) {
               </button>
             ))}
           </div>
+
+          <PresenceAvatars projectId={project.id} currentUser={currentUser} />
 
           <NewTaskDialog projectId={project.id}>
             <div className="h-7 px-2 sm:px-3 text-xs bg-indigo-600 hover:bg-indigo-500 text-white rounded-md cursor-pointer flex items-center font-medium transition-colors">
