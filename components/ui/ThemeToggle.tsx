@@ -12,13 +12,27 @@ export function ThemeToggle() {
   useEffect(() => { setMounted(true) }, [])
 
   // Avoid hydration mismatch — render a placeholder until mounted
-  if (!mounted) return <div className="w-7 h-7 rounded-[8px]" />
+  if (!mounted) return <div className="w-7 h-7 rounded-lg" />
 
   const isDark = resolvedTheme === "dark"
 
   function toggle() {
-    setSpinning(true)
+    // Suppress all transitions while the theme class swaps to prevent
+    // hundreds of elements animating at once (causes perceived lag)
+    const style = document.createElement("style")
+    style.dataset.themeSwitch = "1"
+    style.textContent = "*,*::before,*::after{transition:none!important}"
+    document.head.appendChild(style)
+
     setTheme(isDark ? "light" : "dark")
+
+    // Double rAF ensures the browser paints the new theme before
+    // transitions are restored, so re-enabling is invisible
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => document.head.removeChild(style))
+    )
+
+    setSpinning(true)
     setTimeout(() => setSpinning(false), 350)
   }
 
@@ -28,8 +42,8 @@ export function ThemeToggle() {
       onClick={toggle}
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
       className={[
-        "relative w-7 h-7 flex items-center justify-center rounded-[8px]",
-        "transition-all duration-200 flex-shrink-0",
+        "relative w-7 h-7 flex items-center justify-center rounded-lg",
+        "transition-all duration-200 shrink-0",
         isDark
           ? [
               "bg-amber-950/40 hover:bg-amber-950/70",
@@ -47,7 +61,7 @@ export function ThemeToggle() {
     >
       <span
         style={{ display: "flex", transition: "transform 350ms cubic-bezier(.4,0,.2,1)" }}
-        className={spinning ? "rotate-[200deg]" : "rotate-0"}
+        className={spinning ? "rotate-200" : "rotate-0"}
       >
         {isDark
           ? <Sun  size={13} strokeWidth={2.2} />
