@@ -27,6 +27,7 @@ type Task = {
 	assigneeId: string | null;
 	projectId: string;
 	dueDate: Date | null;
+	updatedAt: Date | null;
 };
 
 type Column = {

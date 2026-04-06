@@ -57,7 +57,8 @@ export default async function DashboardPage({ searchParams }: PageProps) {
           priority:    tasks.priority,
           assigneeId:  tasks.assigneeId,
           projectId:   tasks.projectId,
-          dueDate:     tasks.dueDate,    // ← this is the key fix
+          dueDate:     tasks.dueDate,
+          updatedAt:   tasks.updatedAt,
         })
         .from(tasks)
         .where(inArray(tasks.projectId, userProjects.map((p) => p.id)))

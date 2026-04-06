@@ -9,6 +9,8 @@ import { NewTaskDialog } from "./NewTaskDialog"
 import { DeleteTaskButton } from "./DeleteTaskButton"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { PresenceAvatars } from "./PresenceAvatars"
+import { getDecayLevel, getDecayDays, decayBorderClass, decayBadgeClass } from "@/lib/decay"
+import { Clock } from "lucide-react"
 
 type Task = {
   id:          string
@@ -20,6 +22,7 @@ type Task = {
   projectId:   string
   dueDate:     Date | null
   createdAt:   Date
+  updatedAt:   Date | null
 }
 
 type Project = {
@@ -98,12 +101,18 @@ function BoardView({ tasks, project }: { tasks: Task[]; project: Project }) {
             </div>
 
             {colTasks.map((task) => {
-              const priority = priorityConfig[task.priority as keyof typeof priorityConfig]
-              const overdue  = isOverdue(task.dueDate) && task.status !== "DONE"
+              const priority   = priorityConfig[task.priority as keyof typeof priorityConfig]
+              const overdue    = isOverdue(task.dueDate) && task.status !== "DONE"
+              const decayLevel = getDecayLevel(task.updatedAt, task.status)
+              const decayDays  = decayLevel > 0 ? getDecayDays(task.updatedAt) : 0
               return (
                 <div
                   key={task.id}
-                  className={`group bg-white dark:bg-[#161616] border border-slate-100 dark:border-[#222] rounded-[8px] p-3 hover:border-slate-200 dark:hover:border-[#333] transition-all
+                  className={`group bg-white dark:bg-[#161616] rounded-[8px] p-3 transition-all border
+                    ${decayLevel > 0
+                      ? decayBorderClass[decayLevel]
+                      : "border-slate-100 dark:border-[#222] hover:border-slate-200 dark:hover:border-[#333]"
+                    }
                     ${task.status === "IN_PROGRESS" ? "border-l-2 border-l-indigo-500" : ""}
                     ${task.status === "DONE" ? "opacity-50" : ""}
                   `}
@@ -112,10 +121,21 @@ function BoardView({ tasks, project }: { tasks: Task[]; project: Project }) {
                     <p className="text-[12px] text-slate-700 dark:text-[#ccc] leading-[1.45] flex-1">{task.title}</p>
                     <DeleteTaskButton taskId={task.id} />
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className={`text-[10px] font-medium px-[7px] py-[2px] rounded-[5px] border ${priority?.class}`}>
-                      {priority?.label}
-                    </span>
+                  <div className="flex items-center justify-between gap-1">
+                    <div className="flex items-center gap-1.5">
+                      <span className={`text-[10px] font-medium px-[7px] py-[2px] rounded-[5px] border ${priority?.class}`}>
+                        {priority?.label}
+                      </span>
+                      {decayLevel > 0 && (
+                        <div
+                          title={`No activity for ${decayDays} day${decayDays !== 1 ? "s" : ""}`}
+                          className={`inline-flex items-center gap-[3px] text-[10px] font-semibold px-1.5 py-[2px] rounded-full border ${decayBadgeClass[decayLevel]}`}
+                        >
+                          <Clock size={8} className="flex-shrink-0" />
+                          {decayDays}d
+                        </div>
+                      )}
+                    </div>
                     {task.dueDate && (
                       <span className={`text-[10px] ${overdue ? "text-red-400" : "text-slate-400 dark:text-[#555]"}`}>
                         {formatDate(task.dueDate)}

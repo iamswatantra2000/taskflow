@@ -21,7 +21,8 @@ import {
   useSortable,
 } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { CalendarDays, ArrowDownToLine } from "lucide-react"
+import { CalendarDays, ArrowDownToLine, Clock } from "lucide-react"
+import { getDecayLevel, getDecayDays, decayBorderClass, decayBadgeClass } from "@/lib/decay"
 import { DeleteTaskButton } from "./DeleteTaskButton"
 import { TaskDetailDialog } from "./TaskDetailDialog"
 import { TaskProjectMenu } from "./TaskProjectMenu"
@@ -39,6 +40,7 @@ type Task = {
   assigneeId:  string | null
   projectId:   string
   dueDate:     Date | null
+  updatedAt:   Date | null
 }
 
 type Column = {
@@ -102,6 +104,8 @@ function TaskCard({
   const project    = projects.find((p) => p.id === task.projectId)
   const dateMeta   = task.dueDate ? getDateMeta(task.dueDate, task.status) : null
   const isDone     = task.status === "DONE"
+  const decayLevel = getDecayLevel(task.updatedAt, task.status)
+  const decayDays  = decayLevel > 0 ? getDecayDays(task.updatedAt) : 0
 
   const {
     attributes,
@@ -127,10 +131,12 @@ function TaskCard({
     <div
       ref={setNodeRef}
       style={style}
-      className={`group relative bg-white dark:bg-[#111] border border-slate-100 dark:border-white/[0.07] rounded-[10px] p-3.5
-        hover:border-slate-200 dark:hover:border-white/[0.13] hover:bg-slate-50 dark:hover:bg-[#141414]
+      className={`group relative bg-white dark:bg-[#111] rounded-[10px] p-3.5
+        hover:bg-slate-50 dark:hover:bg-[#141414]
         hover:-translate-y-[1px] hover:shadow-[0_6px_20px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_6px_20px_rgba(0,0,0,0.45)]
-        transition-all duration-150
+        transition-all duration-150 border
+        ${decayLevel > 0 ? decayBorderClass[decayLevel] : "border-slate-100 dark:border-white/[0.07] hover:border-slate-200 dark:hover:border-white/[0.13]"}
+        ${decayLevel === 3 ? "animate-pulse-slow" : ""}
         ${leftAccent}
         ${isDone ? "opacity-55" : ""}
       `}
@@ -180,9 +186,22 @@ function TaskCard({
       <div className="flex items-center justify-between gap-2 pl-[17px]">
 
         {/* Priority pill with colored dot */}
-        <div className={`inline-flex items-center gap-1.5 text-[10.5px] font-semibold px-2 py-[3px] rounded-full border ${priority.pill}`}>
-          <span className={`w-[5px] h-[5px] rounded-full flex-shrink-0 ${priority.dot}`} />
-          {priority.label}
+        <div className="flex items-center gap-1.5 min-w-0">
+          <div className={`inline-flex items-center gap-1.5 text-[10.5px] font-semibold px-2 py-[3px] rounded-full border ${priority.pill}`}>
+            <span className={`w-[5px] h-[5px] rounded-full flex-shrink-0 ${priority.dot}`} />
+            {priority.label}
+          </div>
+
+          {/* Decay badge */}
+          {decayLevel > 0 && (
+            <div
+              title={`No activity for ${decayDays} day${decayDays !== 1 ? "s" : ""}`}
+              className={`inline-flex items-center gap-[3px] text-[10px] font-semibold px-1.5 py-[3px] rounded-full border ${decayBadgeClass[decayLevel]}`}
+            >
+              <Clock size={8} className="flex-shrink-0" />
+              {decayDays}d
+            </div>
+          )}
         </div>
 
         {/* Right side: date + actions */}
@@ -415,17 +434,33 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects, m
                 <DroppableColumn col={col}>
 
                   {/* Column header */}
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <div className={`w-2 h-2 rounded-full flex-shrink-0 ${col.dot}`} />
-                      <span className={`text-[12px] font-semibold tracking-tight ${(columnStyles[col.id] ?? columnStyles.TODO).labelColor}`}>
-                        {col.label}
-                      </span>
-                    </div>
-                    <span className={`text-[10px] font-semibold px-2 py-[2px] rounded-full border ${(columnStyles[col.id] ?? columnStyles.TODO).countStyle}`}>
-                      {col.tasks.length}
-                    </span>
-                  </div>
+                  {(() => {
+                    const staleCount = col.tasks.filter(
+                      (t) => getDecayLevel(t.updatedAt, t.status) > 0
+                    ).length
+                    return (
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <div className={`w-2 h-2 rounded-full flex-shrink-0 ${col.dot}`} />
+                          <span className={`text-[12px] font-semibold tracking-tight ${(columnStyles[col.id] ?? columnStyles.TODO).labelColor}`}>
+                            {col.label}
+                          </span>
+                          {staleCount > 0 && (
+                            <div
+                              title={`${staleCount} stale task${staleCount !== 1 ? "s" : ""} — no activity in 3+ days`}
+                              className="inline-flex items-center gap-[3px] text-[9.5px] font-semibold px-1.5 py-[2px] rounded-full border text-amber-600/80 bg-amber-50 border-amber-200/80 dark:text-amber-400/70 dark:bg-amber-500/[0.07] dark:border-amber-500/20"
+                            >
+                              <Clock size={8} />
+                              {staleCount}
+                            </div>
+                          )}
+                        </div>
+                        <span className={`text-[10px] font-semibold px-2 py-[2px] rounded-full border ${(columnStyles[col.id] ?? columnStyles.TODO).countStyle}`}>
+                          {col.tasks.length}
+                        </span>
+                      </div>
+                    )
+                  })()}
 
                   {/* Task cards */}
                   {col.tasks.map((task) => (

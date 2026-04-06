@@ -50,6 +50,7 @@ export default async function ProjectPage({
       projectId:   tasks.projectId,
       dueDate:     tasks.dueDate,
       createdAt:   tasks.createdAt,
+      updatedAt:   tasks.updatedAt,
     })
     .from(tasks)
     .where(eq(tasks.projectId, project.id))

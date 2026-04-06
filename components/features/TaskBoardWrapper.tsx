@@ -36,8 +36,9 @@ type Column = {
     status:      string
     priority:    string
     assigneeId:  string | null
-    projectId:   string 
-    dueDate:     Date | null   // ← add this
+    projectId:   string
+    dueDate:     Date | null
+    updatedAt:   Date | null
   }[]
   dot: string
 }
