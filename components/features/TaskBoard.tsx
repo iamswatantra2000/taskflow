@@ -149,16 +149,8 @@ function TaskCard({
         ${isDone ? "opacity-55" : ""}
       `}
     >
-      {/* Project color dot — top right corner */}
-      {project && (
-        <div
-          className="absolute top-3 right-3 w-[6px] h-[6px] rounded-full opacity-60"
-          style={{ background: project.color }}
-        />
-      )}
-
-      {/* Top row: drag handle + title */}
-      <div className="flex items-start gap-2 mb-3 pr-3">
+      {/* Top row: drag handle + title + action buttons */}
+      <div className="flex items-start gap-2 mb-3">
         {/* Drag handle — only visible on hover */}
         <div
           {...attributes}
@@ -188,9 +180,27 @@ function TaskCard({
         >
           {task.title}
         </p>
+
+        {/* Action buttons — top right, hidden until hover */}
+        <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); onFocus(task) }}
+            title="Focus on this task"
+            className="w-6 h-6 rounded-[5px] flex items-center justify-center text-slate-400 hover:text-indigo-500 dark:text-[#444] dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors"
+          >
+            <Focus size={11} />
+          </button>
+          <TaskProjectMenu
+            taskId={task.id}
+            currentProjectId={task.projectId}
+            projects={projects}
+          />
+          <DeleteTaskButton taskId={task.id} />
+        </div>
       </div>
 
-      {/* Bottom row: priority badge + date + actions */}
+      {/* Bottom row: priority badge + date + assignee */}
       <div className="flex items-center justify-between gap-2 pl-[17px]">
 
         {/* Priority pill with colored dot */}
@@ -212,7 +222,7 @@ function TaskCard({
           )}
         </div>
 
-        {/* Right side: date + assignee + actions */}
+        {/* Right side: date + assignee */}
         <div className="flex items-center gap-2 ml-auto">
           {dateMeta && (
             <div className={`flex items-center gap-1 ${dateMeta.color}`}>
@@ -221,30 +231,21 @@ function TaskCard({
             </div>
           )}
 
+          {/* Project color dot */}
+          {project && (
+            <div
+              title={project.name}
+              className="w-[6px] h-[6px] rounded-full opacity-60 flex-shrink-0"
+              style={{ background: project.color }}
+            />
+          )}
+
           <AssigneeButton
             taskId={task.id}
             assigneeId={task.assigneeId}
             members={members}
             onAssign={onAssign}
           />
-
-          {/* Action buttons — hidden until hover */}
-          <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); onFocus(task) }}
-              title="Focus on this task"
-              className="w-6 h-6 rounded-[5px] flex items-center justify-center text-slate-400 hover:text-indigo-500 dark:text-[#444] dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors"
-            >
-              <Focus size={11} />
-            </button>
-            <TaskProjectMenu
-              taskId={task.id}
-              currentProjectId={task.projectId}
-              projects={projects}
-            />
-            <DeleteTaskButton taskId={task.id} />
-          </div>
         </div>
       </div>
     </div>
