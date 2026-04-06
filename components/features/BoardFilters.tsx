@@ -72,7 +72,7 @@ export function BoardFilters({ onFilterChange, compact = false }: Props) {
 					}}
 					className={`w-8 h-8 flex items-center justify-center rounded-[7px] border transition-colors ${
 						search
-							? "bg-indigo-950 border-indigo-800 text-indigo-400"
+							? "bg-indigo-100 border-indigo-200 text-indigo-700 dark:bg-indigo-950 dark:border-indigo-800 dark:text-indigo-400"
 							: "border-slate-200 dark:border-[#2a2a2a] text-slate-500 dark:text-[#888] hover:border-slate-300 dark:hover:border-[#3a3a3a] hover:text-slate-900 dark:hover:text-[#ccc]"
 					}`}
 				>
@@ -97,7 +97,7 @@ export function BoardFilters({ onFilterChange, compact = false }: Props) {
 					onClick={() => setOpen(!open)}
 					className={`w-8 h-8 flex items-center justify-center rounded-[7px] border transition-colors relative ${
 						priorities.length > 0
-							? "bg-indigo-950 border-indigo-800 text-indigo-400"
+							? "bg-indigo-100 border-indigo-200 text-indigo-700 dark:bg-indigo-950 dark:border-indigo-800 dark:text-indigo-400"
 							: "border-slate-200 dark:border-[#2a2a2a] text-slate-500 dark:text-[#888] hover:border-slate-300 dark:hover:border-[#3a3a3a] hover:text-slate-900 dark:hover:text-[#ccc]"
 					}`}
 				>
@@ -180,7 +180,7 @@ export function BoardFilters({ onFilterChange, compact = false }: Props) {
 					onClick={() => setOpen(!open)}
 					className={`flex items-center gap-1.5 h-7 px-3 text-[12px] rounded-[7px] border transition-colors ${
 						activeCount > 0
-							? "bg-indigo-950 border-indigo-800 text-indigo-400"
+							? "bg-indigo-100 border-indigo-200 text-indigo-700 dark:bg-indigo-950 dark:border-indigo-800 dark:text-indigo-400"
 							: "bg-transparent border-slate-200 dark:border-[#2a2a2a] text-slate-500 dark:text-[#888] hover:border-slate-300 dark:hover:border-[#3a3a3a] hover:text-slate-900 dark:hover:text-[#ccc]"
 					}`}
 				>

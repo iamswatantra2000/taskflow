@@ -6,10 +6,10 @@ import { DeleteTaskButton } from "@/components/features/DeleteTaskButton"
 
 const statusConfig = {
   TODO:        { label: "Todo",        class: "bg-slate-100 text-slate-500 border-slate-200 dark:bg-[#1a1a1a] dark:text-[#888] dark:border-[#2a2a2a]"            },
-  IN_PROGRESS: { label: "In progress", class: "bg-indigo-950 text-indigo-400 border-indigo-900"      },
-  IN_REVIEW:   { label: "In review",   class: "bg-amber-950 text-amber-400 border-amber-900"         },
-  DONE:        { label: "Done",        class: "bg-emerald-950 text-emerald-400 border-emerald-900"   },
-  CANCELLED:   { label: "Cancelled",   class: "bg-red-950 text-red-400 border-red-900"               },
+  IN_PROGRESS: { label: "In progress", class: "bg-indigo-100 text-indigo-700 border-indigo-200 dark:bg-indigo-950 dark:text-indigo-400 dark:border-indigo-900"      },
+  IN_REVIEW:   { label: "In review",   class: "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-400 dark:border-amber-900"         },
+  DONE:        { label: "Done",        class: "bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-400 dark:border-emerald-900"   },
+  CANCELLED:   { label: "Cancelled",   class: "bg-red-100 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-400 dark:border-red-900"               },
 }
 
 const priorityConfig = {

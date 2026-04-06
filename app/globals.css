@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* ── Dark mode: use .dark class (managed by next-themes), not system preference ── */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   :root {
     --background: 210 20% 97%;

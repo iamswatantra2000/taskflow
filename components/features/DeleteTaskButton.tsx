@@ -48,7 +48,7 @@ export function DeleteTaskButton({ taskId }: { taskId: string }) {
         onPointerDown={(e) => e.stopPropagation()}
         onClick={handleConfirm}
         disabled={loading}
-        className="p-1 rounded-md text-emerald-400 hover:bg-emerald-950 transition-all"
+        className="p-1 rounded-md text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950 transition-all"
       >
         <Check size={11} />
       </button>

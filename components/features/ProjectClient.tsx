@@ -226,7 +226,7 @@ function CalendarView({ tasks }: { tasks: Task[] }) {
             <div
               key={day}
               className={`min-h-[90px] border-r border-b border-slate-100 dark:border-[#1a1a1a] p-1.5 transition-colors hover:bg-slate-50 dark:hover:bg-[#141414] ${
-                isToday ? "bg-indigo-950/20" : ""
+                isToday ? "bg-indigo-50 dark:bg-indigo-950/20" : ""
               }`}
             >
               {/* Day number */}
@@ -251,10 +251,10 @@ function CalendarView({ tasks }: { tasks: Task[] }) {
                       key={task.id}
                       className={`text-[10px] px-1.5 py-0.5 rounded-[4px] truncate border-l-2 ${
                         task.status === "DONE"
-                          ? "bg-emerald-950/30 text-emerald-400/60 border-emerald-800 line-through"
+                          ? "bg-emerald-50 text-emerald-700/60 border-emerald-300 line-through dark:bg-emerald-950/30 dark:text-emerald-400/60 dark:border-emerald-800"
                           : overdue
-                          ? "bg-red-950/30 text-red-400 border-red-800"
-                          : "bg-indigo-950/30 text-indigo-300 border-indigo-700"
+                          ? "bg-red-50 text-red-600 border-red-300 dark:bg-red-950/30 dark:text-red-400 dark:border-red-800"
+                          : "bg-indigo-50 text-indigo-600 border-indigo-300 dark:bg-indigo-950/30 dark:text-indigo-300 dark:border-indigo-700"
                       }`}
                       title={task.title}
                     >

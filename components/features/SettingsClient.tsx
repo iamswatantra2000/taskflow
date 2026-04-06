@@ -153,7 +153,7 @@ const PLAN_META: Record<string, {
     badgeBg:  "bg-indigo-500/[0.12] border-indigo-500/25",
     border:   "border-indigo-500/20",
     glow:     "rgba(99,102,241,0.08)",
-    cardBg:   "bg-indigo-950/[0.07]",
+    cardBg:   "bg-indigo-50/80 dark:bg-indigo-950/[0.07]",
     features: ["Unlimited projects", "Advanced filters", "Analytics", "Activity feed", "Priority support"],
     PlanIcon: Sparkles,
   },
@@ -163,7 +163,7 @@ const PLAN_META: Record<string, {
     badgeBg:  "bg-violet-500/[0.12] border-violet-500/25",
     border:   "border-violet-500/20",
     glow:     "rgba(139,92,246,0.08)",
-    cardBg:   "bg-violet-950/[0.07]",
+    cardBg:   "bg-violet-50/80 dark:bg-violet-950/[0.07]",
     features: ["Everything in Pro", "SSO / SAML", "Audit logs", "SLA guarantee", "Dedicated support"],
     PlanIcon: Shield,
   },
@@ -359,9 +359,9 @@ function ProfileTab({ user }: { user: Props["user"] }) {
 
       {/* Danger zone */}
       <div
-        className="rounded-[16px] p-6 border border-red-900/30 bg-red-950/[0.05]
-          hover:border-red-900/50 hover:-translate-y-[1px]
-          hover:shadow-[0_16px_48px_rgba(127,29,29,0.15)]
+        className="rounded-[16px] p-6 border border-red-200 bg-red-50/50 dark:border-red-900/30 dark:bg-red-950/[0.05]
+          hover:border-red-300 dark:hover:border-red-900/50 hover:-translate-y-[1px]
+          hover:shadow-[0_16px_48px_rgba(127,29,29,0.08)] dark:hover:shadow-[0_16px_48px_rgba(127,29,29,0.15)]
           transition-all duration-200"
       >
         <SectionHead
@@ -376,9 +376,9 @@ function ProfileTab({ user }: { user: Props["user"] }) {
         </p>
         <button
           type="button"
-          className="flex items-center gap-2 h-9 px-5 text-[12.5px] font-semibold border border-red-900/40
-            text-red-400 hover:bg-red-950/40 rounded-[10px]
-            shadow-[0_4px_0_0_rgba(69,10,10,0.5)] active:translate-y-[3px] active:shadow-none
+          className="flex items-center gap-2 h-9 px-5 text-[12.5px] font-semibold border border-red-200 dark:border-red-900/40
+            text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-950/40 rounded-[10px]
+            shadow-[0_4px_0_0_rgba(239,68,68,0.2)] dark:shadow-[0_4px_0_0_rgba(69,10,10,0.5)] active:translate-y-[3px] active:shadow-none
             transition-all duration-100"
           onClick={() => toast.error("Please contact support to delete your account")}
         >

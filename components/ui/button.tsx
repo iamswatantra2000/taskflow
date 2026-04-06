@@ -24,13 +24,13 @@ const buttonVariants = cva(
           "bg-slate-100 dark:bg-[#181818] hover:bg-slate-200 dark:hover:bg-[#1e1e1e] text-slate-500 dark:text-[#777] hover:text-slate-700 dark:hover:text-[#aaa] border-slate-200 dark:border-white/8 shadow-[0_3px_0_0_rgba(0,0,0,0.08)] dark:shadow-[0_3px_0_0_rgba(0,0,0,0.55)] active:shadow-none",
         // ── Ghost — no depth, just hover fill ────────────────────
         ghost:
-          "border-transparent bg-transparent hover:bg-white/[0.05] text-muted-foreground hover:text-foreground active:translate-y-0",
+          "border-transparent bg-transparent hover:bg-slate-100 dark:hover:bg-white/[0.05] text-muted-foreground hover:text-foreground active:translate-y-0",
         // ── Destructive ──────────────────────────────────────────
         destructive:
-          "bg-red-950/30 hover:bg-red-950/50 text-red-400 border-red-900/60 shadow-[0_3px_0_0_rgba(69,10,10,0.8)] active:shadow-none",
+          "bg-red-50 hover:bg-red-100 text-red-600 border-red-200 shadow-[0_3px_0_0_rgba(239,68,68,0.2)] dark:bg-red-950/30 dark:hover:bg-red-950/50 dark:text-red-400 dark:border-red-900/60 dark:shadow-[0_3px_0_0_rgba(69,10,10,0.8)] active:shadow-none",
         // ── Link — inline text ───────────────────────────────────
         link:
-          "border-none rounded-none text-indigo-400 hover:underline underline-offset-4 active:translate-y-0",
+          "border-none rounded-none text-indigo-600 dark:text-indigo-400 hover:underline underline-offset-4 active:translate-y-0",
       },
       size: {
         default: "h-8 px-3.5",

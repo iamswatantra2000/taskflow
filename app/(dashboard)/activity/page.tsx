@@ -21,12 +21,12 @@ function timeAgo(date: Date) {
 }
 
 const activityConfig = {
-  TASK_CREATED:    { icon: CheckSquare, color: "text-indigo-400",  bg: "bg-indigo-950/50"  },
-  TASK_UPDATED:    { icon: Pencil,      color: "text-amber-400",   bg: "bg-amber-950/50"   },
-  TASK_DELETED:    { icon: Trash2,      color: "text-red-400",     bg: "bg-red-950/50"     },
-  TASK_MOVED:      { icon: MoveRight,   color: "text-emerald-400", bg: "bg-emerald-950/50" },
-  PROJECT_CREATED: { icon: FolderPlus,  color: "text-violet-400",  bg: "bg-violet-950/50"  },
-  MEMBER_JOINED:   { icon: UserPlus,    color: "text-blue-400",    bg: "bg-blue-950/50"    },
+  TASK_CREATED:    { icon: CheckSquare, color: "text-indigo-600 dark:text-indigo-400",  bg: "bg-indigo-100 dark:bg-indigo-950/50"  },
+  TASK_UPDATED:    { icon: Pencil,      color: "text-amber-600 dark:text-amber-400",   bg: "bg-amber-100 dark:bg-amber-950/50"   },
+  TASK_DELETED:    { icon: Trash2,      color: "text-red-600 dark:text-red-400",       bg: "bg-red-100 dark:bg-red-950/50"     },
+  TASK_MOVED:      { icon: MoveRight,   color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-100 dark:bg-emerald-950/50" },
+  PROJECT_CREATED: { icon: FolderPlus,  color: "text-violet-600 dark:text-violet-400", bg: "bg-violet-100 dark:bg-violet-950/50"  },
+  MEMBER_JOINED:   { icon: UserPlus,    color: "text-blue-600 dark:text-blue-400",     bg: "bg-blue-100 dark:bg-blue-950/50"    },
 }
 
 export default async function ActivityPage() {
