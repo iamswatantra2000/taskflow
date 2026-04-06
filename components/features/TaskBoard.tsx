@@ -27,7 +27,8 @@ import { DeleteTaskButton } from "./DeleteTaskButton"
 import { TaskDetailDialog } from "./TaskDetailDialog"
 import { TaskProjectMenu } from "./TaskProjectMenu"
 import { FocusMode } from "./FocusMode"
-import { updateTaskStatus } from "@/lib/actions"
+import { updateTaskStatus, reassignTask } from "@/lib/actions"
+import { AssigneeButton } from "./AssigneeButton"
 import { toast } from "sonner"
 import type { FilterState } from "./BoardFilters"
 import { fireConfetti } from "@/lib/confetti"
@@ -97,11 +98,15 @@ function TaskCard({
   onSelect,
   onFocus,
   projects,
+  members,
+  onAssign,
 }: {
   task:     Task
   onSelect: (task: Task) => void
   onFocus:  (task: Task) => void
   projects: { id: string; name: string; color: string }[]
+  members:  { id: string; name: string }[]
+  onAssign: (taskId: string, newId: string | null) => void
 }) {
   const priority   = priorityConfig[task.priority as keyof typeof priorityConfig]
   const project    = projects.find((p) => p.id === task.projectId)
@@ -207,7 +212,7 @@ function TaskCard({
           )}
         </div>
 
-        {/* Right side: date + actions */}
+        {/* Right side: date + assignee + actions */}
         <div className="flex items-center gap-2 ml-auto">
           {dateMeta && (
             <div className={`flex items-center gap-1 ${dateMeta.color}`}>
@@ -215,6 +220,13 @@ function TaskCard({
               <span className="text-[10.5px] font-medium">{dateMeta.label}</span>
             </div>
           )}
+
+          <AssigneeButton
+            taskId={task.id}
+            assigneeId={task.assigneeId}
+            members={members}
+            onAssign={onAssign}
+          />
 
           {/* Action buttons — hidden until hover */}
           <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -379,6 +391,21 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects, m
     })
   }
 
+  async function handleAssign(taskId: string, newId: string | null) {
+    setBoardColumns((prev) =>
+      prev.map((col) => ({
+        ...col,
+        tasks: col.tasks.map((t) => t.id === taskId ? { ...t, assigneeId: newId } : t),
+      }))
+    )
+    try {
+      await reassignTask(taskId, newId)
+    } catch {
+      toast.error("Failed to reassign task")
+      setBoardColumns(columns)
+    }
+  }
+
   async function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event
     setActiveTask(null)
@@ -482,6 +509,8 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects, m
                       onSelect={setSelectedTask}
                       onFocus={setFocusTask}
                       projects={projects}
+                      members={members}
+                      onAssign={handleAssign}
                     />
                   ))}
 

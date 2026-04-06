@@ -156,6 +156,13 @@ Pro gates: Activity feed, Analytics, AI tasks button, some settings
       Auto-saves on exit if > 10s elapsed. Manual "Save now" button mid-session.
       Session history shown in TaskDetailDialog with total focused time summary.
 
+- [x] **Task Assignment from Board** — assign tasks directly from kanban cards without opening the detail dialog.
+      `AssigneeButton` component: avatar (initials + deterministic color) if assigned, dashed `+` if not.
+      Click opens an upward dropdown with all workspace members + unassign option + checkmark on current assignee.
+      Wired into `TaskBoard.tsx` (dashboard board) with optimistic update + `reassignTask` server action.
+      Wired into `ProjectClient.tsx` `BoardView` with local state optimistic update.
+      Members fetched in `app/(dashboard)/projects/[id]/page.tsx` and passed down.
+
 - [x] **Task Decay Indicators** — tasks untouched for 3+ days surface a visual decay signal.
       Level 1 (3–7d): subtle amber border + `🕐 Xd` badge. Level 2 (7–14d): stronger amber.
       Level 3 (14d+): orange border + slow pulse animation. DONE/CANCELLED excluded.
@@ -196,8 +203,11 @@ Pro gates: Activity feed, Analytics, AI tasks button, some settings
 | `components/features/TaskBoardWrapper.tsx` | Added `updatedAt` to task type |
 | `components/features/DashboardClient.tsx` | Added `updatedAt` to task type |
 | `app/(dashboard)/dashboard/page.tsx` | Added `updatedAt` to tasks SELECT |
-| `app/(dashboard)/projects/[id]/page.tsx` | Added `updatedAt` to tasks SELECT |
+| `app/(dashboard)/projects/[id]/page.tsx` | Added `updatedAt` + members query; pass `members` to `ProjectClient` |
 | `app/globals.css` | Added `animate-pulse-slow` keyframe for level-3 decay |
+| `components/features/AssigneeButton.tsx` | **Created** — shared task assignee dropdown for kanban cards |
+| `components/features/TaskBoard.tsx` | Wired `AssigneeButton` + `handleAssign` optimistic update |
+| `components/features/ProjectClient.tsx` | Wired `AssigneeButton` into `BoardView`; added `members` prop + local state |
 
 ---
 
@@ -210,22 +220,16 @@ Pro gates: Activity feed, Analytics, AI tasks button, some settings
 - Fixed theme toggle lag: suppress all CSS transitions during switch via temp `<style>` + double rAF
 - Applied canonical Tailwind classes (`rounded-lg`, `shrink-0`, `rotate-200`) per linter
 - **Presence avatars**: real-time "who's online" feature on project boards
-  - `lib/presenceStore.ts` — module-level Map, 45s TTL
-  - `app/api/presence/[projectId]/route.ts` — POST heartbeat + DELETE leave
-  - `hooks/usePresence.ts` — 20s heartbeat, sendBeacon on unmount
-  - `components/features/PresenceAvatars.tsx` — stacked avatars, pulsing dot, deterministic colors
 - **Workload Balancer** — "People" tab on dashboard; member rows, load badges, segmented bars, inline reassign
 - **Focus Mode** — full-screen Pomodoro overlay; circular ring, session notes, Mark as Done
 - **Task decay indicators** — stale tasks (3/7/14d thresholds) get amber→orange border + clock badge
-  - `lib/decay.ts` — shared utility (getDecayLevel, getDecayDays, Tailwind class maps)
-  - Applied to `TaskBoard.tsx` (drag-and-drop board) + `ProjectClient.tsx` (project detail board)
-  - Column headers show aggregate stale count badge
+- **Task Assignment from Board** — `AssigneeButton` component wired into dashboard `TaskBoard` and `ProjectClient` `BoardView`; optimistic updates with revert on failure
 
 ---
 
 ## Pending / Next Steps
 
-_No pending tasks as of last session. Update this section when new work begins._
+_No pending tasks. Update this section when new work begins._
 
 ---
 

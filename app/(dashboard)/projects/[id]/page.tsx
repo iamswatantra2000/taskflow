@@ -1,6 +1,6 @@
 // app/(dashboard)/projects/[id]/page.tsx
 import { requireAuth } from "@/lib/session"
-import { db, tasks, projects, workspaceMembers } from "@/lib/db"
+import { db, tasks, projects, workspaceMembers, users } from "@/lib/db"
 import { eq, and } from "drizzle-orm"
 import { notFound } from "next/navigation"
 import { ProjectClient } from "../../../../components/features/ProjectClient"
@@ -39,6 +39,12 @@ export default async function ProjectPage({
     .from(projects)
     .where(eq(projects.workspaceId, membership.workspaceId))
 
+  const memberRows = await db
+    .select({ id: users.id, name: users.name })
+    .from(workspaceMembers)
+    .innerJoin(users, eq(workspaceMembers.userId, users.id))
+    .where(eq(workspaceMembers.workspaceId, membership.workspaceId))
+
   const projectTasks = await db
     .select({
       id:          tasks.id,
@@ -61,6 +67,7 @@ export default async function ProjectPage({
       tasks={projectTasks}
       allProjects={allProjects}
       currentUser={{ userId: session.user.id, name: session.user.name }}
+      members={memberRows.map((m) => ({ id: m.id, name: m.name ?? "" }))}
     />
   )
 }

@@ -2,15 +2,16 @@
 "use client"
 
 import { useState } from "react"
-import { LayoutGrid, List, Calendar, GitBranch } from "lucide-react"
+import { LayoutGrid, Calendar, GitBranch, Clock } from "lucide-react"
 import { ThemeToggle } from "@/components/ui/ThemeToggle"
 import { cn } from "@/lib/utils"
 import { NewTaskDialog } from "./NewTaskDialog"
 import { DeleteTaskButton } from "./DeleteTaskButton"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { PresenceAvatars } from "./PresenceAvatars"
 import { getDecayLevel, getDecayDays, decayBorderClass, decayBadgeClass } from "@/lib/decay"
-import { Clock } from "lucide-react"
+import { AssigneeButton } from "./AssigneeButton"
+import { reassignTask } from "@/lib/actions"
+import { toast } from "sonner"
 
 type Task = {
   id:          string
@@ -37,6 +38,7 @@ type Props = {
   tasks:       Task[]
   allProjects: { id: string; name: string; color: string }[]
   currentUser: { userId: string; name: string }
+  members:     { id: string; name: string }[]
 }
 
 type ViewType = "board" | "calendar" | "timeline"
@@ -73,7 +75,17 @@ function isOverdue(date: Date | null) {
 }
 
 // ——— Board View ———
-function BoardView({ tasks, project }: { tasks: Task[]; project: Project }) {
+function BoardView({
+  tasks,
+  project,
+  members,
+  onAssign,
+}: {
+  tasks:    Task[]
+  project:  Project
+  members:  { id: string; name: string }[]
+  onAssign: (taskId: string, newId: string | null) => void
+}) {
   const columns = [
     { id: "TODO",        label: "Todo",        dot: "bg-slate-400 dark:bg-[#555]"      },
     { id: "IN_PROGRESS", label: "In progress", dot: "bg-indigo-500"  },
@@ -136,11 +148,19 @@ function BoardView({ tasks, project }: { tasks: Task[]; project: Project }) {
                         </div>
                       )}
                     </div>
-                    {task.dueDate && (
-                      <span className={`text-[10px] ${overdue ? "text-red-400" : "text-slate-400 dark:text-[#555]"}`}>
-                        {formatDate(task.dueDate)}
-                      </span>
-                    )}
+                    <div className="flex items-center gap-1.5">
+                      {task.dueDate && (
+                        <span className={`text-[10px] ${overdue ? "text-red-400" : "text-slate-400 dark:text-[#555]"}`}>
+                          {formatDate(task.dueDate)}
+                        </span>
+                      )}
+                      <AssigneeButton
+                        taskId={task.id}
+                        assigneeId={task.assigneeId}
+                        members={members}
+                        onAssign={onAssign}
+                      />
+                    </div>
                   </div>
                 </div>
               )
@@ -482,8 +502,21 @@ function TimelineView({ tasks }: { tasks: Task[] }) {
 }
 
 // ——— Main ProjectClient ———
-export function ProjectClient({ project, tasks, allProjects, currentUser }: Props) {
-  const [view, setView] = useState<ViewType>("board")
+export function ProjectClient({ project, tasks, allProjects, currentUser, members }: Props) {
+  const [view, setView]           = useState<ViewType>("board")
+  const [localTasks, setLocalTasks] = useState(tasks)
+
+  async function handleAssign(taskId: string, newId: string | null) {
+    setLocalTasks((prev) =>
+      prev.map((t) => t.id === taskId ? { ...t, assigneeId: newId } : t)
+    )
+    try {
+      await reassignTask(taskId, newId)
+    } catch {
+      toast.error("Failed to reassign task")
+      setLocalTasks(tasks)
+    }
+  }
 
   const views = [
     { id: "board",    label: "Board",    icon: LayoutGrid },
@@ -491,9 +524,9 @@ export function ProjectClient({ project, tasks, allProjects, currentUser }: Prop
     { id: "timeline", label: "Timeline", icon: GitBranch  },
   ]
 
-  const todoTasks       = tasks.filter((t) => t.status === "TODO")
-  const inProgressTasks = tasks.filter((t) => t.status === "IN_PROGRESS")
-  const doneTasks       = tasks.filter((t) => t.status === "DONE")
+  const todoTasks       = localTasks.filter((t) => t.status === "TODO")
+  const inProgressTasks = localTasks.filter((t) => t.status === "IN_PROGRESS")
+  const doneTasks       = localTasks.filter((t) => t.status === "DONE")
 
   return (
     <div className="flex-1 overflow-auto">
@@ -555,7 +588,7 @@ export function ProjectClient({ project, tasks, allProjects, currentUser }: Prop
               <p className="text-[13px] text-slate-500 dark:text-[#555] mt-1">{project.description}</p>
             )}
             <p className="text-[12px] text-slate-400 dark:text-[#444] mt-1">
-              {tasks.length} task{tasks.length !== 1 ? "s" : ""}
+              {localTasks.length} task{localTasks.length !== 1 ? "s" : ""}
             </p>
           </div>
         </div>
@@ -563,7 +596,7 @@ export function ProjectClient({ project, tasks, allProjects, currentUser }: Prop
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
           {[
-            { label: "Total",       value: tasks.length,         color: "text-slate-800 dark:text-[#e0e0e0]"   },
+            { label: "Total",       value: localTasks.length,         color: "text-slate-800 dark:text-[#e0e0e0]"   },
             { label: "In progress", value: inProgressTasks.length, color: "text-indigo-400"  },
             { label: "Completed",   value: doneTasks.length,     color: "text-emerald-400" },
             { label: "Todo",        value: todoTasks.length,     color: "text-amber-400"   },
@@ -578,9 +611,9 @@ export function ProjectClient({ project, tasks, allProjects, currentUser }: Prop
         </div>
 
         {/* View content */}
-        {view === "board"    && <BoardView    tasks={tasks} project={project} />}
-        {view === "calendar" && <CalendarView tasks={tasks} />}
-        {view === "timeline" && <TimelineView tasks={tasks} />}
+        {view === "board"    && <BoardView    tasks={localTasks} project={project} members={members} onAssign={handleAssign} />}
+        {view === "calendar" && <CalendarView tasks={localTasks} />}
+        {view === "timeline" && <TimelineView tasks={localTasks} />}
 
       </div>
     </div>
