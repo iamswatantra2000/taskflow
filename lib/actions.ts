@@ -1,7 +1,7 @@
 // lib/actions.ts
 "use server"
 
-import { db, tasks, projects, workspaces, workspaceMembers, users, activities } from "@/lib/db"
+import { db, tasks, projects, workspaces, workspaceMembers, users, activities, focusSessions } from "@/lib/db"
 import { requireAuth } from "@/lib/session"
 import { revalidatePath } from "next/cache"
 import { eq, inArray } from "drizzle-orm"
@@ -452,4 +452,23 @@ export async function upgradePlan(plan: "free" | "pro" | "enterprise") {
 
   revalidatePath("/settings")
   revalidatePath("/dashboard")
+}
+
+// ——— Save a focus session ———
+export async function saveFocusSession(data: {
+  taskId:    string
+  duration:  number   // seconds of active focus
+  completed: boolean  // true = timer reached 0 or task marked done
+  notes:     string
+}) {
+  const session = await requireAuth()
+  if (data.duration < 10) return  // ignore accidental opens under 10 seconds
+
+  await db.insert(focusSessions).values({
+    taskId:    data.taskId,
+    userId:    session.user.id!,
+    duration:  data.duration,
+    completed: data.completed,
+    notes:     data.notes.trim() || null,
+  })
 }

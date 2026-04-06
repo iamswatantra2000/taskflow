@@ -1,6 +1,6 @@
 // lib/db/schema.ts
 import {
-  pgTable, pgEnum, text, timestamp, boolean, uniqueIndex
+  pgTable, pgEnum, text, timestamp, boolean, uniqueIndex, integer
 } from "drizzle-orm/pg-core"
 
 export const invitationStatusEnum = pgEnum("invitation_status", ["PENDING", "ACCEPTED", "REVOKED"])
@@ -126,6 +126,17 @@ export const notificationPreferences = pgTable("notification_preferences", {
   mentions:        boolean("mentions").default(true).notNull(),
   replies:         boolean("replies").default(true).notNull(),
   updatedAt:       timestamp("updated_at").defaultNow().notNull(),
+})
+
+// ——— Focus Sessions ———
+export const focusSessions = pgTable("focus_sessions", {
+  id:        text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  taskId:    text("task_id").notNull().references(() => tasks.id, { onDelete: "cascade" }),
+  userId:    text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  duration:  integer("duration").notNull().default(0), // seconds of active focus
+  completed: boolean("completed").default(false).notNull(),
+  notes:     text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 })
 
 export const activities = pgTable("activities", {

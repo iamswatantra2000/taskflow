@@ -1,10 +1,10 @@
 // components/features/TaskDetailDialog.tsx
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { updateTask } from "@/lib/actions"
 import { improveTaskDescription } from "@/lib/actions"
-import { Sparkles, Loader2 } from "lucide-react"
+import { Sparkles, Loader2, Timer, CheckCircle2 } from "lucide-react"
 import {
   Dialog, DialogContent,
   DialogHeader, DialogTitle
@@ -30,6 +30,92 @@ type Props = {
   onClose:       () => void
   members:       Member[]
   currentUserId: string
+}
+
+type FocusSession = {
+  id:        string
+  duration:  number
+  completed: boolean
+  notes:     string | null
+  createdAt: string
+  userName:  string | null
+}
+
+function formatDuration(seconds: number) {
+  if (seconds < 60) return `${seconds}s`
+  const m = Math.floor(seconds / 60)
+  const s = seconds % 60
+  return s > 0 ? `${m}m ${s}s` : `${m}m`
+}
+
+function FocusSessionHistory({ taskId }: { taskId: string }) {
+  const [sessions, setSessions] = useState<FocusSession[]>([])
+  const [loading, setLoading]   = useState(true)
+
+  useEffect(() => {
+    fetch(`/api/focus-sessions/${taskId}`)
+      .then((r) => r.json())
+      .then((d) => setSessions(d.sessions ?? []))
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [taskId])
+
+  if (loading) return null
+  if (sessions.length === 0) return null
+
+  const totalSeconds = sessions.reduce((sum, s) => sum + s.duration, 0)
+
+  return (
+    <div className="mt-4 pt-4 border-t border-slate-100 dark:border-[#1f1f1f] space-y-3">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-1.5">
+          <Timer size={12} className="text-indigo-400" />
+          <span className="text-[12px] font-semibold text-slate-700 dark:text-[#ccc]">
+            Focus Sessions
+          </span>
+        </div>
+        <span className="text-[11px] text-slate-400 dark:text-[#555]">
+          {formatDuration(totalSeconds)} total
+        </span>
+      </div>
+
+      <div className="space-y-2 max-h-[200px] overflow-y-auto">
+        {sessions.map((s) => (
+          <div
+            key={s.id}
+            className="flex gap-3 p-2.5 rounded-[8px] bg-slate-50 dark:bg-[#0f0f0f] border border-slate-100 dark:border-[#1a1a1a]"
+          >
+            {/* Duration + completed */}
+            <div className="flex flex-col items-center gap-1 flex-shrink-0 pt-0.5">
+              <span className="text-[12px] font-bold text-slate-700 dark:text-[#ccc] tabular-nums">
+                {formatDuration(s.duration)}
+              </span>
+              {s.completed && (
+                <CheckCircle2 size={10} className="text-emerald-500" />
+              )}
+            </div>
+
+            {/* Notes + meta */}
+            <div className="flex-1 min-w-0">
+              {s.notes ? (
+                <p className="text-[11.5px] text-slate-600 dark:text-[#aaa] leading-relaxed whitespace-pre-wrap">
+                  {s.notes}
+                </p>
+              ) : (
+                <p className="text-[11px] text-slate-400 dark:text-[#444] italic">No notes</p>
+              )}
+              <p className="text-[10px] text-slate-400 dark:text-[#444] mt-1">
+                {s.userName ?? "You"} ·{" "}
+                {new Date(s.createdAt).toLocaleDateString("en-US", {
+                  month: "short", day: "numeric", hour: "numeric", minute: "2-digit",
+                })}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
 }
 
 export function TaskDetailDialog({ task, open, onClose, members, currentUserId }: Props) {
@@ -221,6 +307,8 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId }
           </div>
 
         </div>
+
+        <FocusSessionHistory taskId={task.id} />
 
         <CommentSection
           taskId={task.id}
