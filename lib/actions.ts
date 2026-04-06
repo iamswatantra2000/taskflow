@@ -62,6 +62,37 @@ export async function createTask(formData: FormData) {
   revalidatePath("/activity")
 }
 
+// ——— Reassign a task to a different member ———
+export async function reassignTask(taskId: string, newAssigneeId: string | null) {
+  const session = await requireAuth()
+
+  const [task] = await db
+    .select({ title: tasks.title, assigneeId: tasks.assigneeId })
+    .from(tasks)
+    .where(eq(tasks.id, taskId))
+    .limit(1)
+
+  if (!task) return
+
+  await db
+    .update(tasks)
+    .set({ assigneeId: newAssigneeId || null, updatedAt: new Date() })
+    .where(eq(tasks.id, taskId))
+
+  // Notify new assignee if it's not the actor
+  if (newAssigneeId && newAssigneeId !== task.assigneeId && newAssigneeId !== session.user.id) {
+    await createNotification({
+      userId:  newAssigneeId,
+      type:    "TASK_ASSIGNED",
+      message: `${session.user.name} assigned you to "${task.title}"`,
+      taskId,
+    })
+  }
+
+  revalidatePath("/")
+  revalidatePath("/activity")
+}
+
 // ——— Update task status ———
 export async function updateTaskStatus(taskId: string, status: string) {
   const session = await requireAuth()

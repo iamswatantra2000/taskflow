@@ -5,8 +5,9 @@ import { useState, useRef, useEffect } from "react";
 import {
   Search, Sparkles, Lock,
   ListTodo, Zap, CheckCircle2, Circle,
-  KanbanSquare,
+  KanbanSquare, Users,
 } from "lucide-react";
+import { WorkloadBalancer } from "./WorkloadBalancer";
 import { BoardFilters, type FilterState } from "./BoardFilters";
 import { TaskBoardWrapper } from "./TaskBoardWrapper";
 import { NewTaskDialog } from "./NewTaskDialog";
@@ -162,6 +163,7 @@ export function DashboardClient({
 		priority: [],
 		search: "",
 	});
+	const [boardView, setBoardView] = useState<"board" | "people">("board");
 
 	useEffect(() => {
 		if (invited) {
@@ -314,16 +316,37 @@ export function DashboardClient({
 						})}
 					</div>
 
-					{/* ── Task board ── */}
+					{/* ── Task board / People ── */}
 					<div>
-						{/* Section header */}
+						{/* Section header with view toggle */}
 						<div className="flex items-center justify-between mb-4">
-							<div className="flex items-center gap-2">
-								<KanbanSquare size={15} className="text-slate-400 dark:text-[#444]" />
-								<h2 className="text-[14px] font-semibold text-slate-700 dark:text-[#ccc] tracking-tight">
-									Task board
-								</h2>
+							<div className="flex items-center bg-slate-50 dark:bg-[#161616] border border-slate-200 dark:border-[#2a2a2a] rounded-[8px] p-0.5">
+								<button
+									type="button"
+									onClick={() => setBoardView("board")}
+									className={`flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-[12px] font-medium transition-all ${
+										boardView === "board"
+											? "bg-white dark:bg-[#2a2a2a] text-slate-800 dark:text-[#e0e0e0] shadow-sm"
+											: "text-slate-400 dark:text-[#555] hover:text-slate-700 dark:hover:text-[#999]"
+									}`}
+								>
+									<KanbanSquare size={12} />
+									Board
+								</button>
+								<button
+									type="button"
+									onClick={() => setBoardView("people")}
+									className={`flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-[12px] font-medium transition-all ${
+										boardView === "people"
+											? "bg-white dark:bg-[#2a2a2a] text-slate-800 dark:text-[#e0e0e0] shadow-sm"
+											: "text-slate-400 dark:text-[#555] hover:text-slate-700 dark:hover:text-[#999]"
+									}`}
+								>
+									<Users size={12} />
+									People
+								</button>
 							</div>
+
 							<div className="flex items-center gap-2">
 								{totalTasks > 0 && (
 									<span className="text-[10.5px] font-semibold text-slate-500 bg-slate-100 border border-slate-200 dark:text-[#444] dark:bg-white/[0.04] dark:border-white/[0.07] rounded-full px-2.5 py-0.5">
@@ -333,15 +356,24 @@ export function DashboardClient({
 							</div>
 						</div>
 
-						<TaskBoardWrapper
-							columns={columns}
-							userName={userName}
-							filters={filters}
-							projects={projects}
-							workspaceId={workspaceId}
-						members={members}
-						currentUserId={currentUserId}
-						/>
+						{boardView === "board" ? (
+							<TaskBoardWrapper
+								columns={columns}
+								userName={userName}
+								filters={filters}
+								projects={projects}
+								workspaceId={workspaceId}
+								members={members}
+								currentUserId={currentUserId}
+							/>
+						) : (
+							<WorkloadBalancer
+								tasks={columns.flatMap((c) => c.tasks)}
+								members={members}
+								projects={projects}
+								currentUserId={currentUserId}
+							/>
+						)}
 					</div>
 
 				</div>
