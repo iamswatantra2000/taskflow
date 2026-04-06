@@ -141,6 +141,13 @@ Pro gates: Activity feed, Analytics, AI tasks button, some settings
       Heartbeat every 20s via `POST /api/presence/[projectId]`; stale entries expire at 45s.
       `sendBeacon` fires on navigate-away for instant cleanup. Hidden when you're alone.
 
+### Differentiation Features
+- [x] **Task Decay Indicators** — tasks untouched for 3+ days surface a visual decay signal.
+      Level 1 (3–7d): subtle amber border + `🕐 Xd` badge. Level 2 (7–14d): stronger amber.
+      Level 3 (14d+): orange border + slow pulse animation. DONE/CANCELLED excluded.
+      Column headers show a stale count badge when any tasks in that column are decaying.
+      Logic lives in `lib/decay.ts` (getDecayLevel, getDecayDays, Tailwind class maps).
+
 ---
 
 ## File Change Reference (most recently touched files)
@@ -163,6 +170,13 @@ Pro gates: Activity feed, Analytics, AI tasks button, some settings
 | `app/api/presence/[projectId]/route.ts` | **Created** — POST heartbeat / DELETE leave |
 | `hooks/usePresence.ts` | **Created** — heartbeat hook with sendBeacon cleanup |
 | `components/features/PresenceAvatars.tsx` | **Created** — stacked avatars UI component |
+| `lib/decay.ts` | **Created** — getDecayLevel / getDecayDays / Tailwind class maps |
+| `components/features/TaskBoard.tsx` | Decay border + stale badge on cards; stale count in column headers |
+| `components/features/TaskBoardWrapper.tsx` | Added `updatedAt` to task type |
+| `components/features/DashboardClient.tsx` | Added `updatedAt` to task type |
+| `app/(dashboard)/dashboard/page.tsx` | Added `updatedAt` to tasks SELECT |
+| `app/(dashboard)/projects/[id]/page.tsx` | Added `updatedAt` to tasks SELECT |
+| `app/globals.css` | Added `animate-pulse-slow` keyframe for level-3 decay |
 
 ---
 
@@ -179,6 +193,10 @@ Pro gates: Activity feed, Analytics, AI tasks button, some settings
   - `app/api/presence/[projectId]/route.ts` — POST heartbeat + DELETE leave
   - `hooks/usePresence.ts` — 20s heartbeat, sendBeacon on unmount
   - `components/features/PresenceAvatars.tsx` — stacked avatars, pulsing dot, deterministic colors
+- **Task decay indicators** — stale tasks (3/7/14d thresholds) get amber→orange border + clock badge
+  - `lib/decay.ts` — shared utility (getDecayLevel, getDecayDays, Tailwind class maps)
+  - Applied to `TaskBoard.tsx` (drag-and-drop board) + `ProjectClient.tsx` (project detail board)
+  - Column headers show aggregate stale count badge
 
 ---
 
