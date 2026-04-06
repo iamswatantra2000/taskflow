@@ -127,19 +127,19 @@ Pro gates: Activity feed, Analytics, AI tasks button, some settings
 - [x] Realistic light mode color system (backgrounds, text, borders, inputs, badges, charts)
 - [x] Landing page — theme-aware product mockup in Hero section
 - [x] **ThemeToggle button** — sun/moon icon button, amber glow in dark / indigo tint in light,
-      spin-on-click animation. Added to:
-      - Landing page navbar (right side, before CTA)
-      - Dashboard topbar (between notification bell and avatar)
-      - My Tasks topbar (right side)
-      - Activity topbar (right side)
-      - Analytics topbar (right side)
-      - Settings topbar (right side)
-      - Upgrade topbar (right side)
-      - Project detail topbar (next to New task button)
+      spin-on-click animation. Added to all 8 page topbars + landing page navbar.
+      Lag fix: transitions suppressed during theme switch via temporary `<style>` tag + double rAF
 - [x] ProfileDropdown (change name, sign out)
 - [x] ProGate component — locks Pro features with tooltip for free users
 - [x] AppSidebar — collapsible, with project list, nav items, upgrade CTA
 - [x] Sonner toasts — custom styled for light + dark mode
+
+### Real-time Collaboration
+- [x] **Presence avatars on project board** — stacked circular avatars in the topbar showing
+      who is currently viewing the same board. Pulsing green dot + "N online" label.
+      Each user gets a deterministic color from their userId. Your own avatar shows an indigo ring.
+      Heartbeat every 20s via `POST /api/presence/[projectId]`; stale entries expire at 45s.
+      `sendBeacon` fires on navigate-away for instant cleanup. Hidden when you're alone.
 
 ---
 
@@ -155,8 +155,14 @@ Pro gates: Activity feed, Analytics, AI tasks button, some settings
 | `components/features/SettingsClient.tsx` | ThemeToggle added to topbar |
 | `components/features/AnalyticsClient.tsx` | ThemeToggle added to topbar |
 | `components/features/UpgradeClient.tsx` | ThemeToggle added to topbar |
-| `components/features/ProjectClient.tsx` | ThemeToggle added to topbar |
+| `components/features/ProjectClient.tsx` | ThemeToggle + PresenceAvatars added to topbar; `currentUser` prop added |
+| `app/(dashboard)/projects/[id]/page.tsx` | Pass `currentUser` (userId, name) to ProjectClient |
 | `app/globals.css` | `@custom-variant dark` + refined CSS variables for light mode depth |
+| `components/ui/ThemeToggle.tsx` | Lag fix: suppress transitions during switch via temp `<style>` + double rAF; canonical Tailwind classes |
+| `lib/presenceStore.ts` | **Created** — in-memory presence store (Map + 45s TTL) |
+| `app/api/presence/[projectId]/route.ts` | **Created** — POST heartbeat / DELETE leave |
+| `hooks/usePresence.ts` | **Created** — heartbeat hook with sendBeacon cleanup |
+| `components/features/PresenceAvatars.tsx` | **Created** — stacked avatars UI component |
 
 ---
 
@@ -164,9 +170,15 @@ Pro gates: Activity feed, Analytics, AI tasks button, some settings
 
 **Session:** 2026-04-06
 **Changes:**
-- Added `ThemeToggle` component (`components/ui/ThemeToggle.tsx`) — sun/moon icon, no switch
-- Placed toggle in all 8 page topbars + landing page navbar
-- Fixed landing page Hero product mockup dark colors for light theme
+- Added `ThemeToggle` component — sun/moon icon, placed in all 8 topbars + landing navbar
+- Fixed landing page Hero product mockup for light theme
+- Fixed theme toggle lag: suppress all CSS transitions during switch via temp `<style>` + double rAF
+- Applied canonical Tailwind classes (`rounded-lg`, `shrink-0`, `rotate-200`) per linter
+- **Presence avatars**: real-time "who's online" feature on project boards
+  - `lib/presenceStore.ts` — module-level Map, 45s TTL
+  - `app/api/presence/[projectId]/route.ts` — POST heartbeat + DELETE leave
+  - `hooks/usePresence.ts` — 20s heartbeat, sendBeacon on unmount
+  - `components/features/PresenceAvatars.tsx` — stacked avatars, pulsing dot, deterministic colors
 
 ---
 
