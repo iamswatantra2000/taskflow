@@ -114,8 +114,8 @@ function TaskCard({
   const project    = projects.find((p) => p.id === task.projectId)
   const dateMeta   = task.dueDate ? getDateMeta(task.dueDate, task.status) : null
   const isDone     = task.status === "DONE"
-  const decayLevel = getDecayLevel(task.updatedAt, task.status)
-  const decayDays  = decayLevel > 0 ? getDecayDays(task.updatedAt) : 0
+  const decayLevel = getDecayLevel(task.updatedAt, task.status, task.dueDate)
+  const decayDays  = decayLevel > 0 ? getDecayDays(task.updatedAt, task.dueDate) : 0
 
   const {
     attributes,
@@ -480,7 +480,7 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects, m
                   {/* Column header */}
                   {(() => {
                     const staleCount = col.tasks.filter(
-                      (t) => getDecayLevel(t.updatedAt, t.status) > 0
+                      (t) => getDecayLevel(t.updatedAt, t.status, t.dueDate) > 0
                     ).length
                     return (
                       <div className="flex items-center justify-between mb-3">

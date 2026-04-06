@@ -115,8 +115,8 @@ function BoardView({
             {colTasks.map((task) => {
               const priority   = priorityConfig[task.priority as keyof typeof priorityConfig]
               const overdue    = isOverdue(task.dueDate) && task.status !== "DONE"
-              const decayLevel = getDecayLevel(task.updatedAt, task.status)
-              const decayDays  = decayLevel > 0 ? getDecayDays(task.updatedAt) : 0
+              const decayLevel = getDecayLevel(task.updatedAt, task.status, task.dueDate)
+              const decayDays  = decayLevel > 0 ? getDecayDays(task.updatedAt, task.dueDate) : 0
               return (
                 <div
                   key={task.id}
