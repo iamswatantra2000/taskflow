@@ -21,11 +21,12 @@ import {
   useSortable,
 } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { CalendarDays, ArrowDownToLine, Clock } from "lucide-react"
+import { CalendarDays, ArrowDownToLine, Clock, Focus } from "lucide-react"
 import { getDecayLevel, getDecayDays, decayBorderClass, decayBadgeClass } from "@/lib/decay"
 import { DeleteTaskButton } from "./DeleteTaskButton"
 import { TaskDetailDialog } from "./TaskDetailDialog"
 import { TaskProjectMenu } from "./TaskProjectMenu"
+import { FocusMode } from "./FocusMode"
 import { updateTaskStatus } from "@/lib/actions"
 import { toast } from "sonner"
 import type { FilterState } from "./BoardFilters"
@@ -94,10 +95,12 @@ const columnStyles: Record<string, {
 function TaskCard({
   task,
   onSelect,
+  onFocus,
   projects,
 }: {
   task:     Task
   onSelect: (task: Task) => void
+  onFocus:  (task: Task) => void
   projects: { id: string; name: string; color: string }[]
 }) {
   const priority   = priorityConfig[task.priority as keyof typeof priorityConfig]
@@ -215,6 +218,14 @@ function TaskCard({
 
           {/* Action buttons — hidden until hover */}
           <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); onFocus(task) }}
+              title="Focus on this task"
+              className="w-6 h-6 rounded-[5px] flex items-center justify-center text-slate-400 hover:text-indigo-500 dark:text-[#444] dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors"
+            >
+              <Focus size={11} />
+            </button>
             <TaskProjectMenu
               taskId={task.id}
               currentProjectId={task.projectId}
@@ -274,8 +285,9 @@ function DroppableColumn({
 export function TaskBoard({ columns, userName, filters, workspaceId, projects, members, currentUserId }: Props) {
   const [selectedTask, setSelectedTask]     = useState<Task | null>(null)
   const [activeTask, setActiveTask]         = useState<Task | null>(null)
+  const [focusTask, setFocusTask]           = useState<Task | null>(null)
   const [boardColumns, setBoardColumns]     = useState<Column[]>(columns)
-  const [showCelebration, setShowCelebration] = useState(false)  // ← new
+  const [showCelebration, setShowCelebration] = useState(false)
 
   useEffect(() => {
     setBoardColumns(columns)
@@ -468,6 +480,7 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects, m
                       key={task.id}
                       task={task}
                       onSelect={setSelectedTask}
+                      onFocus={setFocusTask}
                       projects={projects}
                     />
                   ))}
@@ -505,6 +518,13 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects, m
           onClose={() => setSelectedTask(null)}
           members={members}
           currentUserId={currentUserId}
+        />
+      )}
+
+      {focusTask && (
+        <FocusMode
+          task={focusTask}
+          onClose={() => setFocusTask(null)}
         />
       )}
     </>
