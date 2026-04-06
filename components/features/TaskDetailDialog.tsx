@@ -179,7 +179,7 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId }
                 type="button"
                 onClick={handleImproveDescription}
                 disabled={improving || !title}
-                className="flex items-center gap-1.5 h-6 px-2.5 text-[11px] font-medium text-violet-400 bg-violet-950/40 hover:bg-violet-950/60 border border-violet-800/50 rounded-[7px] shadow-[0_2px_0_0_rgba(76,29,149,0.5)] active:translate-y-[2px] active:shadow-none disabled:opacity-40 transition-all duration-100"
+                className="flex items-center gap-1.5 h-6 px-2.5 text-[11px] font-medium text-violet-700 bg-violet-50 hover:bg-violet-100 border border-violet-200 dark:text-violet-400 dark:bg-violet-950/40 dark:hover:bg-violet-950/60 dark:border-violet-800/50 rounded-[7px] shadow-[0_2px_0_0_rgba(109,40,217,0.15)] dark:shadow-[0_2px_0_0_rgba(76,29,149,0.5)] active:translate-y-[2px] active:shadow-none disabled:opacity-40 transition-all duration-100"
               >
                 {improving
                   ? <><Loader2 size={10} className="animate-spin" /> Improving...</>
@@ -198,7 +198,7 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId }
 
           {/* Actions */}
           <div className="flex items-center justify-between pt-1">
-            <p className={`text-[12px] transition-opacity ${saved ? "text-emerald-400 opacity-100" : "opacity-0"}`}>
+            <p className={`text-[12px] transition-opacity ${saved ? "text-emerald-600 dark:text-emerald-400 opacity-100" : "opacity-0"}`}>
               Saved!
             </p>
             <div className="flex items-center gap-2">

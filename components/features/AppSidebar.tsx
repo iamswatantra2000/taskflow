@@ -315,13 +315,13 @@ export function AppSidebar({ user, projects, plan }: AppSidebarProps) {
             onClick={() => setMobileOpen(false)}
             className={cn(
               "flex items-center gap-3 h-9 rounded-[8px] text-[13px] font-semibold transition-all",
-              "bg-indigo-600/[0.12] border border-indigo-500/20 text-indigo-400",
-              "hover:bg-indigo-600/[0.18] hover:border-indigo-500/30 hover:text-indigo-300",
+              "bg-indigo-50 border border-indigo-200 text-indigo-700 dark:bg-indigo-600/[0.12] dark:border-indigo-500/20 dark:text-indigo-400",
+              "hover:bg-indigo-100 hover:border-indigo-300 hover:text-indigo-800 dark:hover:bg-indigo-600/[0.18] dark:hover:border-indigo-500/30 dark:hover:text-indigo-300",
               collapsed ? "px-0 justify-center" : "px-3"
             )}
             title={collapsed ? "Upgrade to Pro" : undefined}
           >
-            <Sparkles size={15} className="flex-shrink-0 text-indigo-400" />
+            <Sparkles size={15} className="flex-shrink-0 text-indigo-600 dark:text-indigo-400" />
             {!collapsed && <span>Upgrade to Pro</span>}
           </Link>
         )}

@@ -256,7 +256,7 @@ export function DashboardClient({
 							</p>
 							<h1 className="text-[26px] sm:text-[30px] font-bold tracking-tight leading-tight">
 								Good day,{" "}
-								<span className="text-indigo-400">{firstName}</span>
+								<span className="text-indigo-600 dark:text-indigo-400">{firstName}</span>
 							</h1>
 							<p className="text-[13px] text-slate-500 dark:text-[#555] mt-1.5">
 								Here&apos;s what&apos;s happening across your projects.

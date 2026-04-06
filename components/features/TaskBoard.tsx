@@ -150,7 +150,7 @@ function TaskCard({
           {...attributes}
           {...listeners}
           style={{ touchAction: "none" }}
-          className="flex-shrink-0 mt-[3px] cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-500 dark:text-[#333] dark:hover:text-[#666] opacity-0 group-hover:opacity-100 transition-all"
+          className="flex-shrink-0 mt-[3px] cursor-grab active:cursor-grabbing text-slate-400 hover:text-slate-600 dark:text-[#333] dark:hover:text-[#666] opacity-0 group-hover:opacity-100 transition-all"
         >
           {/** biome-ignore lint/a11y/noSvgWithoutTitle: drag handle */}
           <svg width="9" height="13" viewBox="0 0 10 14" fill="none">
@@ -441,9 +441,9 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects, m
                   {col.tasks.length === 0 && (
                     <div className="flex-1 flex flex-col items-center justify-center py-10 gap-3 border border-dashed border-slate-200 dark:border-white/[0.05] rounded-[10px]">
                       <div className="w-9 h-9 rounded-full border-2 border-dashed border-slate-200 dark:border-white/[0.08] flex items-center justify-center">
-                        <ArrowDownToLine size={13} className="text-slate-300 dark:text-[#2a2a2a]" />
+                        <ArrowDownToLine size={13} className="text-slate-400 dark:text-[#2a2a2a]" />
                       </div>
-                      <p className="text-[11.5px] font-medium text-slate-400 dark:text-[#2d2d2d]">
+                      <p className="text-[11.5px] font-medium text-slate-500 dark:text-[#2d2d2d]">
                         {filters.priority.length > 0 || filters.search
                           ? "No matching tasks"
                           : "Drop tasks here"

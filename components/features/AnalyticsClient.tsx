@@ -23,6 +23,7 @@ import {
 	Zap,
 	FolderKanban,
 } from "lucide-react";
+import { useTheme } from "next-themes";
 
 type AnalyticsData = {
 	statusData: { name: string; value: number; fill: string }[];
@@ -83,6 +84,12 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
 export function AnalyticsClient({ data }: { data: AnalyticsData }) {
 	const { statusData, priorityData, velocityData, tasksByProject, summary } =
 		data;
+	const { resolvedTheme } = useTheme();
+	const isDark = resolvedTheme === "dark";
+	const gridColor  = isDark ? "#1f1f1f" : "#e2e8f0";
+	const axisColor  = isDark ? "#1f1f1f" : "#e2e8f0";
+	const tickColor  = isDark ? "#555555" : "#94a3b8";
+	const legendColor = isDark ? "#888888" : "#64748b";
 
 	return (
 		<div className="flex-1 overflow-auto">
@@ -120,31 +127,31 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
 							label: "Completed",
 							value: summary.completedTasks,
 							icon: CheckSquare,
-							color: "text-emerald-400",
+							color: "text-emerald-600 dark:text-emerald-400",
 						},
 						{
 							label: "In progress",
 							value: summary.inProgressCount,
 							icon: Clock,
-							color: "text-indigo-400",
+							color: "text-indigo-600 dark:text-indigo-400",
 						},
 						{
 							label: "Completion rate",
 							value: `${summary.completionRate}%`,
 							icon: TrendingUp,
-							color: "text-amber-400",
+							color: "text-amber-600 dark:text-amber-400",
 						},
 						{
 							label: "Projects",
 							value: summary.totalProjects,
 							icon: FolderKanban,
-							color: "text-violet-400",
+							color: "text-violet-600 dark:text-violet-400",
 						},
 						{
 							label: "Top project",
 							value: summary.mostActiveProject,
 							icon: Zap,
-							color: "text-pink-400",
+							color: "text-pink-600 dark:text-pink-400",
 						},
 					].map((stat) => (
 						<div
@@ -181,21 +188,21 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
 								data={velocityData}
 								margin={{ top: 5, right: 10, left: -20, bottom: 5 }}
 							>
-								<CartesianGrid strokeDasharray="3 3" stroke="#1f1f1f" />
+								<CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
 								<XAxis
 									dataKey="day"
-									tick={{ fill: "#555", fontSize: 10 }}
-									axisLine={{ stroke: "#1f1f1f" }}
+									tick={{ fill: tickColor, fontSize: 10 }}
+									axisLine={{ stroke: axisColor }}
 									tickLine={false}
 								/>
 								<YAxis
-									tick={{ fill: "#555", fontSize: 10 }}
-									axisLine={{ stroke: "#1f1f1f" }}
+									tick={{ fill: tickColor, fontSize: 10 }}
+									axisLine={{ stroke: axisColor }}
 									tickLine={false}
 									allowDecimals={false}
 								/>
 								<Tooltip content={<CustomTooltip />} />
-								<Legend wrapperStyle={{ fontSize: "11px", color: "#888" }} />
+								<Legend wrapperStyle={{ fontSize: "11px", color: legendColor }} />
 								<Line
 									type="monotone"
 									dataKey="created"
@@ -282,18 +289,18 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
 							>
 								<CartesianGrid
 									strokeDasharray="3 3"
-									stroke="#1f1f1f"
+									stroke={gridColor}
 									vertical={false}
 								/>
 								<XAxis
 									dataKey="name"
-									tick={{ fill: "#555", fontSize: 11 }}
-									axisLine={{ stroke: "#1f1f1f" }}
+									tick={{ fill: tickColor, fontSize: 11 }}
+									axisLine={{ stroke: axisColor }}
 									tickLine={false}
 								/>
 								<YAxis
-									tick={{ fill: "#555", fontSize: 10 }}
-									axisLine={{ stroke: "#1f1f1f" }}
+									tick={{ fill: tickColor, fontSize: 10 }}
+									axisLine={{ stroke: axisColor }}
 									tickLine={false}
 									allowDecimals={false}
 								/>
@@ -339,23 +346,23 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
 								>
 									<CartesianGrid
 										strokeDasharray="3 3"
-										stroke="#1f1f1f"
+										stroke={gridColor}
 										vertical={false}
 									/>
 									<XAxis
 										dataKey="projectName"
-										tick={{ fill: "#555", fontSize: 10 }}
-										axisLine={{ stroke: "#1f1f1f" }}
+										tick={{ fill: tickColor, fontSize: 10 }}
+										axisLine={{ stroke: axisColor }}
 										tickLine={false}
 									/>
 									<YAxis
-										tick={{ fill: "#555", fontSize: 10 }}
-										axisLine={{ stroke: "#1f1f1f" }}
+										tick={{ fill: tickColor, fontSize: 10 }}
+										axisLine={{ stroke: axisColor }}
 										tickLine={false}
 										allowDecimals={false}
 									/>
 									<Tooltip content={<CustomTooltip />} />
-									<Legend wrapperStyle={{ fontSize: "11px", color: "#888" }} />
+									<Legend wrapperStyle={{ fontSize: "11px", color: legendColor }} />
 									<Bar
 										dataKey="total"
 										name="Total"

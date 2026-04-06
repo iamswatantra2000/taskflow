@@ -2,6 +2,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useTransition } from "react"
+import { useTheme } from "next-themes"
 import {
   Bell, AtSign, CornerDownRight, UserPlus,
   ArrowRightLeft, Clock, Loader2, CheckCheck, Trash2,
@@ -25,11 +26,11 @@ const TYPE_META: Record<string, {
   iconColor: string
   accent:  string
 }> = {
-  MENTION:       { icon: AtSign,          iconBg: "bg-indigo-500/[0.12]",  iconColor: "text-indigo-400",  accent: "border-l-indigo-500/50"  },
-  REPLY:         { icon: CornerDownRight,  iconBg: "bg-violet-500/[0.12]",  iconColor: "text-violet-400",  accent: "border-l-violet-500/50"  },
-  TASK_ASSIGNED: { icon: UserPlus,         iconBg: "bg-emerald-500/[0.12]", iconColor: "text-emerald-400", accent: "border-l-emerald-500/50" },
-  STATUS_CHANGE: { icon: ArrowRightLeft,   iconBg: "bg-amber-500/[0.12]",   iconColor: "text-amber-400",   accent: "border-l-amber-500/50"   },
-  DUE_DATE:      { icon: Clock,            iconBg: "bg-red-500/[0.12]",     iconColor: "text-red-400",     accent: "border-l-red-500/50"     },
+  MENTION:       { icon: AtSign,          iconBg: "bg-indigo-50 dark:bg-indigo-500/[0.12]",   iconColor: "text-indigo-600 dark:text-indigo-400",  accent: "border-l-indigo-500/50"  },
+  REPLY:         { icon: CornerDownRight,  iconBg: "bg-violet-50 dark:bg-violet-500/[0.12]",   iconColor: "text-violet-600 dark:text-violet-400",  accent: "border-l-violet-500/50"  },
+  TASK_ASSIGNED: { icon: UserPlus,         iconBg: "bg-emerald-50 dark:bg-emerald-500/[0.12]", iconColor: "text-emerald-600 dark:text-emerald-400", accent: "border-l-emerald-500/50" },
+  STATUS_CHANGE: { icon: ArrowRightLeft,   iconBg: "bg-amber-50 dark:bg-amber-500/[0.12]",     iconColor: "text-amber-600 dark:text-amber-400",    accent: "border-l-amber-500/50"   },
+  DUE_DATE:      { icon: Clock,            iconBg: "bg-red-50 dark:bg-red-500/[0.12]",         iconColor: "text-red-600 dark:text-red-400",        accent: "border-l-red-500/50"     },
 }
 
 const FALLBACK_META = TYPE_META.MENTION
@@ -66,6 +67,8 @@ export function NotificationBell() {
   const [items, setItems]         = useState<Notification[]>([])
   const [pending, startTransition] = useTransition()
   const ref                       = useRef<HTMLDivElement>(null)
+  const { resolvedTheme }         = useTheme()
+  const isDark                    = resolvedTheme === "dark"
 
   const unread = items.filter((n) => !n.isRead).length
   const groups = groupByDate(items)
@@ -146,7 +149,9 @@ export function NotificationBell() {
         <div
           className="absolute right-0 top-full mt-2 w-[340px] bg-white dark:bg-[#0d0d0d] border border-slate-200 dark:border-white/[0.08] rounded-[16px] overflow-hidden z-[200]"
           style={{
-            boxShadow: "0 32px 80px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.04)",
+            boxShadow: isDark
+              ? "0 32px 80px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.04)"
+              : "0 8px 40px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.05)",
             animation: "fadeSlideIn 0.15s ease-out",
           }}
         >
@@ -156,12 +161,12 @@ export function NotificationBell() {
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 dark:border-white/[0.06]">
             <div className="flex items-center gap-2.5">
-              <div className="w-6 h-6 rounded-[7px] bg-indigo-500/[0.12] border border-indigo-500/20 flex items-center justify-center">
-                <Bell size={11} className="text-indigo-400" />
+              <div className="w-6 h-6 rounded-[7px] bg-indigo-50 dark:bg-indigo-500/[0.12] border border-indigo-200 dark:border-indigo-500/20 flex items-center justify-center">
+                <Bell size={11} className="text-indigo-600 dark:text-indigo-400" />
               </div>
               <span className="text-[13px] font-bold text-slate-900 dark:text-white tracking-tight">Notifications</span>
               {unread > 0 && (
-                <span className="text-[10px] font-bold text-indigo-300 bg-indigo-500/[0.12] border border-indigo-500/25 rounded-full px-1.5 py-0.5 leading-none">
+                <span className="text-[10px] font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-100 dark:bg-indigo-500/[0.12] border border-indigo-200 dark:border-indigo-500/25 rounded-full px-1.5 py-0.5 leading-none">
                   {unread} new
                 </span>
               )}
@@ -196,10 +201,10 @@ export function NotificationBell() {
             {items.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
                 <div className="w-12 h-12 rounded-[12px] bg-slate-50 border border-slate-100 dark:bg-white/[0.03] dark:border-white/[0.06] flex items-center justify-center mb-3">
-                  <Bell size={18} className="text-slate-200 dark:text-[#1f1f1f]" />
+                  <Bell size={18} className="text-slate-300 dark:text-[#1f1f1f]" />
                 </div>
-                <p className="text-[12.5px] font-semibold text-slate-400 dark:text-[#333]">All caught up</p>
-                <p className="text-[11px] text-slate-300 dark:text-[#222] mt-1">Assignments, mentions & due dates appear here</p>
+                <p className="text-[12.5px] font-semibold text-slate-500 dark:text-[#333]">All caught up</p>
+                <p className="text-[11px] text-slate-400 dark:text-[#222] mt-1">Assignments, mentions & due dates appear here</p>
               </div>
             ) : (
               groups.map(({ label, items: groupItems }) => (
@@ -234,7 +239,7 @@ export function NotificationBell() {
                           <p className={`text-[12.5px] leading-snug ${n.isRead ? "text-slate-400 dark:text-[#444]" : "text-slate-700 dark:text-[#aaa]"}`}>
                             {n.message}
                           </p>
-                          <p className="text-[10.5px] text-slate-300 dark:text-[#2e2e2e] mt-0.5">{timeAgo(n.createdAt)}</p>
+                          <p className="text-[10.5px] text-slate-400 dark:text-[#2e2e2e] mt-0.5">{timeAgo(n.createdAt)}</p>
                         </div>
 
                         {/* Unread dot */}

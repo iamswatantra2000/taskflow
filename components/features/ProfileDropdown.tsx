@@ -137,7 +137,7 @@ export function ProfileDropdown({ user }: Props) {
                     <User size={13} className="text-slate-400 dark:text-[#555]" />
                     <span className="text-[12px] text-slate-700 dark:text-[#ccc]">Change name</span>
                   </div>
-                  <ChevronRight size={12} className="text-slate-300 dark:text-[#444] group-hover:text-slate-500 dark:group-hover:text-[#666] transition-colors" />
+                  <ChevronRight size={12} className="text-slate-400 dark:text-[#444] group-hover:text-slate-600 dark:group-hover:text-[#666] transition-colors" />
                 </button>
 
               </div>

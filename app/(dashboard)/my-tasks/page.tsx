@@ -13,10 +13,10 @@ const statusConfig = {
 }
 
 const priorityConfig = {
-  LOW:    { label: "Low",    class: "text-emerald-400" },
-  MEDIUM: { label: "Medium", class: "text-amber-400"   },
-  HIGH:   { label: "High",   class: "text-red-400"     },
-  URGENT: { label: "Urgent", class: "text-red-400"     },
+  LOW:    { label: "Low",    class: "text-emerald-600 dark:text-emerald-400" },
+  MEDIUM: { label: "Medium", class: "text-amber-600 dark:text-amber-400"   },
+  HIGH:   { label: "High",   class: "text-red-600 dark:text-red-400"       },
+  URGENT: { label: "Urgent", class: "text-red-600 dark:text-red-400"       },
 }
 
 export default async function MyTasksPage() {
