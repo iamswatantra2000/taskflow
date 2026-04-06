@@ -142,6 +142,12 @@ Pro gates: Activity feed, Analytics, AI tasks button, some settings
       `sendBeacon` fires on navigate-away for instant cleanup. Hidden when you're alone.
 
 ### Differentiation Features
+- [x] **Workload Balancer** — "People" tab on the dashboard alongside the Board tab. Each member
+      row shows: avatar with deterministic color, load badge (Free/Busy/Overloaded), segmented bar
+      normalized to the most-loaded member (indigo=InProgress, amber=InReview, slate=Todo),
+      expandable task list with priority dot + status chip. Hover any task to reassign — optimistic
+      update with `reassignTask()` server action + TASK_ASSIGNED notification. Unassigned row at bottom.
+
 - [x] **Focus Mode** — full-screen Pomodoro overlay triggered by hovering a task card and clicking ⊕.
       25-min work / 5-min break cycle with circular SVG progress ring (color shifts indigo→amber→red
       as time runs low). Space to start/pause, Esc to exit. Session notes scratchpad. "Mark as done"
@@ -175,6 +181,9 @@ Pro gates: Activity feed, Analytics, AI tasks button, some settings
 | `app/api/presence/[projectId]/route.ts` | **Created** — POST heartbeat / DELETE leave |
 | `hooks/usePresence.ts` | **Created** — heartbeat hook with sendBeacon cleanup |
 | `components/features/PresenceAvatars.tsx` | **Created** — stacked avatars UI component |
+| `components/features/WorkloadBalancer.tsx` | **Created** — team workload view with reassign |
+| `components/features/DashboardClient.tsx` | Board/People tab toggle; WorkloadBalancer wired in |
+| `lib/actions.ts` | Added `reassignTask()` server action |
 | `components/features/FocusMode.tsx` | **Created** — full-screen Pomodoro focus overlay |
 | `lib/decay.ts` | **Created** — getDecayLevel / getDecayDays / Tailwind class maps |
 | `components/features/TaskBoard.tsx` | Decay border + stale badge on cards; stale count in column headers |
@@ -199,6 +208,7 @@ Pro gates: Activity feed, Analytics, AI tasks button, some settings
   - `app/api/presence/[projectId]/route.ts` — POST heartbeat + DELETE leave
   - `hooks/usePresence.ts` — 20s heartbeat, sendBeacon on unmount
   - `components/features/PresenceAvatars.tsx` — stacked avatars, pulsing dot, deterministic colors
+- **Workload Balancer** — "People" tab on dashboard; member rows, load badges, segmented bars, inline reassign
 - **Focus Mode** — full-screen Pomodoro overlay; circular ring, session notes, Mark as Done
 - **Task decay indicators** — stale tasks (3/7/14d thresholds) get amber→orange border + clock badge
   - `lib/decay.ts` — shared utility (getDecayLevel, getDecayDays, Tailwind class maps)
