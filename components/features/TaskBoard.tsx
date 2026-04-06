@@ -108,6 +108,8 @@ function TaskCard({
   members:  { id: string; name: string }[]
   onAssign: (taskId: string, newId: string | null) => void
 }) {
+  const [menuOpen, setMenuOpen] = useState(false)
+
   const priority   = priorityConfig[task.priority as keyof typeof priorityConfig]
   const project    = projects.find((p) => p.id === task.projectId)
   const dateMeta   = task.dueDate ? getDateMeta(task.dueDate, task.status) : null
@@ -143,6 +145,7 @@ function TaskCard({
         hover:bg-slate-50 dark:hover:bg-[#141414]
         hover:-translate-y-[1px] hover:shadow-[0_6px_20px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_6px_20px_rgba(0,0,0,0.45)]
         transition-all duration-150 border
+        ${menuOpen ? "z-[20]" : ""}
         ${decayLevel > 0 ? decayBorderClass[decayLevel] : "border-slate-100 dark:border-white/[0.07] hover:border-slate-200 dark:hover:border-white/[0.13]"}
         ${decayLevel === 3 ? "animate-pulse-slow" : ""}
         ${leftAccent}
@@ -195,6 +198,7 @@ function TaskCard({
             taskId={task.id}
             currentProjectId={task.projectId}
             projects={projects}
+            onOpenChange={setMenuOpen}
           />
           <DeleteTaskButton taskId={task.id} />
         </div>

@@ -14,15 +14,21 @@ type Project = {
 }
 
 type Props = {
-  taskId:          string
+  taskId:           string
   currentProjectId: string
-  projects:        Project[]
+  projects:         Project[]
+  onOpenChange?:    (open: boolean) => void
 }
 
-export function TaskProjectMenu({ taskId, currentProjectId, projects }: Props) {
+export function TaskProjectMenu({ taskId, currentProjectId, projects, onOpenChange }: Props) {
   const router              = useRouter()
   const [open, setOpen]     = useState(false)
   const [loading, setLoading] = useState(false)
+
+  function toggle(next: boolean) {
+    setOpen(next)
+    onOpenChange?.(next)
+  }
 
   async function handleMove(projectId: string) {
     if (projectId === currentProjectId) {
@@ -39,7 +45,7 @@ export function TaskProjectMenu({ taskId, currentProjectId, projects }: Props) {
       toast.error("Failed to move task")
     } finally {
       setLoading(false)
-      setOpen(false)
+      toggle(false)
     }
   }
 
@@ -50,7 +56,7 @@ export function TaskProjectMenu({ taskId, currentProjectId, projects }: Props) {
         onPointerDown={(e) => e.stopPropagation()}
         onClick={(e) => {
           e.stopPropagation()
-          setOpen(!open)
+          toggle(!open)
         }}
         className="opacity-0 group-hover:opacity-100 p-1 rounded-md text-slate-400 dark:text-[#555] hover:text-slate-700 dark:hover:text-[#ccc] hover:bg-slate-100 dark:hover:bg-[#2a2a2a] transition-all"
       >
@@ -101,7 +107,7 @@ export function TaskProjectMenu({ taskId, currentProjectId, projects }: Props) {
         <button
           type="button"
           className="fixed inset-0 z-40 cursor-default"
-          onClick={() => setOpen(false)}
+          onClick={() => toggle(false)}
           aria-label="Close menu"
         />
       )}
