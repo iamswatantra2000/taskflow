@@ -142,6 +142,11 @@ Pro gates: Activity feed, Analytics, AI tasks button, some settings
       `sendBeacon` fires on navigate-away for instant cleanup. Hidden when you're alone.
 
 ### Differentiation Features
+- [x] **Focus Mode** — full-screen Pomodoro overlay triggered by hovering a task card and clicking ⊕.
+      25-min work / 5-min break cycle with circular SVG progress ring (color shifts indigo→amber→red
+      as time runs low). Space to start/pause, Esc to exit. Session notes scratchpad. "Mark as done"
+      button closes the session and updates task status. Phase auto-advances with toast on timer end.
+
 - [x] **Task Decay Indicators** — tasks untouched for 3+ days surface a visual decay signal.
       Level 1 (3–7d): subtle amber border + `🕐 Xd` badge. Level 2 (7–14d): stronger amber.
       Level 3 (14d+): orange border + slow pulse animation. DONE/CANCELLED excluded.
@@ -170,6 +175,7 @@ Pro gates: Activity feed, Analytics, AI tasks button, some settings
 | `app/api/presence/[projectId]/route.ts` | **Created** — POST heartbeat / DELETE leave |
 | `hooks/usePresence.ts` | **Created** — heartbeat hook with sendBeacon cleanup |
 | `components/features/PresenceAvatars.tsx` | **Created** — stacked avatars UI component |
+| `components/features/FocusMode.tsx` | **Created** — full-screen Pomodoro focus overlay |
 | `lib/decay.ts` | **Created** — getDecayLevel / getDecayDays / Tailwind class maps |
 | `components/features/TaskBoard.tsx` | Decay border + stale badge on cards; stale count in column headers |
 | `components/features/TaskBoardWrapper.tsx` | Added `updatedAt` to task type |
@@ -193,6 +199,7 @@ Pro gates: Activity feed, Analytics, AI tasks button, some settings
   - `app/api/presence/[projectId]/route.ts` — POST heartbeat + DELETE leave
   - `hooks/usePresence.ts` — 20s heartbeat, sendBeacon on unmount
   - `components/features/PresenceAvatars.tsx` — stacked avatars, pulsing dot, deterministic colors
+- **Focus Mode** — full-screen Pomodoro overlay; circular ring, session notes, Mark as Done
 - **Task decay indicators** — stale tasks (3/7/14d thresholds) get amber→orange border + clock badge
   - `lib/decay.ts` — shared utility (getDecayLevel, getDecayDays, Tailwind class maps)
   - Applied to `TaskBoard.tsx` (drag-and-drop board) + `ProjectClient.tsx` (project detail board)
