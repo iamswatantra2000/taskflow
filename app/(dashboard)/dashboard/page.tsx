@@ -27,26 +27,40 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     .where(eq(workspaceMembers.userId, session.user.id!))
     .limit(1)
 
-  const userProjects = membership
-    ? await db
-        .select()
-        .from(projects)
-        .where(eq(projects.workspaceId, membership.workspaceId))
-    : []
+  if (!membership) {
+    return <DashboardClient
+      columns={[]}
+      userName={session.user.name ?? "User"}
+      userInitials={getInitials(session.user.name ?? "User")}
+      projectId={null}
+      projects={[]}
+      stats={[
+        { label: "Total tasks", value: 0, sub: "across all projects", valueColor: "text-slate-800 dark:text-[#e0e0e0]" },
+        { label: "In progress", value: 0, sub: "currently active",    valueColor: "text-indigo-400"  },
+        { label: "Completed",   value: 0, sub: "great work!",         valueColor: "text-emerald-400" },
+        { label: "Todo",        value: 0, sub: "up next",             valueColor: "text-amber-400"   },
+      ]}
+      firstName={firstName}
+      user={session.user}
+      workspaceId=""
+      plan={session.user.plan ?? "free"}
+      members={[]}
+      currentUserId={session.user.id}
+    />
+  }
+
+  // Run projects + members queries in parallel
+  const [userProjects, members] = await Promise.all([
+    db.select().from(projects).where(eq(projects.workspaceId, membership.workspaceId)),
+    db.select({ id: users.id, name: users.name })
+      .from(workspaceMembers)
+      .leftJoin(users, eq(workspaceMembers.userId, users.id))
+      .where(eq(workspaceMembers.workspaceId, membership.workspaceId))
+      .then((rows) => rows.map((r) => ({ id: r.id ?? "", name: r.name ?? "Unknown" }))),
+  ])
 
   const firstProject = userProjects[0] ?? null
 
-  // Fetch workspace members for @mentions
-  const members = membership
-    ? await db
-        .select({ id: users.id, name: users.name })
-        .from(workspaceMembers)
-        .leftJoin(users, eq(workspaceMembers.userId, users.id))
-        .where(eq(workspaceMembers.workspaceId, membership.workspaceId))
-        .then((rows) => rows.map((r) => ({ id: r.id ?? "", name: r.name ?? "Unknown" })))
-    : []
-
-  // ← Explicitly select all fields including dueDate
   const allTasks = userProjects.length > 0
     ? await db
         .select({

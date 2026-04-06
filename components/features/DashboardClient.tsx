@@ -174,7 +174,15 @@ export function DashboardClient({
 	}, [invited]);
 
 	useEffect(() => {
-		checkDueDateReminders().catch(() => {})
+		// Run at most once per browser session, with a 5s delay so it never
+		// blocks the initial render or slows perceived tab switching.
+		const key = "ddr-checked"
+		if (sessionStorage.getItem(key)) return
+		const t = setTimeout(() => {
+			sessionStorage.setItem(key, "1")
+			checkDueDateReminders().catch(() => {})
+		}, 5000)
+		return () => clearTimeout(t)
 	}, []);
 
 	const totalTasks = columns.reduce((sum, col) => sum + col.tasks.length, 0);
