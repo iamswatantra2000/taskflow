@@ -328,173 +328,239 @@ function CalendarView({ tasks }: { tasks: Task[] }) {
   )
 }
 
-// ——— Timeline View ———
+// ——— Timeline / Gantt View ———
+const DAY_PX      = 36   // pixels per day column
+const ROW_H       = 44   // px height of each task row
+const LABEL_W     = 220  // px width of left label column
+const STATUS_BAR: Record<string, string> = {
+  TODO:        "bg-slate-400 dark:bg-[#555]",
+  IN_PROGRESS: "bg-indigo-500",
+  IN_REVIEW:   "bg-amber-500",
+  DONE:        "bg-emerald-500 opacity-70",
+}
+
 function TimelineView({ tasks }: { tasks: Task[] }) {
-  const tasksWithDates = tasks.filter((t) => t.dueDate)
+  const today = new Date(); today.setHours(0, 0, 0, 0)
 
-  if (tasksWithDates.length === 0) {
-    return (
-      <div className="bg-white dark:bg-[#111] border border-slate-100 dark:border-[#1a1a1a] rounded-[12px] p-12 text-center">
-        <GitBranch size={32} className="text-slate-300 dark:text-[#333] mx-auto mb-3" />
-        <p className="text-[13px] text-slate-400 dark:text-[#555]">No tasks with due dates</p>
-        <p className="text-[11px] text-slate-400 dark:text-[#444] mt-1">
-          Add due dates to tasks to see them on the timeline
-        </p>
-      </div>
-    )
-  }
+  // Build date range: start of this month → last due date + 7d (min 8 weeks visible)
+  const hasDates      = tasks.filter((t) => t.dueDate)
+  const dueDates      = hasDates.map((t) => new Date(t.dueDate!).getTime())
+  const rangeStart    = new Date(today.getFullYear(), today.getMonth(), 1)
+  const latestDue     = dueDates.length ? new Date(Math.max(...dueDates)) : new Date(today.getTime() + 56 * 86400000)
+  latestDue.setDate(latestDue.getDate() + 7)
+  // Ensure at least 8 weeks from rangeStart
+  const minEnd = new Date(rangeStart.getTime() + 56 * 86400000)
+  const rangeEnd = latestDue > minEnd ? latestDue : minEnd
 
-  // Get date range
-  const dates     = tasksWithDates.map((t) => new Date(t.dueDate!))
-  const minDate   = new Date(Math.min(...dates.map((d) => d.getTime())))
-  const maxDate   = new Date(Math.max(...dates.map((d) => d.getTime())))
+  const MS_DAY    = 86400000
+  const totalDays = Math.ceil((rangeEnd.getTime() - rangeStart.getTime()) / MS_DAY) + 1
+  const totalW    = totalDays * DAY_PX
 
-  // Expand range by 2 days on each side
-  minDate.setDate(minDate.getDate() - 2)
-  maxDate.setDate(maxDate.getDate() + 2)
+  // Today column index
+  const todayIdx = Math.floor((today.getTime() - rangeStart.getTime()) / MS_DAY)
 
-  const totalDays = Math.ceil(
-    (maxDate.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24)
-  ) + 1
-
-  // Generate day headers
-  const dayHeaders = Array.from({ length: totalDays }, (_, i) => {
-    const date = new Date(minDate)
-    date.setDate(date.getDate() + i)
-    return date
+  // Generate day array
+  const days = Array.from({ length: totalDays }, (_, i) => {
+    const d = new Date(rangeStart.getTime() + i * MS_DAY)
+    return d
   })
 
-  function getTaskPosition(task: Task) {
-    if (!task.dueDate) return { left: 0, width: 0 }
-    const due      = new Date(task.dueDate)
-    const created  = new Date(task.createdAt)
-    const startDay = Math.max(
-      0,
-      Math.floor((created.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24))
-    )
-    const endDay = Math.floor(
-      (due.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24)
-    )
-    const left  = (startDay / totalDays) * 100
-    const width = Math.max(2, ((endDay - startDay + 1) / totalDays) * 100)
+  // Group days into months for the top header row
+  type MonthSegment = { label: string; startIdx: number; span: number }
+  const monthSegments: MonthSegment[] = []
+  days.forEach((d, i) => {
+    const label = d.toLocaleDateString("en-US", { month: "short", year: "numeric" })
+    const last  = monthSegments[monthSegments.length - 1]
+    if (!last || last.label !== label) {
+      monthSegments.push({ label, startIdx: i, span: 1 })
+    } else {
+      last.span++
+    }
+  })
+
+  function barProps(task: Task) {
+    const due     = task.dueDate ? new Date(task.dueDate) : null
+    const created = new Date(task.createdAt); created.setHours(0, 0, 0, 0)
+    if (!due) return null
+    due.setHours(0, 0, 0, 0)
+    const startIdx = Math.max(0, Math.floor((created.getTime() - rangeStart.getTime()) / MS_DAY))
+    const endIdx   = Math.max(startIdx, Math.floor((due.getTime() - rangeStart.getTime()) / MS_DAY))
+    const left     = startIdx * DAY_PX
+    const width    = Math.max(DAY_PX, (endIdx - startIdx + 1) * DAY_PX)
     return { left, width }
   }
-
-  const today       = new Date()
-  const todayOffset = Math.floor(
-    (today.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24)
-  )
-  const todayLeft = (todayOffset / totalDays) * 100
 
   return (
     <div className="bg-white dark:bg-[#111] border border-slate-100 dark:border-[#1a1a1a] rounded-[12px] overflow-hidden">
 
-      {/* Timeline header */}
-      <div className="px-5 py-4 border-b border-slate-100 dark:border-[#1a1a1a]">
-        <h3 className="text-[13px] font-semibold text-slate-800 dark:text-[#e0e0e0]">Timeline</h3>
-        <p className="text-[11px] text-slate-400 dark:text-[#555] mt-0.5">
-          Task duration from creation to due date
-        </p>
+      {/* Header bar */}
+      <div className="px-5 py-3.5 border-b border-slate-100 dark:border-[#1a1a1a] flex items-center justify-between">
+        <div>
+          <h3 className="text-[13px] font-semibold text-slate-800 dark:text-[#e0e0e0]">Gantt Timeline</h3>
+          <p className="text-[11px] text-slate-400 dark:text-[#555] mt-0.5">
+            {hasDates.length} of {tasks.length} task{tasks.length !== 1 ? "s" : ""} have due dates
+          </p>
+        </div>
+        <div className="flex items-center gap-3 text-[10.5px] text-slate-400 dark:text-[#555]">
+          {(["TODO", "IN_PROGRESS", "IN_REVIEW", "DONE"] as const).map((s) => (
+            <div key={s} className="flex items-center gap-1.5">
+              <div className={`w-2.5 h-2.5 rounded-[3px] ${STATUS_BAR[s]}`} />
+              {statusConfig[s].label}
+            </div>
+          ))}
+        </div>
       </div>
 
+      {/* Scrollable grid */}
       <div className="overflow-x-auto">
-        <div className="min-w-[700px]">
+        <div style={{ width: LABEL_W + totalW }} className="relative">
 
-          {/* Day headers */}
-          <div className="flex border-b border-slate-100 dark:border-[#1a1a1a] bg-slate-50 dark:bg-[#0d0d0d]">
-            <div className="w-[200px] flex-shrink-0 px-4 py-2">
-              <span className="text-[10px] text-slate-400 dark:text-[#444]">Task</span>
+          {/* ── Month header row ── */}
+          <div className="flex border-b border-slate-100 dark:border-[#1a1a1a] bg-slate-50/80 dark:bg-[#0d0d0d] sticky top-0 z-20">
+            <div style={{ width: LABEL_W }} className="flex-shrink-0 px-4 py-2 border-r border-slate-100 dark:border-[#1f1f1f]">
+              <span className="text-[10px] font-medium text-slate-400 dark:text-[#444]">Task</span>
             </div>
-            <div className="flex-1 relative h-8">
-              {dayHeaders.map((date, i) => {
-                const isToday = (
-                  date.getFullYear() === today.getFullYear() &&
-                  date.getMonth()    === today.getMonth()    &&
-                  date.getDate()     === today.getDate()
-                )
+            <div className="flex" style={{ width: totalW }}>
+              {monthSegments.map((seg) => (
+                <div
+                  key={seg.label}
+                  style={{ width: seg.span * DAY_PX }}
+                  className="flex-shrink-0 px-2 py-2 border-r border-slate-100 dark:border-[#1f1f1f]"
+                >
+                  <span className="text-[10px] font-semibold text-slate-500 dark:text-[#555]">{seg.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ── Day header row ── */}
+          <div className="flex border-b border-slate-100 dark:border-[#1a1a1a] bg-slate-50/40 dark:bg-[#0a0a0a]">
+            <div style={{ width: LABEL_W }} className="flex-shrink-0 border-r border-slate-100 dark:border-[#1f1f1f]" />
+            <div className="flex" style={{ width: totalW }}>
+              {days.map((d, i) => {
+                const isToday   = i === todayIdx
+                const isSunday  = d.getDay() === 0
+                const isMonthStart = d.getDate() === 1
                 return (
                   <div
-                    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                    // biome-ignore lint/suspicious/noArrayIndexKey: positional
                     key={i}
-                    className="absolute top-0 h-full flex items-center"
-                    style={{ left: `${(i / totalDays) * 100}%` }}
+                    style={{ width: DAY_PX }}
+                    className={cn(
+                      "flex-shrink-0 flex items-center justify-center py-1 border-r text-[9px] font-medium",
+                      isToday
+                        ? "bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800/40"
+                        : isSunday || isMonthStart
+                          ? "text-slate-400 dark:text-[#3a3a3a] border-slate-200 dark:border-[#1f1f1f]"
+                          : "text-slate-300 dark:text-[#2a2a2a] border-slate-100 dark:border-[#191919]"
+                    )}
                   >
-                    <span className={cn(
-                      "text-[9px] font-medium",
-                      isToday ? "text-indigo-400" : "text-slate-400 dark:text-[#444]"
-                    )}>
-                      {date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                    </span>
+                    {isToday ? (
+                      <span className="w-4 h-4 bg-indigo-600 text-white rounded-full flex items-center justify-center text-[8px] font-bold">{d.getDate()}</span>
+                    ) : (
+                      d.getDate()
+                    )}
                   </div>
                 )
               })}
             </div>
           </div>
 
-          {/* Task rows */}
-          {tasksWithDates.map((task) => {
-            const { left, width } = getTaskPosition(task)
-            const priority        = priorityConfig[task.priority as keyof typeof priorityConfig]
-            const overdue         = isOverdue(task.dueDate) && task.status !== "DONE"
-            const status          = statusConfig[task.status]
+          {/* ── Task rows ── */}
+          {tasks.length === 0 ? (
+            <div className="py-16 text-center">
+              <GitBranch size={28} className="text-slate-300 dark:text-[#333] mx-auto mb-3" />
+              <p className="text-[13px] text-slate-400 dark:text-[#555]">No tasks yet</p>
+            </div>
+          ) : (
+            tasks.map((task) => {
+              const bar     = barProps(task)
+              const overdue = isOverdue(task.dueDate) && task.status !== "DONE"
+              const status  = statusConfig[task.status]
 
-            return (
-              <div
-                key={task.id}
-                className="flex items-center border-b border-slate-100 dark:border-[#1a1a1a] hover:bg-slate-50 dark:hover:bg-[#141414] transition-colors group"
-              >
-                {/* Task name */}
-                <div className="w-[200px] flex-shrink-0 px-4 py-3 flex items-center gap-2">
-                  <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${status?.dot}`} />
-                  <p className="text-[12px] text-slate-700 dark:text-[#ccc] truncate">{task.title}</p>
-                </div>
-
-                {/* Timeline bar */}
-                <div className="flex-1 relative h-[40px]">
-                  {/* Today line */}
-                  {todayLeft >= 0 && todayLeft <= 100 && (
-                    <div
-                      className="absolute top-0 bottom-0 w-px bg-indigo-500/50 z-10"
-                      style={{ left: `${todayLeft}%` }}
-                    />
-                  )}
-
-                  {/* Task bar */}
+              return (
+                <div
+                  key={task.id}
+                  style={{ height: ROW_H }}
+                  className="flex items-center border-b border-slate-100 dark:border-[#1a1a1a] hover:bg-slate-50/60 dark:hover:bg-white/[0.015] transition-colors group"
+                >
+                  {/* Label */}
                   <div
-                    className={cn(
-                      "absolute top-1/2 -translate-y-1/2 h-6 rounded-full flex items-center px-2 text-[10px] font-medium text-white transition-all",
-                      task.status === "DONE"
-                        ? "bg-emerald-700 opacity-60"
-                        : overdue
-                        ? "bg-red-700"
-                        : "bg-indigo-600 hover:bg-indigo-500"
-                    )}
-                    style={{
-                      left:     `${left}%`,
-                      width:    `${width}%`,
-                      minWidth: "8px",
-                    }}
-                    title={`${task.title} — Due ${formatDate(task.dueDate)}`}
+                    style={{ width: LABEL_W }}
+                    className="flex-shrink-0 px-4 flex items-center gap-2 border-r border-slate-100 dark:border-[#1f1f1f] h-full"
                   >
-                    <span className="truncate">{task.title}</span>
+                    <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${status?.dot}`} />
+                    <p className="text-[12px] text-slate-700 dark:text-[#ccc] truncate flex-1">{task.title}</p>
+                    {task.dueDate && (
+                      <span className={`text-[10px] flex-shrink-0 hidden sm:block ${overdue ? "text-red-400" : "text-slate-400 dark:text-[#444]"}`}>
+                        {formatDate(task.dueDate)}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Gantt bar area */}
+                  <div className="relative flex-1 h-full" style={{ width: totalW }}>
+                    {/* Weekend / month-start shading */}
+                    {days.map((d, i) => (d.getDay() === 0 || d.getDay() === 6) && (
+                      <div
+                        // biome-ignore lint/suspicious/noArrayIndexKey: positional
+                        key={i}
+                        className="absolute top-0 bottom-0 bg-slate-50/60 dark:bg-white/[0.012]"
+                        style={{ left: i * DAY_PX, width: DAY_PX }}
+                      />
+                    ))}
+
+                    {/* Today highlight column */}
+                    {todayIdx >= 0 && todayIdx < totalDays && (
+                      <div
+                        className="absolute top-0 bottom-0 bg-indigo-500/[0.06] dark:bg-indigo-500/[0.04]"
+                        style={{ left: todayIdx * DAY_PX, width: DAY_PX }}
+                      />
+                    )}
+
+                    {/* Today vertical line */}
+                    {todayIdx >= 0 && todayIdx < totalDays && (
+                      <div
+                        className="absolute top-0 bottom-0 w-[2px] bg-indigo-500/50 z-10"
+                        style={{ left: todayIdx * DAY_PX + DAY_PX / 2 }}
+                      />
+                    )}
+
+                    {/* Task bar */}
+                    {bar ? (
+                      <div
+                        className={cn(
+                          "absolute top-1/2 -translate-y-1/2 rounded-[6px] flex items-center px-2.5 text-[10.5px] font-medium text-white shadow-sm transition-all cursor-default",
+                          overdue && task.status !== "DONE"
+                            ? "bg-red-500 hover:bg-red-400"
+                            : task.status === "DONE"
+                              ? "bg-emerald-500/70 hover:bg-emerald-500/90"
+                              : task.status === "IN_REVIEW"
+                                ? "bg-amber-500 hover:bg-amber-400"
+                                : task.status === "IN_PROGRESS"
+                                  ? "bg-indigo-500 hover:bg-indigo-400"
+                                  : "bg-slate-400 hover:bg-slate-500"
+                        )}
+                        style={{ left: bar.left, width: bar.width, height: 26 }}
+                        title={`${task.title} — Due ${formatDate(task.dueDate) ?? "n/a"}`}
+                      >
+                        <span className="truncate">{task.title}</span>
+                      </div>
+                    ) : (
+                      /* No due date — show a dashed placeholder */
+                      <div
+                        className="absolute top-1/2 -translate-y-1/2 border border-dashed border-slate-300 dark:border-[#333] rounded-[6px] flex items-center px-2 text-[10px] text-slate-400 dark:text-[#444]"
+                        style={{ left: todayIdx * DAY_PX, width: DAY_PX * 4, height: 24 }}
+                        title="No due date"
+                      >
+                        No due date
+                      </div>
+                    )}
                   </div>
                 </div>
-
-                {/* Due date + priority */}
-                <div className="w-[120px] flex-shrink-0 px-4 flex items-center gap-2">
-                  <span className={`text-[10px] font-medium px-[7px] py-[2px] rounded-[5px] border ${priority?.class}`}>
-                    {priority?.label}
-                  </span>
-                  {task.dueDate && (
-                    <span className={`text-[10px] ${overdue ? "text-red-400" : "text-slate-400 dark:text-[#555]"}`}>
-                      {formatDate(task.dueDate)}
-                    </span>
-                  )}
-                </div>
-              </div>
-            )
-          })}
-
+              )
+            })
+          )}
         </div>
       </div>
     </div>

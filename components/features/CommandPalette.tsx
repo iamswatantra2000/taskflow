@@ -1,19 +1,43 @@
 // components/features/CommandPalette.tsx
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { Command } from "cmdk"
 import {
   LayoutDashboard, CheckSquare, Clock,
   FolderPlus, Plus, LogOut, Settings2,
-  Search, ArrowRight, Lock, BarChart3, Sparkles,
+  Search, ArrowRight, Lock, BarChart3, Sparkles, Loader2,
 } from "lucide-react"
 import { useClerk } from "@clerk/nextjs"
 
 type Props = {
   projects: { id: string; name: string; color: string }[]
   plan:     string
+}
+
+type SearchTask = {
+  id:           string
+  title:        string
+  status:       string
+  priority:     string
+  projectId:    string
+  projectName:  string
+  projectColor: string
+}
+
+type SearchProject = {
+  id:          string
+  name:        string
+  color:       string
+  description: string | null
+}
+
+const STATUS_DOT: Record<string, string> = {
+  TODO:        "bg-slate-400",
+  IN_PROGRESS: "bg-indigo-500",
+  IN_REVIEW:   "bg-amber-500",
+  DONE:        "bg-emerald-500",
 }
 
 // Shared group heading classes
@@ -60,6 +84,36 @@ export function CommandPalette({ projects, plan }: Props) {
   }, [open])
 
   const isPro = plan === "pro" || plan === "enterprise"
+
+  // ── Live search ──
+  const [searchTasks,    setSearchTasks]    = useState<SearchTask[]>([])
+  const [searchProjects, setSearchProjects] = useState<SearchProject[]>([])
+  const [searching,      setSearching]      = useState(false)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    if (query.length < 2) {
+      setSearchTasks([])
+      setSearchProjects([])
+      setSearching(false)
+      return
+    }
+    setSearching(true)
+    debounceRef.current = setTimeout(() => {
+      fetch(`/api/search?q=${encodeURIComponent(query)}`)
+        .then((r) => r.json())
+        .then((d) => {
+          setSearchTasks(d.tasks ?? [])
+          setSearchProjects(d.projects ?? [])
+        })
+        .catch(() => {})
+        .finally(() => setSearching(false))
+    }, 280)
+  }, [query])
+
+  const hasSearchResults = searchTasks.length > 0 || searchProjects.length > 0
+  const isSearchMode     = query.length >= 2
 
   function runCommand(fn: () => void) {
     setOpen(false)
@@ -126,13 +180,82 @@ export function CommandPalette({ projects, plan }: Props) {
           <Command.List className="max-h-[58vh] sm:max-h-[420px] overflow-y-auto p-2 pb-2.5">
 
             <Command.Empty className="py-10 text-center">
-              <div className="w-10 h-10 rounded-full bg-slate-50 border border-slate-200 dark:bg-white/[0.03] dark:border-white/[0.06] flex items-center justify-center mx-auto mb-3">
-                <Search size={16} className="text-slate-300 dark:text-[#333]" />
-              </div>
-              <p className="text-[12.5px] text-slate-400 dark:text-[#444]">No results found</p>
-              <p className="text-[11px] text-slate-300 dark:text-[#2a2a2a] mt-1">Try a different keyword</p>
+              {searching ? (
+                <Loader2 size={20} className="animate-spin text-slate-300 dark:text-[#333] mx-auto mb-2" />
+              ) : (
+                <>
+                  <div className="w-10 h-10 rounded-full bg-slate-50 border border-slate-200 dark:bg-white/[0.03] dark:border-white/[0.06] flex items-center justify-center mx-auto mb-3">
+                    <Search size={16} className="text-slate-300 dark:text-[#333]" />
+                  </div>
+                  <p className="text-[12.5px] text-slate-400 dark:text-[#444]">No results found</p>
+                  <p className="text-[11px] text-slate-300 dark:text-[#2a2a2a] mt-1">Try a different keyword</p>
+                </>
+              )}
             </Command.Empty>
 
+            {/* ── Search loading indicator ── */}
+            {searching && (
+              <div className="flex items-center gap-2 px-3 py-2 text-[12px] text-slate-400 dark:text-[#444]">
+                <Loader2 size={12} className="animate-spin" />
+                Searching…
+              </div>
+            )}
+
+            {/* ── Live search results ── */}
+            {isSearchMode && !searching && searchTasks.length > 0 && (
+              <Command.Group heading="Tasks" className={GROUP_CLS}>
+                {searchTasks.map((task) => (
+                  <Command.Item
+                    key={task.id}
+                    value={`task ${task.title} ${task.projectName}`}
+                    onSelect={() => runCommand(() => router.push(`/projects/${task.projectId}`))}
+                    className={ITEM_BASE}
+                  >
+                    <div
+                      className="w-7 h-7 rounded-[8px] flex items-center justify-center flex-shrink-0 border border-slate-100 dark:border-white/[0.06]"
+                      style={{ background: `${task.projectColor}18` }}
+                    >
+                      <div className={`w-2 h-2 rounded-full ${STATUS_DOT[task.status] ?? "bg-slate-400"}`} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[13px] font-medium text-slate-700 dark:text-[#aaa] group-data-[selected=true]:text-slate-900 dark:group-data-[selected=true]:text-white truncate transition-colors">
+                        {task.title}
+                      </p>
+                      <p className="text-[11px] text-slate-400 dark:text-[#444] truncate">{task.projectName}</p>
+                    </div>
+                    <ArrowRight size={12} className="text-slate-300 dark:text-[#2a2a2a] group-data-[selected=true]:text-indigo-500 transition-colors flex-shrink-0" />
+                  </Command.Item>
+                ))}
+              </Command.Group>
+            )}
+
+            {isSearchMode && !searching && searchProjects.length > 0 && (
+              <Command.Group heading="Projects" className={GROUP_CLS}>
+                {searchProjects.map((project) => (
+                  <Command.Item
+                    key={project.id}
+                    value={`project ${project.name}`}
+                    onSelect={() => runCommand(() => router.push(`/projects/${project.id}`))}
+                    className={ITEM_BASE}
+                  >
+                    <div
+                      className="w-7 h-7 rounded-[8px] flex items-center justify-center flex-shrink-0 border border-slate-200 dark:border-white/[0.06]"
+                      style={{ background: `${project.color}18` }}
+                    >
+                      <div className="w-2 h-2 rounded-full" style={{ background: project.color }} />
+                    </div>
+                    <span className="flex-1 font-medium text-slate-600 dark:text-[#888] group-data-[selected=true]:text-slate-900 dark:group-data-[selected=true]:text-white transition-colors truncate">
+                      {project.name}
+                    </span>
+                    <ArrowRight size={12} className="text-slate-300 dark:text-[#2a2a2a] group-data-[selected=true]:text-indigo-500 transition-colors" />
+                  </Command.Item>
+                ))}
+              </Command.Group>
+            )}
+
+            {/* ── Default groups (shown when not in search mode or no results) ── */}
+            {(!isSearchMode || (!searching && !hasSearchResults)) && (
+              <>
             {/* ── Navigation ── */}
             <Command.Group heading="Navigation" className={GROUP_CLS}>
               {navItems.map((item) => {
@@ -273,6 +396,7 @@ export function CommandPalette({ projects, plan }: Props) {
                 </span>
               </Command.Item>
             </Command.Group>
+            </>)}
 
           </Command.List>
 
