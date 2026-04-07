@@ -16,22 +16,27 @@ const PRESET_COLORS = [
 export function LabelPicker({
   taskId,
   workspaceId,
+  initialWorkspaceLabels,
+  initialAppliedIds,
 }: {
-  taskId:      string
-  workspaceId: string
+  taskId:                  string
+  workspaceId:             string
+  initialWorkspaceLabels?: Label[]
+  initialAppliedIds?:      string[]
 }) {
-  const [workspaceLabels, setWorkspaceLabels] = useState<Label[]>([])
-  const [taskLabelIds, setTaskLabelIds]       = useState<Set<string>>(new Set())
+  const [workspaceLabels, setWorkspaceLabels] = useState<Label[]>(initialWorkspaceLabels ?? [])
+  const [taskLabelIds, setTaskLabelIds]       = useState<Set<string>>(new Set(initialAppliedIds ?? []))
   const [open, setOpen]                       = useState(false)
   const [creating, setCreating]               = useState(false)
   const [newName, setNewName]                 = useState("")
   const [newColor, setNewColor]               = useState("#6366f1")
   const [saving, setSaving]                   = useState(false)
-  const [loadingLabels, setLoadingLabels]     = useState(true)
+  const [loadingLabels, setLoadingLabels]     = useState(initialWorkspaceLabels === undefined)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  // Fetch workspace labels + this task's labels
+  // Fetch workspace labels + this task's labels (only when not pre-fetched)
   useEffect(() => {
+    if (initialWorkspaceLabels !== undefined) return
     setLoadingLabels(true)
     Promise.all([
       fetch(`/api/labels/workspace/${workspaceId}`).then((r) => r.json()),
@@ -44,7 +49,7 @@ export function LabelPicker({
       })
       .catch(() => {})
       .finally(() => setLoadingLabels(false))
-  }, [taskId, workspaceId])
+  }, [taskId, workspaceId, initialWorkspaceLabels])
 
   // Close on outside click
   useEffect(() => {

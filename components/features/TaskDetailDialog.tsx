@@ -26,13 +26,19 @@ type Task = {
   assigneeId:  string | null
 }
 
+type SubtaskItem = { id: string; title: string; completed: boolean; position: number }
+type Label       = { id: string; name: string; color: string }
+
 type Props = {
-  task:          Task
-  open:          boolean
-  onClose:       () => void
-  members:       Member[]
-  currentUserId: string
-  workspaceId:   string
+  task:                    Task
+  open:                    boolean
+  onClose:                 () => void
+  members:                 Member[]
+  currentUserId:           string
+  workspaceId:             string
+  initialSubtasks?:        SubtaskItem[]
+  initialWorkspaceLabels?: Label[]
+  initialAppliedLabelIds?: string[]
 }
 
 type FocusSession = {
@@ -121,7 +127,7 @@ function FocusSessionHistory({ taskId }: { taskId: string }) {
   )
 }
 
-export function TaskDetailDialog({ task, open, onClose, members, currentUserId, workspaceId }: Props) {
+export function TaskDetailDialog({ task, open, onClose, members, currentUserId, workspaceId, initialSubtasks, initialWorkspaceLabels, initialAppliedLabelIds }: Props) {
   const [title, setTitle]             = useState(task.title)
   const [description, setDescription] = useState(task.description ?? "")
   const [status, setStatus]           = useState(task.status)
@@ -290,8 +296,13 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId, 
 
         </div>
 
-          <LabelPicker taskId={task.id} workspaceId={workspaceId} />
-          <SubtaskList taskId={task.id} />
+          <LabelPicker
+            taskId={task.id}
+            workspaceId={workspaceId}
+            initialWorkspaceLabels={initialWorkspaceLabels}
+            initialAppliedIds={initialAppliedLabelIds}
+          />
+          <SubtaskList taskId={task.id} initialItems={initialSubtasks} />
           <FocusSessionHistory taskId={task.id} />
           <CommentSection
             taskId={task.id}

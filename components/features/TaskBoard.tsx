@@ -62,7 +62,8 @@ type Props = {
   currentUserId: string
 }
 
-type Label = { id: string; name: string; color: string }
+type Label       = { id: string; name: string; color: string }
+type SubtaskItem = { id: string; title: string; completed: boolean; position: number }
 
 const priorityConfig = {
   URGENT: { label: "Urgent", dot: "bg-red-500",    pill: "bg-red-50 text-red-600 border-red-200 dark:bg-red-500/[0.08] dark:text-red-400 dark:border-red-500/20"             },
@@ -329,20 +330,30 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects, m
   const [boardColumns, setBoardColumns]     = useState<Column[]>(columns)
   const [showCelebration, setShowCelebration] = useState(false)
   const [taskLabelMap, setTaskLabelMap]     = useState<Record<string, Label[]>>({})
+  const [subtaskMap, setSubtaskMap]         = useState<Record<string, SubtaskItem[]>>({})
+  const [workspaceLabels, setWorkspaceLabels] = useState<Label[]>([])
 
   useEffect(() => {
     setBoardColumns(columns)
   }, [columns])
 
-  // Fetch label chips for all cards (batch, after mount)
+  // Batch-fetch labels + subtasks for all cards on mount so dialog opens instantly
   useEffect(() => {
     const taskIds = columns.flatMap((c) => c.tasks.map((t) => t.id))
     if (taskIds.length === 0) return
-    fetch(`/api/labels/tasks?ids=${taskIds.join(",")}`)
-      .then((r) => r.json())
-      .then((d) => setTaskLabelMap(d.taskLabelMap ?? {}))
+    const joined = taskIds.join(",")
+    Promise.all([
+      fetch(`/api/labels/tasks?ids=${joined}`).then((r) => r.json()),
+      fetch(`/api/subtasks/batch?ids=${joined}`).then((r) => r.json()),
+      fetch(`/api/labels/workspace/${workspaceId}`).then((r) => r.json()),
+    ])
+      .then(([labelData, subtaskData, wsLabelData]) => {
+        setTaskLabelMap(labelData.taskLabelMap ?? {})
+        setSubtaskMap(subtaskData.subtaskMap ?? {})
+        setWorkspaceLabels(wsLabelData.labels ?? [])
+      })
       .catch(() => {})
-  }, [columns])
+  }, [columns, workspaceId])
 
   // ← Delayed celebration effect
   useEffect(() => {
@@ -588,6 +599,9 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects, m
           members={members}
           currentUserId={currentUserId}
           workspaceId={workspaceId}
+          initialSubtasks={subtaskMap[selectedTask.id]}
+          initialWorkspaceLabels={workspaceLabels.length > 0 ? workspaceLabels : undefined}
+          initialAppliedLabelIds={taskLabelMap[selectedTask.id]?.map((l) => l.id)}
         />
       )}
 

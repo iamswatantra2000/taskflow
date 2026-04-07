@@ -17,9 +17,9 @@ type Subtask = {
   position:  number
 }
 
-export function SubtaskList({ taskId }: { taskId: string }) {
-  const [items, setItems]       = useState<Subtask[]>([])
-  const [loading, setLoading]   = useState(true)
+export function SubtaskList({ taskId, initialItems }: { taskId: string; initialItems?: Subtask[] }) {
+  const [items, setItems]       = useState<Subtask[]>(initialItems ?? [])
+  const [loading, setLoading]   = useState(initialItems === undefined)
   const [newTitle, setNewTitle] = useState("")
   const [adding, setAdding]     = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -27,12 +27,13 @@ export function SubtaskList({ taskId }: { taskId: string }) {
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
+    if (initialItems !== undefined) return
     fetch(`/api/subtasks/${taskId}`)
       .then((r) => r.json())
       .then((d) => setItems(d.subtasks ?? []))
       .catch(() => {})
       .finally(() => setLoading(false))
-  }, [taskId])
+  }, [taskId, initialItems])
 
   const total     = items.length
   const completed = items.filter((i) => i.completed).length
