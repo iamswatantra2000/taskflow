@@ -158,6 +158,12 @@ Pro gates: Activity feed, Analytics, AI tasks button, some settings
 
 - [x] **Task Assignment from Board** — assign tasks directly from kanban cards without opening the detail dialog.
 - [x] **Subtasks / Checklist** — checklist inside TaskDetailDialog; progress bar (X/Y + %); optimistic add/toggle/delete/rename; needs `subtasks` table in Supabase (see SQL below)
+- [x] **Instant dialog open** — batch pre-fetch subtasks + labels at board mount; dialog opens with zero loading skeletons
+- [x] **Bulk Actions** — multi-select cards via checkbox, floating BulkActionBar: move status / assign / delete with optimistic updates
+- [x] **Subtask progress chip on cards** — mini progress bar + done/total count on kanban cards that have subtasks
+- [x] **Inline task creation** — `+` button in column headers → inline input → optimistic temp card → server persist
+- [x] **Gantt / Timeline view** — full pixel-per-day Gantt in project Timeline tab; month headers, day row, status-colored bars, today marker, weekend shading
+- [x] **Global search** — ⌘K command palette now does live full-text search across tasks + projects with debounce; `GET /api/search?q=` endpoint
       `AssigneeButton` component: avatar (initials + deterministic color) if assigned, dashed `+` if not.
       Click opens an upward dropdown with all workspace members + unassign option + checkmark on current assignee.
       Wired into `TaskBoard.tsx` (dashboard board) with optimistic update + `reassignTask` server action.
@@ -217,38 +223,44 @@ Pro gates: Activity feed, Analytics, AI tasks button, some settings
 | `app/api/subtasks/[taskId]/route.ts` | **Created** — GET endpoint returns subtasks ordered by position/createdAt |
 | `components/features/SubtaskList.tsx` | **Created** — checklist UI with progress bar, optimistic toggle/add/delete/rename |
 | `components/features/TaskDetailDialog.tsx` | Added `<SubtaskList>` between description and focus sessions |
+| `app/api/subtasks/batch/route.ts` | **Created** — batch GET endpoint returns subtask map keyed by taskId |
+| `app/api/labels/workspace/[workspaceId]/route.ts` | **Created** — GET workspace labels |
+| `app/api/labels/tasks/route.ts` | **Created** — GET task-label map for multiple task IDs |
+| `components/features/SubtaskList.tsx` | Added `initialItems?` prop to skip fetch when data pre-loaded |
+| `components/features/LabelPicker.tsx` | Added `initialWorkspaceLabels?` + `initialAppliedIds?` props |
+| `components/features/TaskDetailDialog.tsx` | Added `initialSubtasks`, `initialWorkspaceLabels`, `initialAppliedLabelIds` props |
+| `components/features/TaskBoard.tsx` | Batch pre-fetch at mount; bulk selection state + BulkActionBar; subtask progress chip; InlineTaskForm; checkbox alignment fix; drag listener moved to title `<p>` |
+| `components/features/BulkActionBar.tsx` | **Created** — floating action bar for bulk move/assign/delete |
+| `lib/actions.ts` | Added `bulkUpdateStatus`, `bulkAssign`, `bulkDelete` server actions |
+| `components/features/ProjectClient.tsx` | `TimelineView` rebuilt as full Gantt chart (pixel-per-day, month headers, status bars, today marker) |
+| `app/api/search/route.ts` | **Created** — GET `/api/search?q=` full-text search across tasks + projects |
+| `components/features/CommandPalette.tsx` | Debounced live search with Tasks/Projects result groups |
 
 ---
 
 ## Last Worked On
 
-**Session:** 2026-04-07
+**Session:** 2026-04-07 (continued)
 **Changes:**
-- **Instant tab switching** — `My Tasks` sidebar link now navigates to `/dashboard?tab=my-tasks` instead of `/my-tasks` route; `DashboardClient` reads `tab` + `invited` from `useSearchParams()` (client-side); `dashboard/page.tsx` no longer reads `searchParams` so Next.js skips server re-render on param changes → switching between Dashboard and My Tasks is now instant with zero server round-trips
-- Added inline My Tasks view inside `DashboardClient` — filters `columns` tasks by `currentUserId`, enriches with project color/name, grouped by status with status badge + priority label + due date
-- `AppSidebar` uses `useSearchParams()` + `isNavActive()` helper to correctly highlight the active nav item for both `/dashboard` and `/dashboard?tab=my-tasks`
-- Added `loading.tsx` skeleton screens for `/dashboard`, `/my-tasks`, `/activity`, `/analytics` routes
-- Focus Mode page — full redesign: two-panel immersive layout, animated SVG ring (r=100), ambient radial glow, 4 round tracker dots, elapsed time badge, phase badge (Work/Break), right panel with notes + stats
-- Task decay fix — `lib/decay.ts` now uses `Math.max(staleDays, overdueDays)` so overdue tasks reflect due-date age, not just updatedAt age
-- Task card layout — action icons (focus/move/delete) moved to top row; AssigneeButton moved to bottom right; z-index fix for three-dots menu via `menuOpen` state lifting
-- Previously: `ThemeToggle` in all topbars + landing navbar; Hero mockup light-mode fix
-- Fixed theme toggle lag: suppress all CSS transitions during switch via temp `<style>` + double rAF
-- Applied canonical Tailwind classes (`rounded-lg`, `shrink-0`, `rotate-200`) per linter
-- **Presence avatars**: real-time "who's online" feature on project boards
-- **Workload Balancer** — "People" tab on dashboard; member rows, load badges, segmented bars, inline reassign
-- **Focus Mode** — full-screen Pomodoro overlay; circular ring, session notes, Mark as Done
-- **Task decay indicators** — stale tasks (3/7/14d thresholds) get amber→orange border + clock badge
-- **Task Assignment from Board** — `AssigneeButton` component wired into dashboard `TaskBoard` and `ProjectClient` `BoardView`; optimistic updates with revert on failure
+- **Instant dialog open** — batch-fetch subtasks + workspace labels + task-label map at `TaskBoard` mount via single `Promise.all`; data threaded as `initialItems`/`initialWorkspaceLabels`/`initialAppliedIds` props to skip child component fetches → `TaskDetailDialog` opens instantly with no loading skeletons
+- **`SubtaskList.tsx`** — added `initialItems?: Subtask[]` prop; skips fetch when provided; `useState(initialItems === undefined)` for loading guard
+- **`LabelPicker.tsx`** — added `initialWorkspaceLabels?` and `initialAppliedIds?` props; skips both fetch calls when provided
+- **`TaskDetailDialog.tsx`** — added `initialSubtasks`, `initialWorkspaceLabels`, `initialAppliedLabelIds` optional props; passes them to children
+- **Bulk Actions** — multi-select kanban cards via checkbox (shows on hover); floating `BulkActionBar` at bottom center with Move to / Assign / Delete; `lib/actions.ts` has `bulkUpdateStatus`, `bulkAssign`, `bulkDelete` using `inArray`; optimistic updates in `TaskBoard`; `BulkActionBar.tsx` created
+- **Checkbox alignment fix** — checkbox and drag handle share inline `relative w-[13px] h-[13px]` flex slot; both `absolute inset-0` inside, no more absolute card-level positioning
+- **Drag fix** — `{...listeners}` moved from drag handle div to title `<p>` only; drag handle keeps only `{...attributes}`; fixed dnd-kit conflict
+- **Subtask progress chip on cards** — mini progress bar + `done/total` count rendered on `TaskCard` when task has subtasks; emerald when 100%, indigo otherwise
+- **Inline task creation** — `+` button in column headers; `InlineTaskForm` component (text input + Enter to save, Esc to cancel); optimistic temp card with `temp-${Date.now()}` id; `createTask` server action + `revalidatePath`
+- **Gantt / Timeline view** — `TimelineView` in `ProjectClient.tsx` rebuilt: pixel-per-day (DAY_PX=36, LABEL_W=220), two-row header (month segments + day numbers with today highlight), status-colored bars, today vertical line, weekend shading, dashed placeholder for tasks with no due date, status legend
+- **Global search** — `app/api/search/route.ts` created: GET `/api/search?q=` searches tasks by title + projects by name via `ilike`, scoped to user's workspace; `CommandPalette.tsx` updated with debounced fetch (280ms), `SearchTask`/`SearchProject` types, `STATUS_DOT` map, searching spinner, conditional Tasks/Projects result groups vs default navigation groups
 
 ---
 
 ## Pending / Next Steps
 
-- **Next: Task Labels / Tags** (high impact #2)
-- **Then: Bulk Actions** (high impact #3)
 - Activity and Analytics routes still do a full server render on navigation (they are separate routes). Could be inlined as lazy-fetched tabs in `DashboardClient` if needed.
 - The `/my-tasks` route still exists and works (direct URL); sidebar no longer links to it.
-- Subtask progress chip on kanban cards is not yet shown (needs subtask count passed from server page → DashboardClient → TaskBoard → TaskCard). Can add when needed.
+- Search currently only covers task titles and project names — could extend to comments if needed.
 
 ---
 
