@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   Search, Sparkles, Lock,
   ListTodo, Zap, CheckCircle2, Circle,
@@ -55,7 +56,6 @@ type Props = {
 	user: { name?: string | null; email?: string | null };
 	workspaceId:   string;
 	plan:          string;
-	invited?:      boolean;
 	members:       { id: string; name: string }[];
 	currentUserId: string;
 };
@@ -72,6 +72,20 @@ const STAT_META: Record<string, {
 	"Completed":   { icon: CheckCircle2, accentBg: "bg-emerald-500/50",    iconBg: "bg-emerald-500/[0.12]", iconColor: "text-emerald-400"    },
 	"Todo":        { icon: Circle,       accentBg: "bg-amber-500/50",      iconBg: "bg-amber-500/[0.12]",   iconColor: "text-amber-400"      },
 };
+
+const MY_TASK_STATUS: Record<string, { label: string; dot: string; badge: string }> = {
+	TODO:        { label: "Todo",        dot: "bg-slate-400 dark:bg-[#555]",  badge: "bg-slate-100 text-slate-600 border-slate-200 dark:bg-[#1a1a1a] dark:text-[#888] dark:border-[#2a2a2a]"             },
+	IN_PROGRESS: { label: "In progress", dot: "bg-indigo-500",                badge: "bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950 dark:text-indigo-400 dark:border-indigo-900"   },
+	IN_REVIEW:   { label: "In review",   dot: "bg-amber-500",                 badge: "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-400 dark:border-amber-900"         },
+	DONE:        { label: "Done",        dot: "bg-emerald-500",               badge: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-400 dark:border-emerald-900" },
+}
+
+const MY_TASK_PRIORITY: Record<string, { label: string; color: string }> = {
+	LOW:    { label: "Low",    color: "text-emerald-600 dark:text-emerald-400" },
+	MEDIUM: { label: "Medium", color: "text-amber-600 dark:text-amber-400"   },
+	HIGH:   { label: "High",   color: "text-red-500 dark:text-red-400"       },
+	URGENT: { label: "Urgent", color: "text-rose-600 dark:text-rose-400"     },
+}
 
 // ProGate — locks Pro-only UI for free users
 function ProGate({
@@ -155,10 +169,13 @@ export function DashboardClient({
 	firstName,
 	user,
 	plan,
-	invited,
 	members,
 	currentUserId,
 }: Props) {
+	const searchParams = useSearchParams();
+	const activeTab = searchParams.get("tab") ?? "board";
+	const isInvited = searchParams.get("invited") === "1";
+
 	const [filters, setFilters] = useState<FilterState>({
 		priority: [],
 		search: "",
@@ -166,12 +183,12 @@ export function DashboardClient({
 	const [boardView, setBoardView] = useState<"board" | "people">("board");
 
 	useEffect(() => {
-		if (invited) {
+		if (isInvited) {
 			toast.success("Welcome to the workspace!", {
 				description: "You've successfully joined via invitation.",
 			})
 		}
-	}, [invited]);
+	}, [isInvited]);
 
 	useEffect(() => {
 		// Run at most once per browser session, with a 5s delay so it never
@@ -194,7 +211,9 @@ export function DashboardClient({
 			<div className="h-[50px] border-b border-border flex items-center justify-between pl-14 pr-4 md:px-5 flex-shrink-0 bg-background z-10">
 				<div className="flex items-center gap-2 min-w-0">
 					<span className="text-[13px] text-muted-foreground hidden sm:inline">Workspace /</span>
-					<span className="text-[13px] font-semibold text-foreground truncate">Dashboard</span>
+					<span className="text-[13px] font-semibold text-foreground truncate">
+					{activeTab === "my-tasks" ? "My tasks" : "Dashboard"}
+				</span>
 				</div>
 
 				<div className="hidden md:flex items-center gap-3 flex-shrink-0">
@@ -259,132 +278,202 @@ export function DashboardClient({
 
 			{/* ── Main content ── */}
 			<div className="flex-1 overflow-auto">
-				<div className="p-5 sm:p-7 space-y-6 sm:space-y-8">
-
-					{/* ── Welcome ── */}
-					<div className="flex items-start justify-between gap-4">
-						<div>
-							<p className="text-[11px] font-semibold text-slate-400 dark:text-[#3a3a3a] uppercase tracking-[0.1em] mb-2">
-								{formatDate()}
-							</p>
-							<h1 className="text-[26px] sm:text-[30px] font-bold tracking-tight leading-tight">
-								Good day,{" "}
-								<span className="text-indigo-600 dark:text-indigo-400">{firstName}</span>
-							</h1>
-							<p className="text-[13px] text-slate-500 dark:text-[#555] mt-1.5">
-								Here&apos;s what&apos;s happening across your projects.
-							</p>
-						</div>
-
-						{/* Quick task count bubble — desktop only */}
-						<div className="hidden sm:flex flex-col items-end gap-1 flex-shrink-0 pt-1">
-							<div className="flex items-center gap-2 px-3 py-1.5 rounded-[10px] bg-slate-50 border border-slate-200 dark:bg-white/[0.03] dark:border-white/[0.07]">
-								<KanbanSquare size={13} className="text-slate-400 dark:text-[#444]" />
-								<span className="text-[12px] font-semibold text-slate-500 dark:text-[#666]">
-									{totalTasks} task{totalTasks !== 1 ? "s" : ""} total
-								</span>
+				{activeTab === "my-tasks" ? (() => {
+					const myTasks = columns.flatMap((c) => c.tasks).filter((t) => t.assigneeId === currentUserId)
+					const projectMap = new Map(projects.map((p) => [p.id, p]))
+					const statuses = ["TODO", "IN_PROGRESS", "IN_REVIEW", "DONE"] as const
+					return (
+						<div className="p-5 sm:p-7 space-y-6">
+							<div>
+								<h1 className="text-[22px] font-bold tracking-tight text-foreground">My tasks</h1>
+								<p className="text-[13px] text-muted-foreground mt-1">
+									{myTasks.length} task{myTasks.length !== 1 ? "s" : ""} assigned to you
+								</p>
 							</div>
-						</div>
-					</div>
 
-					{/* ── Stats ── */}
-					<div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-						{stats.map((stat, index) => {
-							const meta = STAT_META[stat.label] ?? STAT_META["Total tasks"];
-							const Icon = meta.icon;
-							return (
-								<div
-									key={stat.label}
-									className="relative bg-white dark:bg-[#111] border border-slate-100 dark:border-white/[0.07] rounded-[12px] p-4 overflow-hidden
-										hover:border-slate-200 dark:hover:border-white/[0.13] hover:-translate-y-[1px] hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_8px_24px_rgba(0,0,0,0.45)]
-										transition-all duration-150 group"
-								>
-									{/* Top accent bar */}
-									<div className={`absolute top-0 left-0 right-0 h-[2px] ${meta.accentBg} rounded-t-[12px]`} />
-
-									{/* Label + icon */}
-									<div className="flex items-start justify-between mb-4 mt-1">
-										<p className="text-[10.5px] font-semibold text-slate-400 dark:text-[#444] uppercase tracking-[0.08em] leading-none">
-											{stat.label}
-										</p>
-										<div className={`w-7 h-7 rounded-[7px] flex items-center justify-center flex-shrink-0 ${meta.iconBg}`}>
-											<Icon size={14} className={meta.iconColor} />
+							{statuses.map((status) => {
+								const group = myTasks.filter((t) => t.status === status)
+								if (group.length === 0) return null
+								const sc = MY_TASK_STATUS[status]
+								return (
+									<div key={status}>
+										<div className="flex items-center gap-2 mb-3">
+											<div className={`w-2 h-2 rounded-full flex-shrink-0 ${sc.dot}`} />
+											<span className={`text-[11px] font-semibold px-2 py-0.5 rounded-[5px] border ${sc.badge}`}>
+												{sc.label}
+											</span>
+											<span className="text-[11px] text-muted-foreground">{group.length}</span>
+										</div>
+										<div className="space-y-1.5">
+											{group.map((task) => {
+												const proj = projectMap.get(task.projectId)
+												const pc = MY_TASK_PRIORITY[task.priority] ?? MY_TASK_PRIORITY.MEDIUM
+												return (
+													<div
+														key={task.id}
+														className="flex items-center gap-3 bg-white dark:bg-[#111] border border-slate-100 dark:border-white/[0.07] rounded-[9px] px-4 py-3 hover:border-slate-200 dark:hover:border-white/[0.12] transition-colors"
+													>
+														<div
+															className="w-[6px] h-[6px] rounded-full flex-shrink-0"
+															style={{ background: proj?.color ?? "#6366f1" }}
+														/>
+														<p className="flex-1 text-[13px] text-slate-700 dark:text-[#ccc] truncate">{task.title}</p>
+														{proj && (
+															<span className="text-[11px] text-muted-foreground hidden sm:block shrink-0">{proj.name}</span>
+														)}
+														<span className={`text-[11px] font-medium shrink-0 ${pc.color}`}>{pc.label}</span>
+														{task.dueDate && (
+															<span className="text-[11px] text-muted-foreground shrink-0 hidden sm:block">
+																{new Date(task.dueDate).toLocaleDateString()}
+															</span>
+														)}
+													</div>
+												)
+											})}
 										</div>
 									</div>
+								)
+							})}
 
-									{/* Value */}
-									<p className={`text-[34px] font-bold tracking-tight leading-none mb-2 ${stat.valueColor}`}>
-										<AnimatedCounter value={stat.value} duration={1200} delay={index * 100} />
-									</p>
-
-									{/* Sub */}
-									<p className="text-[11px] text-slate-400 dark:text-[#3a3a3a] font-medium">{stat.sub}</p>
+							{myTasks.length === 0 && (
+								<div className="flex flex-col items-center justify-center py-20 text-center">
+									<div className="w-14 h-14 rounded-full bg-slate-100 dark:bg-white/[0.04] flex items-center justify-center mb-4">
+										<ListTodo size={22} className="text-slate-400 dark:text-[#444]" />
+									</div>
+									<p className="text-[14px] font-medium text-slate-500 dark:text-[#555]">No tasks assigned to you</p>
+									<p className="text-[12px] text-slate-400 dark:text-[#333] mt-1">Tasks assigned to you will appear here</p>
 								</div>
-							);
-						})}
-					</div>
+							)}
+						</div>
+					)
+				})() : (
+					<div className="p-5 sm:p-7 space-y-6 sm:space-y-8">
 
-					{/* ── Task board / People ── */}
-					<div>
-						{/* Section header with view toggle */}
-						<div className="flex items-center justify-between mb-4">
-							<div className="flex items-center bg-slate-50 dark:bg-[#161616] border border-slate-200 dark:border-[#2a2a2a] rounded-[8px] p-0.5">
-								<button
-									type="button"
-									onClick={() => setBoardView("board")}
-									className={`flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-[12px] font-medium transition-all ${
-										boardView === "board"
-											? "bg-white dark:bg-[#2a2a2a] text-slate-800 dark:text-[#e0e0e0] shadow-sm"
-											: "text-slate-400 dark:text-[#555] hover:text-slate-700 dark:hover:text-[#999]"
-									}`}
-								>
-									<KanbanSquare size={12} />
-									Board
-								</button>
-								<button
-									type="button"
-									onClick={() => setBoardView("people")}
-									className={`flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-[12px] font-medium transition-all ${
-										boardView === "people"
-											? "bg-white dark:bg-[#2a2a2a] text-slate-800 dark:text-[#e0e0e0] shadow-sm"
-											: "text-slate-400 dark:text-[#555] hover:text-slate-700 dark:hover:text-[#999]"
-									}`}
-								>
-									<Users size={12} />
-									People
-								</button>
+						{/* ── Welcome ── */}
+						<div className="flex items-start justify-between gap-4">
+							<div>
+								<p className="text-[11px] font-semibold text-slate-400 dark:text-[#3a3a3a] uppercase tracking-[0.1em] mb-2">
+									{formatDate()}
+								</p>
+								<h1 className="text-[26px] sm:text-[30px] font-bold tracking-tight leading-tight">
+									Good day,{" "}
+									<span className="text-indigo-600 dark:text-indigo-400">{firstName}</span>
+								</h1>
+								<p className="text-[13px] text-slate-500 dark:text-[#555] mt-1.5">
+									Here&apos;s what&apos;s happening across your projects.
+								</p>
 							</div>
 
-							<div className="flex items-center gap-2">
-								{totalTasks > 0 && (
-									<span className="text-[10.5px] font-semibold text-slate-500 bg-slate-100 border border-slate-200 dark:text-[#444] dark:bg-white/[0.04] dark:border-white/[0.07] rounded-full px-2.5 py-0.5">
-										{totalTasks} task{totalTasks !== 1 ? "s" : ""}
+							{/* Quick task count bubble — desktop only */}
+							<div className="hidden sm:flex flex-col items-end gap-1 flex-shrink-0 pt-1">
+								<div className="flex items-center gap-2 px-3 py-1.5 rounded-[10px] bg-slate-50 border border-slate-200 dark:bg-white/[0.03] dark:border-white/[0.07]">
+									<KanbanSquare size={13} className="text-slate-400 dark:text-[#444]" />
+									<span className="text-[12px] font-semibold text-slate-500 dark:text-[#666]">
+										{totalTasks} task{totalTasks !== 1 ? "s" : ""} total
 									</span>
-								)}
+								</div>
 							</div>
 						</div>
 
-						{boardView === "board" ? (
-							<TaskBoardWrapper
-								columns={columns}
-								userName={userName}
-								filters={filters}
-								projects={projects}
-								workspaceId={workspaceId}
-								members={members}
-								currentUserId={currentUserId}
-							/>
-						) : (
-							<WorkloadBalancer
-								tasks={columns.flatMap((c) => c.tasks)}
-								members={members}
-								projects={projects}
-								currentUserId={currentUserId}
-							/>
-						)}
-					</div>
+						{/* ── Stats ── */}
+						<div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+							{stats.map((stat, index) => {
+								const meta = STAT_META[stat.label] ?? STAT_META["Total tasks"];
+								const Icon = meta.icon;
+								return (
+									<div
+										key={stat.label}
+										className="relative bg-white dark:bg-[#111] border border-slate-100 dark:border-white/[0.07] rounded-[12px] p-4 overflow-hidden
+											hover:border-slate-200 dark:hover:border-white/[0.13] hover:-translate-y-[1px] hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_8px_24px_rgba(0,0,0,0.45)]
+											transition-all duration-150 group"
+									>
+										{/* Top accent bar */}
+										<div className={`absolute top-0 left-0 right-0 h-[2px] ${meta.accentBg} rounded-t-[12px]`} />
 
-				</div>
+										{/* Label + icon */}
+										<div className="flex items-start justify-between mb-4 mt-1">
+											<p className="text-[10.5px] font-semibold text-slate-400 dark:text-[#444] uppercase tracking-[0.08em] leading-none">
+												{stat.label}
+											</p>
+											<div className={`w-7 h-7 rounded-[7px] flex items-center justify-center flex-shrink-0 ${meta.iconBg}`}>
+												<Icon size={14} className={meta.iconColor} />
+											</div>
+										</div>
+
+										{/* Value */}
+										<p className={`text-[34px] font-bold tracking-tight leading-none mb-2 ${stat.valueColor}`}>
+											<AnimatedCounter value={stat.value} duration={1200} delay={index * 100} />
+										</p>
+
+										{/* Sub */}
+										<p className="text-[11px] text-slate-400 dark:text-[#3a3a3a] font-medium">{stat.sub}</p>
+									</div>
+								);
+							})}
+						</div>
+
+						{/* ── Task board / People ── */}
+						<div>
+							{/* Section header with view toggle */}
+							<div className="flex items-center justify-between mb-4">
+								<div className="flex items-center bg-slate-50 dark:bg-[#161616] border border-slate-200 dark:border-[#2a2a2a] rounded-[8px] p-0.5">
+									<button
+										type="button"
+										onClick={() => setBoardView("board")}
+										className={`flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-[12px] font-medium transition-all ${
+											boardView === "board"
+												? "bg-white dark:bg-[#2a2a2a] text-slate-800 dark:text-[#e0e0e0] shadow-sm"
+												: "text-slate-400 dark:text-[#555] hover:text-slate-700 dark:hover:text-[#999]"
+										}`}
+									>
+										<KanbanSquare size={12} />
+										Board
+									</button>
+									<button
+										type="button"
+										onClick={() => setBoardView("people")}
+										className={`flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-[12px] font-medium transition-all ${
+											boardView === "people"
+												? "bg-white dark:bg-[#2a2a2a] text-slate-800 dark:text-[#e0e0e0] shadow-sm"
+												: "text-slate-400 dark:text-[#555] hover:text-slate-700 dark:hover:text-[#999]"
+										}`}
+									>
+										<Users size={12} />
+										People
+									</button>
+								</div>
+
+								<div className="flex items-center gap-2">
+									{totalTasks > 0 && (
+										<span className="text-[10.5px] font-semibold text-slate-500 bg-slate-100 border border-slate-200 dark:text-[#444] dark:bg-white/[0.04] dark:border-white/[0.07] rounded-full px-2.5 py-0.5">
+											{totalTasks} task{totalTasks !== 1 ? "s" : ""}
+										</span>
+									)}
+								</div>
+							</div>
+
+							{boardView === "board" ? (
+								<TaskBoardWrapper
+									columns={columns}
+									userName={userName}
+									filters={filters}
+									projects={projects}
+									workspaceId={workspaceId}
+									members={members}
+									currentUserId={currentUserId}
+								/>
+							) : (
+								<WorkloadBalancer
+									tasks={columns.flatMap((c) => c.tasks)}
+									members={members}
+									projects={projects}
+									currentUserId={currentUserId}
+								/>
+							)}
+						</div>
+
+					</div>
+				)}
 			</div>
 		</div>
 	);

@@ -13,6 +13,7 @@ import {
   Search, BarChart3, Menu, X, LogOut, Lock, Zap, Sparkles,
 } from "lucide-react"
 import { useState, useRef } from "react"
+import { useSearchParams } from "next/navigation"
 import { createPortal } from "react-dom"
 import { useClerk, useUser } from "@clerk/nextjs"
 
@@ -37,10 +38,10 @@ type NavItem = {
 }
 
 const navItems: NavItem[] = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/my-tasks",  label: "My tasks",  icon: ListChecks      },
-  { href: "/activity",  label: "Activity",  icon: Activity,  pro: true, proLabel: "Activity feed" },
-  { href: "/analytics", label: "Analytics", icon: BarChart3, pro: true, proLabel: "Analytics"    },
+  { href: "/dashboard",              label: "Dashboard", icon: LayoutDashboard },
+  { href: "/dashboard?tab=my-tasks", label: "My tasks",  icon: ListChecks      },
+  { href: "/activity",               label: "Activity",  icon: Activity,  pro: true, proLabel: "Activity feed" },
+  { href: "/analytics",              label: "Analytics", icon: BarChart3, pro: true, proLabel: "Analytics"    },
 ]
 
 function getInitials(name: string) {
@@ -111,12 +112,23 @@ function LockedNavItem({ label, icon: Icon, proLabel, collapsed }: {
 
 export function AppSidebar({ user, projects, plan }: AppSidebarProps) {
   const pathname                    = usePathname()
+  const searchParams                = useSearchParams()
   const [collapsed, setCollapsed]   = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const { signOut }                 = useClerk()
   const { user: clerkUser }         = useUser()
 
   const isPro = plan === "pro" || plan === "enterprise"
+
+  function isNavActive(href: string): boolean {
+    if (href === "/dashboard?tab=my-tasks") {
+      return pathname === "/dashboard" && searchParams.get("tab") === "my-tasks"
+    }
+    if (href === "/dashboard") {
+      return pathname === "/dashboard" && !searchParams.get("tab")
+    }
+    return pathname === href
+  }
 
   function openCommandPalette() {
     document.dispatchEvent(
@@ -174,7 +186,7 @@ export function AppSidebar({ user, projects, plan }: AppSidebarProps) {
         <div className="space-y-0.5">
           {navItems.map(({ href, label, icon: Icon, pro, proLabel }) => {
             const isLocked  = pro && !isPro
-            const isActive  = pathname === href
+            const isActive  = isNavActive(href)
 
             if (isLocked) {
               return (

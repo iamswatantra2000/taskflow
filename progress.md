@@ -208,15 +208,24 @@ Pro gates: Activity feed, Analytics, AI tasks button, some settings
 | `components/features/AssigneeButton.tsx` | **Created** — shared task assignee dropdown for kanban cards |
 | `components/features/TaskBoard.tsx` | Wired `AssigneeButton` + `handleAssign` optimistic update |
 | `components/features/ProjectClient.tsx` | Wired `AssigneeButton` into `BoardView`; added `members` prop + local state |
+| `app/(dashboard)/dashboard/page.tsx` | Removed `searchParams` prop — server component no longer re-renders on URL param changes |
+| `components/features/DashboardClient.tsx` | Added `useSearchParams()` for tab + invited; added inline My Tasks view (instant, client-side filter) |
+| `components/features/AppSidebar.tsx` | My Tasks href changed to `/dashboard?tab=my-tasks`; `isNavActive()` helper uses `useSearchParams()` |
 
 ---
 
 ## Last Worked On
 
-**Session:** 2026-04-06
+**Session:** 2026-04-07
 **Changes:**
-- Added `ThemeToggle` component — sun/moon icon, placed in all 8 topbars + landing navbar
-- Fixed landing page Hero product mockup for light theme
+- **Instant tab switching** — `My Tasks` sidebar link now navigates to `/dashboard?tab=my-tasks` instead of `/my-tasks` route; `DashboardClient` reads `tab` + `invited` from `useSearchParams()` (client-side); `dashboard/page.tsx` no longer reads `searchParams` so Next.js skips server re-render on param changes → switching between Dashboard and My Tasks is now instant with zero server round-trips
+- Added inline My Tasks view inside `DashboardClient` — filters `columns` tasks by `currentUserId`, enriches with project color/name, grouped by status with status badge + priority label + due date
+- `AppSidebar` uses `useSearchParams()` + `isNavActive()` helper to correctly highlight the active nav item for both `/dashboard` and `/dashboard?tab=my-tasks`
+- Added `loading.tsx` skeleton screens for `/dashboard`, `/my-tasks`, `/activity`, `/analytics` routes
+- Focus Mode page — full redesign: two-panel immersive layout, animated SVG ring (r=100), ambient radial glow, 4 round tracker dots, elapsed time badge, phase badge (Work/Break), right panel with notes + stats
+- Task decay fix — `lib/decay.ts` now uses `Math.max(staleDays, overdueDays)` so overdue tasks reflect due-date age, not just updatedAt age
+- Task card layout — action icons (focus/move/delete) moved to top row; AssigneeButton moved to bottom right; z-index fix for three-dots menu via `menuOpen` state lifting
+- Previously: `ThemeToggle` in all topbars + landing navbar; Hero mockup light-mode fix
 - Fixed theme toggle lag: suppress all CSS transitions during switch via temp `<style>` + double rAF
 - Applied canonical Tailwind classes (`rounded-lg`, `shrink-0`, `rotate-200`) per linter
 - **Presence avatars**: real-time "who's online" feature on project boards
@@ -229,7 +238,8 @@ Pro gates: Activity feed, Analytics, AI tasks button, some settings
 
 ## Pending / Next Steps
 
-_No pending tasks. Update this section when new work begins._
+- Activity and Analytics routes still do a full server render on navigation (they are separate routes). Could be inlined as lazy-fetched tabs in `DashboardClient` if needed.
+- The `/my-tasks` route still exists and works (direct URL); sidebar no longer links to it.
 
 ---
 

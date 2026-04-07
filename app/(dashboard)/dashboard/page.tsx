@@ -9,11 +9,7 @@ function getInitials(name: string) {
   return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
 }
 
-type PageProps = { searchParams: Promise<Record<string, string>> }
-
-export default async function DashboardPage({ searchParams }: PageProps) {
-  const params = await searchParams
-  const invited = params.invited === "1"
+export default async function DashboardPage() {
   const session   = await requireAuth()
 
   // Redirect new users to onboarding wizard
@@ -109,7 +105,6 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       user={session.user}
       workspaceId={membership?.workspaceId ?? ""}
       plan={session.user.plan ?? "free"}
-      invited={invited}
       members={members}
       currentUserId={session.user.id}
     />
