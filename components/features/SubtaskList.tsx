@@ -106,7 +106,22 @@ export function SubtaskList({ taskId }: { taskId: string }) {
     if (e.key === "Enter") handleAdd()
   }
 
-  if (loading) return null
+  if (loading) return (
+    <div className="space-y-3 pt-4 border-t border-slate-100 dark:border-[#1f1f1f]">
+      <div className="flex items-center gap-1.5">
+        <div className="w-3 h-3 rounded bg-slate-100 dark:bg-[#1f1f1f] animate-pulse" />
+        <div className="h-3 w-16 rounded bg-slate-100 dark:bg-[#1f1f1f] animate-pulse" />
+      </div>
+      <div className="space-y-2">
+        {[1, 2].map((i) => (
+          <div key={i} className="flex items-center gap-2.5 px-1">
+            <div className="w-4 h-4 rounded-[4px] bg-slate-100 dark:bg-[#1f1f1f] animate-pulse flex-shrink-0" />
+            <div className="h-3 rounded bg-slate-100 dark:bg-[#1f1f1f] animate-pulse flex-1" style={{ width: `${55 + i * 15}%` }} />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
 
   return (
     <div className="space-y-3 pt-4 border-t border-slate-100 dark:border-[#1f1f1f]">

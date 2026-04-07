@@ -27,10 +27,12 @@ export function LabelPicker({
   const [newName, setNewName]                 = useState("")
   const [newColor, setNewColor]               = useState("#6366f1")
   const [saving, setSaving]                   = useState(false)
+  const [loadingLabels, setLoadingLabels]     = useState(true)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   // Fetch workspace labels + this task's labels
   useEffect(() => {
+    setLoadingLabels(true)
     Promise.all([
       fetch(`/api/labels/workspace/${workspaceId}`).then((r) => r.json()),
       fetch(`/api/labels/tasks?ids=${taskId}`).then((r) => r.json()),
@@ -41,6 +43,7 @@ export function LabelPicker({
         setTaskLabelIds(new Set(applied))
       })
       .catch(() => {})
+      .finally(() => setLoadingLabels(false))
   }, [taskId, workspaceId])
 
   // Close on outside click
@@ -104,6 +107,19 @@ export function LabelPicker({
     setTaskLabelIds((prev) => { const n = new Set(prev); n.delete(labelId); return n })
     try { await deleteLabel(labelId) } catch {}
   }
+
+  if (loadingLabels) return (
+    <div className="space-y-2 pt-4 border-t border-slate-100 dark:border-[#1f1f1f]">
+      <div className="flex items-center gap-1.5">
+        <div className="w-3 h-3 rounded bg-slate-100 dark:bg-[#1f1f1f] animate-pulse" />
+        <div className="h-3 w-10 rounded bg-slate-100 dark:bg-[#1f1f1f] animate-pulse" />
+      </div>
+      <div className="flex gap-1.5">
+        <div className="h-5 w-16 rounded-full bg-slate-100 dark:bg-[#1f1f1f] animate-pulse" />
+        <div className="h-5 w-20 rounded-full bg-slate-100 dark:bg-[#1f1f1f] animate-pulse" />
+      </div>
+    </div>
+  )
 
   return (
     <div className="space-y-2 pt-4 border-t border-slate-100 dark:border-[#1f1f1f]">
