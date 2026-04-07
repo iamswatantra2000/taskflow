@@ -1,7 +1,7 @@
 // components/features/TaskBoard.tsx
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import {
   DndContext,
   DragOverlay,
@@ -21,14 +21,14 @@ import {
   useSortable,
 } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { CalendarDays, ArrowDownToLine, Clock, Focus } from "lucide-react"
+import { CalendarDays, ArrowDownToLine, Clock, Focus, Plus, Loader2 } from "lucide-react"
 import { getDecayLevel, getDecayDays, decayBorderClass, decayBadgeClass } from "@/lib/decay"
 import { DeleteTaskButton } from "./DeleteTaskButton"
 import { TaskDetailDialog } from "./TaskDetailDialog"
 import { TaskProjectMenu } from "./TaskProjectMenu"
 import { FocusMode } from "./FocusMode"
 import { BulkActionBar } from "./BulkActionBar"
-import { updateTaskStatus, reassignTask } from "@/lib/actions"
+import { updateTaskStatus, reassignTask, createTask } from "@/lib/actions"
 import { AssigneeButton } from "./AssigneeButton"
 import { toast } from "sonner"
 import type { FilterState } from "./BoardFilters"
@@ -96,6 +96,92 @@ const columnStyles: Record<string, {
   DONE:        { bg: "bg-emerald-50/30 dark:bg-emerald-950/[0.10]",     borderColor: "border-emerald-200 dark:border-emerald-500/15",  labelColor: "text-emerald-600 dark:text-emerald-400", countStyle: "text-emerald-600/70 border-emerald-200 bg-emerald-50 dark:text-emerald-400/60 dark:border-emerald-500/20 dark:bg-emerald-500/[0.07]" },
 }
 
+// ——— Inline task creation form inside a column ———
+function InlineTaskForm({
+  status,
+  projects,
+  onSave,
+  onCancel,
+  adding,
+}: {
+  status:   string
+  projects: { id: string; name: string; color: string }[]
+  onSave:   (title: string, projectId: string) => void
+  onCancel: () => void
+  adding:   boolean
+}) {
+  const [title,     setTitle]     = useState("")
+  const [projectId, setProjectId] = useState(projects[0]?.id ?? "")
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => { inputRef.current?.focus() }, [])
+
+  function submit() {
+    const t = title.trim()
+    if (t) onSave(t, projectId)
+  }
+
+  return (
+    <div className="rounded-[8px] border border-indigo-300/60 dark:border-indigo-500/30 bg-white dark:bg-[#0d0d0d] p-2.5 space-y-2 shadow-sm">
+      <input
+        ref={inputRef}
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") submit()
+          if (e.key === "Escape") onCancel()
+        }}
+        placeholder="Task title…"
+        className="w-full text-[13px] bg-transparent text-slate-800 dark:text-[#e0e0e0] placeholder-slate-300 dark:placeholder-[#444] outline-none"
+      />
+
+      {/* Project pills — only shown when workspace has multiple projects */}
+      {projects.length > 1 && (
+        <div className="flex flex-wrap gap-1">
+          {projects.map((p) => (
+            <button
+              key={p.id}
+              type="button"
+              onClick={() => setProjectId(p.id)}
+              className={`flex items-center gap-1 text-[10px] px-1.5 py-[2px] rounded-full border transition-colors ${
+                projectId === p.id
+                  ? "border-transparent text-white"
+                  : "border-slate-200 dark:border-[#2a2a2a] text-slate-500 dark:text-[#666] hover:border-slate-300"
+              }`}
+              style={projectId === p.id ? { background: p.color } : {}}
+            >
+              <span
+                className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                style={{ background: projectId === p.id ? "rgba(255,255,255,0.65)" : p.color }}
+              />
+              {p.name}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <div className="flex items-center gap-1.5">
+        <button
+          type="button"
+          onClick={submit}
+          disabled={!title.trim() || adding}
+          className="flex-1 h-6 text-[11px] font-semibold bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white rounded-[5px] transition-colors flex items-center justify-center gap-1"
+        >
+          {adding && <Loader2 size={10} className="animate-spin" />}
+          {adding ? "Adding…" : "Add task"}
+        </button>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="h-6 px-2 text-[11px] text-slate-400 dark:text-[#555] hover:text-slate-600 dark:hover:text-[#888] transition-colors"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  )
+}
+
 // ——— Single draggable task card ———
 function TaskCard({
   task,
@@ -105,6 +191,7 @@ function TaskCard({
   members,
   onAssign,
   labels,
+  subtasks,
   isSelected,
   selectionMode,
   onToggleSelect,
@@ -116,6 +203,7 @@ function TaskCard({
   members:         { id: string; name: string }[]
   onAssign:        (taskId: string, newId: string | null) => void
   labels:          Label[]
+  subtasks:        SubtaskItem[]
   isSelected:      boolean
   selectionMode:   boolean
   onToggleSelect:  (taskId: string) => void
@@ -268,6 +356,26 @@ function TaskCard({
         </div>
       )}
 
+      {/* Subtask progress chip */}
+      {subtasks.length > 0 && (() => {
+        const total = subtasks.length
+        const done  = subtasks.filter((s) => s.completed).length
+        const pct   = Math.round((done / total) * 100)
+        return (
+          <div className="flex items-center gap-2 pl-[17px] mb-2">
+            <div className="flex-1 h-[3px] bg-slate-100 dark:bg-[#222] rounded-full overflow-hidden">
+              <div
+                className={`h-full rounded-full transition-all duration-300 ${pct === 100 ? "bg-emerald-500" : "bg-indigo-400"}`}
+                style={{ width: `${pct}%` }}
+              />
+            </div>
+            <span className={`text-[10px] font-medium tabular-nums flex-shrink-0 ${pct === 100 ? "text-emerald-500" : "text-slate-400 dark:text-[#555]"}`}>
+              {done}/{total}
+            </span>
+          </div>
+        )
+      })()}
+
       {/* Bottom row: priority badge + date + assignee */}
       <div className="flex items-center justify-between gap-2 pl-[17px]">
 
@@ -373,6 +481,8 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects, m
   const [subtaskMap, setSubtaskMap]         = useState<Record<string, SubtaskItem[]>>({})
   const [workspaceLabels, setWorkspaceLabels] = useState<Label[]>([])
   const [selectedIds, setSelectedIds]       = useState<Set<string>>(new Set())
+  const [inlineColumn, setInlineColumn]     = useState<string | null>(null)
+  const [inlineAdding, setInlineAdding]     = useState(false)
 
   useEffect(() => {
     setBoardColumns(columns)
@@ -526,6 +636,38 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects, m
     await updateTaskStatus(activeId, finalColumn.id)
   }
 
+  async function handleInlineCreate(title: string, projectId: string, status: string) {
+    if (inlineAdding) return
+    setInlineAdding(true)
+    const tempId = `temp-${Date.now()}`
+    setBoardColumns((prev) => prev.map((col) =>
+      col.id === status
+        ? { ...col, tasks: [...col.tasks, {
+            id: tempId, title, description: null, status,
+            priority: "MEDIUM", assigneeId: currentUserId,
+            projectId, dueDate: null, updatedAt: new Date(),
+          }] }
+        : col
+    ))
+    setInlineColumn(null)
+    try {
+      const fd = new FormData()
+      fd.set("title",     title)
+      fd.set("priority",  "MEDIUM")
+      fd.set("projectId", projectId)
+      fd.set("status",    status)
+      await createTask(fd)
+    } catch {
+      setBoardColumns((prev) => prev.map((col) => ({
+        ...col,
+        tasks: col.tasks.filter((t) => t.id !== tempId),
+      })))
+      toast.error("Failed to create task")
+    } finally {
+      setInlineAdding(false)
+    }
+  }
+
   function handleToggleSelect(taskId: string) {
     setSelectedIds((prev) => {
       const next = new Set(prev)
@@ -628,9 +770,19 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects, m
                             </div>
                           )}
                         </div>
-                        <span className={`text-[10px] font-semibold px-2 py-[2px] rounded-full border ${(columnStyles[col.id] ?? columnStyles.TODO).countStyle}`}>
-                          {col.tasks.length}
-                        </span>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => setInlineColumn(inlineColumn === col.id ? null : col.id)}
+                            title={`Add task to ${col.label}`}
+                            className="w-5 h-5 flex items-center justify-center rounded-[5px] text-slate-400 hover:text-indigo-500 dark:text-[#444] dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors"
+                          >
+                            <Plus size={11} />
+                          </button>
+                          <span className={`text-[10px] font-semibold px-2 py-[2px] rounded-full border ${(columnStyles[col.id] ?? columnStyles.TODO).countStyle}`}>
+                            {col.tasks.length}
+                          </span>
+                        </div>
                       </div>
                     )
                   })()}
@@ -646,14 +798,26 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects, m
                       members={members}
                       onAssign={handleAssign}
                       labels={taskLabelMap[task.id] ?? []}
+                      subtasks={subtaskMap[task.id] ?? []}
                       isSelected={selectedIds.has(task.id)}
                       selectionMode={selectedIds.size > 0}
                       onToggleSelect={handleToggleSelect}
                     />
                   ))}
 
+                  {/* Inline task creation form */}
+                  {inlineColumn === col.id && (
+                    <InlineTaskForm
+                      status={col.id}
+                      projects={projects}
+                      onSave={(title, projectId) => handleInlineCreate(title, projectId, col.id)}
+                      onCancel={() => setInlineColumn(null)}
+                      adding={inlineAdding}
+                    />
+                  )}
+
                   {/* Empty state */}
-                  {col.tasks.length === 0 && (
+                  {col.tasks.length === 0 && inlineColumn !== col.id && (
                     <div className="flex-1 flex flex-col items-center justify-center py-10 gap-3 border border-dashed border-slate-200 dark:border-white/[0.05] rounded-[10px]">
                       <div className="w-9 h-9 rounded-full border-2 border-dashed border-slate-200 dark:border-white/[0.08] flex items-center justify-center">
                         <ArrowDownToLine size={13} className="text-slate-400 dark:text-[#2a2a2a]" />
