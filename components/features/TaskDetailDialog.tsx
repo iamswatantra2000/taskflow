@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog"
 import { toast } from "sonner"
 import { CommentSection } from "./CommentSection"
+import { SubtaskList } from "./SubtaskList"
 
 type Member = { id: string; name: string }
 
@@ -307,6 +308,8 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId }
           </div>
 
         </div>
+
+        <SubtaskList taskId={task.id} />
 
         <FocusSessionHistory taskId={task.id} />
 

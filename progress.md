@@ -157,6 +157,7 @@ Pro gates: Activity feed, Analytics, AI tasks button, some settings
       Session history shown in TaskDetailDialog with total focused time summary.
 
 - [x] **Task Assignment from Board** — assign tasks directly from kanban cards without opening the detail dialog.
+- [x] **Subtasks / Checklist** — checklist inside TaskDetailDialog; progress bar (X/Y + %); optimistic add/toggle/delete/rename; needs `subtasks` table in Supabase (see SQL below)
       `AssigneeButton` component: avatar (initials + deterministic color) if assigned, dashed `+` if not.
       Click opens an upward dropdown with all workspace members + unassign option + checkmark on current assignee.
       Wired into `TaskBoard.tsx` (dashboard board) with optimistic update + `reassignTask` server action.
@@ -211,6 +212,11 @@ Pro gates: Activity feed, Analytics, AI tasks button, some settings
 | `app/(dashboard)/dashboard/page.tsx` | Removed `searchParams` prop — server component no longer re-renders on URL param changes |
 | `components/features/DashboardClient.tsx` | Added `useSearchParams()` for tab + invited; added inline My Tasks view (instant, client-side filter) |
 | `components/features/AppSidebar.tsx` | My Tasks href changed to `/dashboard?tab=my-tasks`; `isNavActive()` helper uses `useSearchParams()` |
+| `lib/db/schema.ts` | Added `subtasks` table (taskId, title, completed, position) |
+| `lib/subtask-actions.ts` | **Created** — server actions: addSubtask, toggleSubtask, deleteSubtask, updateSubtaskTitle |
+| `app/api/subtasks/[taskId]/route.ts` | **Created** — GET endpoint returns subtasks ordered by position/createdAt |
+| `components/features/SubtaskList.tsx` | **Created** — checklist UI with progress bar, optimistic toggle/add/delete/rename |
+| `components/features/TaskDetailDialog.tsx` | Added `<SubtaskList>` between description and focus sessions |
 
 ---
 
@@ -238,8 +244,11 @@ Pro gates: Activity feed, Analytics, AI tasks button, some settings
 
 ## Pending / Next Steps
 
+- **Next: Task Labels / Tags** (high impact #2)
+- **Then: Bulk Actions** (high impact #3)
 - Activity and Analytics routes still do a full server render on navigation (they are separate routes). Could be inlined as lazy-fetched tabs in `DashboardClient` if needed.
 - The `/my-tasks` route still exists and works (direct URL); sidebar no longer links to it.
+- Subtask progress chip on kanban cards is not yet shown (needs subtask count passed from server page → DashboardClient → TaskBoard → TaskCard). Can add when needed.
 
 ---
 

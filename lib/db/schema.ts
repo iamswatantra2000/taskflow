@@ -139,6 +139,16 @@ export const focusSessions = pgTable("focus_sessions", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 })
 
+// ——— Subtasks ———
+export const subtasks = pgTable("subtasks", {
+  id:        text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  taskId:    text("task_id").notNull().references(() => tasks.id, { onDelete: "cascade" }),
+  title:     text("title").notNull(),
+  completed: boolean("completed").default(false).notNull(),
+  position:  integer("position").notNull().default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+})
+
 export const activities = pgTable("activities", {
   id:          text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   type:        activityTypeEnum("type").notNull(),
