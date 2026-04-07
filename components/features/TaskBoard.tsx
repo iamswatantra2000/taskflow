@@ -169,49 +169,57 @@ function TaskCard({
         ${isDone && !isSelected ? "opacity-55" : ""}
       `}
     >
-      {/* Selection checkbox — top-left, visible on hover or when in selection mode */}
-      <button
-        type="button"
-        onClick={(e) => { e.stopPropagation(); onToggleSelect(task.id) }}
-        className={`absolute top-2.5 left-2.5 z-10 w-[15px] h-[15px] rounded-[4px] border-2 flex items-center justify-center transition-all duration-100
-          ${isSelected
-            ? "opacity-100 bg-indigo-600 border-indigo-600"
-            : selectionMode
-              ? "opacity-100 bg-white dark:bg-[#111] border-slate-300 dark:border-[#555]"
-              : "opacity-0 group-hover:opacity-100 bg-white dark:bg-[#111] border-slate-300 dark:border-[#555] hover:border-indigo-400"
-          }
-        `}
-        aria-label={isSelected ? "Deselect task" : "Select task"}
-      >
-        {isSelected && (
-          <svg width="8" height="6" viewBox="0 0 8 6" fill="none">
-            <path d="M1 3L3 5L7 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        )}
-      </button>
-
-      {/* Top row: drag handle + title + action buttons */}
+      {/* Top row: drag handle / checkbox + title + action buttons */}
       <div className="flex items-start gap-2 mb-3">
-        {/* Drag handle — only visible on hover */}
-        <div
-          {...attributes}
-          {...listeners}
-          style={{ touchAction: "none" }}
-          className="flex-shrink-0 mt-[3px] cursor-grab active:cursor-grabbing text-slate-400 hover:text-slate-600 dark:text-[#333] dark:hover:text-[#666] opacity-0 group-hover:opacity-100 transition-all"
-        >
-          {/** biome-ignore lint/a11y/noSvgWithoutTitle: drag handle */}
-          <svg width="9" height="13" viewBox="0 0 10 14" fill="none">
-            <circle cx="2"  cy="2"  r="1.3" fill="currentColor"/>
-            <circle cx="8"  cy="2"  r="1.3" fill="currentColor"/>
-            <circle cx="2"  cy="7"  r="1.3" fill="currentColor"/>
-            <circle cx="8"  cy="7"  r="1.3" fill="currentColor"/>
-            <circle cx="2"  cy="12" r="1.3" fill="currentColor"/>
-            <circle cx="8"  cy="12" r="1.3" fill="currentColor"/>
-          </svg>
+
+        {/* Left slot: drag handle dots (normal) or selection checkbox (hover/selection mode) */}
+        <div className="relative flex-shrink-0 mt-[3px] w-[13px] h-[13px]">
+          {/* Drag handle — visible on hover when not in selection mode */}
+          <div
+            {...attributes}
+            {...listeners}
+            style={{ touchAction: "none" }}
+            className={`absolute inset-0 flex items-center justify-center cursor-grab active:cursor-grabbing text-slate-400 dark:text-[#333] transition-opacity
+              ${isSelected || selectionMode ? "opacity-0 pointer-events-none" : "opacity-0 group-hover:opacity-100"}
+            `}
+          >
+            {/** biome-ignore lint/a11y/noSvgWithoutTitle: drag handle */}
+            <svg width="9" height="13" viewBox="0 0 10 14" fill="none">
+              <circle cx="2"  cy="2"  r="1.3" fill="currentColor"/>
+              <circle cx="8"  cy="2"  r="1.3" fill="currentColor"/>
+              <circle cx="2"  cy="7"  r="1.3" fill="currentColor"/>
+              <circle cx="8"  cy="7"  r="1.3" fill="currentColor"/>
+              <circle cx="2"  cy="12" r="1.3" fill="currentColor"/>
+              <circle cx="8"  cy="12" r="1.3" fill="currentColor"/>
+            </svg>
+          </div>
+
+          {/* Selection checkbox — overlaid in same slot, visible on hover or in selection mode */}
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); onToggleSelect(task.id) }}
+            className={`absolute inset-0 flex items-center justify-center rounded-[3px] border-2 transition-all duration-100
+              ${isSelected
+                ? "opacity-100 bg-indigo-600 border-indigo-600"
+                : selectionMode
+                  ? "opacity-100 bg-white dark:bg-[#111] border-slate-300 dark:border-[#555] hover:border-indigo-400"
+                  : "opacity-0 group-hover:opacity-100 bg-white dark:bg-[#111] border-slate-300 dark:border-[#555] hover:border-indigo-400"
+              }
+            `}
+            aria-label={isSelected ? "Deselect task" : "Select task"}
+          >
+            {isSelected && (
+              <svg width="7" height="5" viewBox="0 0 8 6" fill="none">
+                <path d="M1 3L3 5L7 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            )}
+          </button>
         </div>
 
         {/** biome-ignore lint/a11y/useKeyWithClickEvents: intentional */}
         <p
+          {...listeners}
+          style={{ touchAction: "none" }}
           onClick={() => selectionMode ? onToggleSelect(task.id) : onSelect(task)}
           className={`flex-1 text-[13px] font-semibold leading-snug cursor-pointer transition-colors
             ${isDone
