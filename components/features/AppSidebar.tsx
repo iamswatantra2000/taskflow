@@ -210,20 +210,28 @@ export function AppSidebar({ user, projects, plan }: AppSidebarProps) {
                   "relative flex items-center gap-3 h-9 rounded-[8px] text-[13px] font-medium transition-all duration-150 overflow-hidden",
                   collapsed ? "px-0 justify-center" : "px-3",
                   isActive
-                    ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-500/[0.1] dark:text-indigo-300"
+                    ? ""
                     : "text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-[#666] dark:hover:text-[#ccc] dark:hover:bg-white/[0.04]"
                 )}
+                style={isActive ? {
+                  backgroundColor: "var(--tf-accent-muted)",
+                  color:           "var(--tf-accent-text)",
+                } : undefined}
               >
                 {/* Active left accent bar */}
                 {isActive && (
-                  <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-[18px] bg-indigo-500 rounded-r-full" />
+                  <span
+                    className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-[18px] rounded-r-full"
+                    style={{ backgroundColor: "var(--tf-accent)" }}
+                  />
                 )}
                 <Icon
                   size={16}
                   className={cn(
                     "flex-shrink-0 transition-colors",
-                    isActive ? "text-indigo-600 dark:text-indigo-400" : "text-slate-400 dark:text-[#555]"
+                    isActive ? "" : "text-slate-400 dark:text-[#555]"
                   )}
+                  style={isActive ? { color: "var(--tf-accent)" } : undefined}
                 />
                 {!collapsed && <span className="whitespace-nowrap">{label}</span>}
               </Link>
@@ -326,14 +334,17 @@ export function AppSidebar({ user, projects, plan }: AppSidebarProps) {
             href="/upgrade"
             onClick={() => setMobileOpen(false)}
             className={cn(
-              "flex items-center gap-3 h-9 rounded-[8px] text-[13px] font-semibold transition-all",
-              "bg-indigo-50 border border-indigo-200 text-indigo-700 dark:bg-indigo-600/[0.12] dark:border-indigo-500/20 dark:text-indigo-400",
-              "hover:bg-indigo-100 hover:border-indigo-300 hover:text-indigo-800 dark:hover:bg-indigo-600/[0.18] dark:hover:border-indigo-500/30 dark:hover:text-indigo-300",
+              "flex items-center gap-3 h-9 rounded-[8px] text-[13px] font-semibold transition-all border",
               collapsed ? "px-0 justify-center" : "px-3"
             )}
+            style={{
+              backgroundColor: "var(--tf-accent-muted)",
+              borderColor:     "color-mix(in srgb, var(--tf-accent) 30%, transparent)",
+              color:           "var(--tf-accent-text)",
+            }}
             title={collapsed ? "Upgrade to Pro" : undefined}
           >
-            <Sparkles size={15} className="flex-shrink-0 text-indigo-600 dark:text-indigo-400" />
+            <Sparkles size={15} className="flex-shrink-0" style={{ color: "var(--tf-accent)" }} />
             {!collapsed && <span>Upgrade to Pro</span>}
           </Link>
         )}

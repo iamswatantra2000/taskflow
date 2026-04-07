@@ -71,6 +71,54 @@
   }
 }
 
+/* ════════════════════════════════════════
+   Style-Theme CSS Custom Properties
+   Applied to <html> via ThemeStyleContext
+   ════════════════════════════════════════ */
+
+:root {
+  /* Defaults (Midnight) — overridden by ThemeStyleContext at runtime */
+  --tf-accent:         #6366f1;
+  --tf-accent-muted:   rgba(99, 102, 241, 0.12);
+  --tf-accent-text:    #818cf8;
+  --tf-sidebar-bg:     #0f0f0f;
+  --tf-sidebar-border: rgba(255, 255, 255, 0.06);
+}
+
+/* ── Sidebar background override (higher specificity than Tailwind dark: prefix) ── */
+
+/* Dark themes: .dark class is on html too, so combine selectors */
+html.dark[data-theme] aside {
+  background-color: var(--tf-sidebar-bg) !important;
+  border-color:     var(--tf-sidebar-border) !important;
+}
+
+/* Light themes: no .dark class on html */
+html:not(.dark)[data-theme] aside {
+  background-color: var(--tf-sidebar-bg) !important;
+  border-color:     var(--tf-sidebar-border) !important;
+}
+
+/* ── Parchment serif headings ── */
+[data-theme="parchment"] h1,
+[data-theme="parchment"] h2,
+[data-theme="parchment"] h3,
+[data-theme="parchment"] h4,
+[data-theme="parchment"] h5,
+[data-theme="parchment"] h6 {
+  font-family: var(--font-lora), Georgia, "Times New Roman", serif;
+}
+
+/* ── Nord: softer, wider letter-spacing for a Scandinavian feel ── */
+[data-theme="nord"] body {
+  letter-spacing: 0;
+}
+
+/* ── Ember: warm body text tint ── */
+[data-theme="ember"] body {
+  color: hsl(30 25% 82%);
+}
+
 @keyframes fade-in-up {
   from { opacity: 0; transform: translateY(22px); }
   to   { opacity: 1; transform: translateY(0); }

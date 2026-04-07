@@ -1,10 +1,11 @@
 // app/layout.tsx
 import type { Metadata } from "next"
-import { Inter_Tight, Raleway, Bricolage_Grotesque } from "next/font/google"
+import { Inter_Tight, Raleway, Bricolage_Grotesque, Lora } from "next/font/google"
 import "./globals.css"
 import { ClerkProvider } from "@clerk/nextjs"
 import { Toaster } from "sonner"
 import { ThemeProvider } from "next-themes"
+import { ThemeStyleProvider } from "@/context/ThemeStyleContext"
 import { CheckCircle2, XCircle, AlertTriangle, Info, Loader2 } from "lucide-react"
 
 // Primary — UI, body, labels, inputs, buttons
@@ -31,6 +32,14 @@ const bricolage = Bricolage_Grotesque({
   weight: ["600", "700", "800"],
 })
 
+// Parchment theme — editorial serif headings
+const lora = Lora({
+  subsets: ["latin"],
+  variable: "--font-lora",
+  display: "swap",
+  weight: ["400", "500", "600", "700"],
+})
+
 export const metadata: Metadata = {
   title: "TaskFlow",
   description: "The workspace where great teams ship.",
@@ -46,7 +55,7 @@ export default function RootLayout({
       <html
         lang="en"
         suppressHydrationWarning
-        className={`${interTight.variable} ${raleway.variable} ${bricolage.variable}`}
+        className={`${interTight.variable} ${raleway.variable} ${bricolage.variable} ${lora.variable}`}
       >
         <body className={interTight.className}>
           <ThemeProvider
@@ -54,6 +63,7 @@ export default function RootLayout({
             defaultTheme="dark"
             enableSystem={false}
           >
+            <ThemeStyleProvider>
             {children}
             <Toaster
               position="top-center"
@@ -88,6 +98,7 @@ export default function RootLayout({
                 ),
               }}
             />
+            </ThemeStyleProvider>
           </ThemeProvider>
         </body>
       </html>

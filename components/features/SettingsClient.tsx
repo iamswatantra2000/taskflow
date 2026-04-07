@@ -2,20 +2,21 @@
 "use client"
 
 import { useState, useRef } from "react"
-import { useTheme } from "next-themes"
 import { useUser } from "@clerk/nextjs"
 import { toast } from "sonner"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { updateDisplayName, updateWorkspaceName } from "@/lib/actions"
 import { ThemeToggle } from "@/components/ui/ThemeToggle"
 import {
-  User, Building2, Palette, Bell, Sun, Moon, Monitor,
+  User, Building2, Palette, Bell, Sun, Moon,
   Save, Loader2, Camera, Zap, CheckCircle, Shield,
   Trash2, Users, Check, Mail, AlertTriangle, Sparkles,
   Clock, MessageSquare, UserPlus, ArrowUpRight,
 } from "lucide-react"
 import { InviteModal } from "./InviteModal"
 import { saveNotificationPreferences, type NotifPrefs } from "@/lib/notification-prefs-actions"
+import { ThemePicker } from "./ThemePicker"
+import { useStyleTheme } from "@/context/ThemeStyleContext"
 
 type Invitation = {
   id: string; email: string; role: string
@@ -523,173 +524,52 @@ function WorkspaceTab({
 // ── Appearance Tab ──
 // ══════════════════════════════
 function AppearanceTab() {
-  const { theme, setTheme } = useTheme()
-  const [accent, setAccent] = useState("#6366f1")
-
-  const themes = [
-    {
-      id: "dark", label: "Dark", icon: Moon, desc: "Easy on the eyes", comingSoon: false,
-      preview: (
-        <div className="w-full h-11 rounded-[7px] bg-[#0d0d0d] border border-white/[0.08] overflow-hidden flex gap-1 p-1.5">
-          <div className="w-5 bg-white/[0.04] rounded-[3px]" />
-          <div className="flex-1 flex flex-col gap-1 justify-center">
-            <div className="h-1.5 bg-white/[0.07] rounded-full" />
-            <div className="h-1.5 bg-white/[0.04] rounded-full w-3/4" />
-            <div className="h-1.5 bg-indigo-500/30 rounded-full w-1/2" />
-          </div>
-        </div>
-      ),
-    },
-    {
-      id: "light", label: "Light", icon: Sun, desc: "Clean and bright", comingSoon: false,
-      preview: (
-        <div className="w-full h-11 rounded-[7px] bg-white border border-black/[0.08] overflow-hidden flex gap-1 p-1.5">
-          <div className="w-5 bg-black/[0.05] rounded-[3px]" />
-          <div className="flex-1 flex flex-col gap-1 justify-center">
-            <div className="h-1.5 bg-black/[0.1] rounded-full" />
-            <div className="h-1.5 bg-black/[0.06] rounded-full w-3/4" />
-            <div className="h-1.5 bg-indigo-400/40 rounded-full w-1/2" />
-          </div>
-        </div>
-      ),
-    },
-    {
-      id: "system", label: "System", icon: Monitor, desc: "Follows your OS", comingSoon: false,
-      preview: (
-        <div className="w-full h-11 rounded-[7px] overflow-hidden flex">
-          <div className="flex-1 bg-[#0d0d0d] border-r border-white/[0.05] flex gap-0.5 p-1.5">
-            <div className="w-3 bg-white/[0.04] rounded-[2px]" />
-            <div className="flex-1 flex flex-col gap-0.5 justify-center">
-              <div className="h-1 bg-white/[0.07] rounded-full" />
-              <div className="h-1 bg-indigo-500/30 rounded-full w-2/3" />
-            </div>
-          </div>
-          <div className="flex-1 bg-[#f4f4f5] flex gap-0.5 p-1.5">
-            <div className="w-3 bg-black/[0.06] rounded-[2px]" />
-            <div className="flex-1 flex flex-col gap-0.5 justify-center">
-              <div className="h-1 bg-black/[0.1] rounded-full" />
-              <div className="h-1 bg-indigo-400/40 rounded-full w-2/3" />
-            </div>
-          </div>
-        </div>
-      ),
-    },
-  ]
-
-  const accents = [
-    { color: "#6366f1", label: "Indigo"  },
-    { color: "#8b5cf6", label: "Violet"  },
-    { color: "#ec4899", label: "Pink"    },
-    { color: "#0ea5e9", label: "Sky"     },
-    { color: "#10b981", label: "Emerald" },
-    { color: "#f59e0b", label: "Amber"   },
-  ]
-
   return (
     <div className="space-y-4">
+      <Card>
+        <SectionHead
+          icon={Palette}
+          title="Themes"
+          subtitle="Choose a look that fits your style — dark, light, and everything in between"
+          iconBg="bg-sky-500/[0.1]"
+          iconColor="text-sky-400"
+        />
+        <ThemePicker />
+      </Card>
 
       <Card>
         <SectionHead
           icon={Moon}
-          title="Interface theme"
-          subtitle="Choose how TaskFlow looks to you"
-          iconBg="bg-sky-500/[0.1]"
-          iconColor="text-sky-400"
+          title="Quick toggle"
+          subtitle="Switch between dark and light using the sun / moon button in any page header"
+          iconBg="bg-amber-500/[0.1]"
+          iconColor="text-amber-400"
         />
-
-        <div className="grid grid-cols-3 gap-3">
-          {themes.map((t) => (
-            <div key={t.id} className="relative">
-              <button
-                type="button"
-                disabled={t.comingSoon}
-                onClick={() => {
-                  if (t.comingSoon) return
-                  setTheme(t.id)
-                  toast.success(`${t.label} mode enabled`)
-                }}
-                className={`w-full flex flex-col gap-2.5 p-3 rounded-[12px] border transition-all duration-150 text-left
-                  ${t.comingSoon
-                    ? "border-slate-100 dark:border-white/[0.04] opacity-40 cursor-not-allowed"
-                    : theme === t.id
-                      ? "border-indigo-500/30 bg-indigo-500/[0.07] ring-1 ring-indigo-500/15"
-                      : "border-slate-200 dark:border-white/[0.07] hover:border-slate-300 dark:hover:border-white/[0.12] hover:bg-slate-50 dark:hover:bg-white/[0.02]"
-                  }`}
-              >
-                {t.preview}
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className={`text-[12px] font-semibold ${!t.comingSoon && theme === t.id ? "text-indigo-600 dark:text-indigo-300" : "text-slate-500 dark:text-[#666]"}`}>
-                      {t.label}
-                    </p>
-                    <p className="text-[10px] text-slate-400 dark:text-[#2e2e2e] mt-0.5">{t.desc}</p>
-                  </div>
-                  {!t.comingSoon && theme === t.id && (
-                    <div className="w-4 h-4 rounded-full bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center flex-shrink-0">
-                      <Check size={9} className="text-indigo-400" />
-                    </div>
-                  )}
-                </div>
-              </button>
-              {t.comingSoon && (
-                <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-amber-500/[0.12] text-amber-400 border border-amber-500/20 text-[9px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap tracking-[0.06em]">
-                  SOON
-                </div>
-              )}
-            </div>
-          ))}
+        <div className="flex items-center gap-3 p-3 rounded-[10px] bg-slate-50 dark:bg-white/[0.02] border border-slate-100 dark:border-white/[0.05]">
+          <ThemeToggleInline />
+          <div>
+            <p className="text-[12.5px] font-semibold text-slate-700 dark:text-[#ccc]">Sun / Moon toggle</p>
+            <p className="text-[11px] text-slate-400 dark:text-[#3a3a3a] mt-0.5">Available in every page header — switches between your paired dark & light themes</p>
+          </div>
         </div>
       </Card>
 
-      <Card>
-        <SectionHead
-          icon={Palette}
-          title="Accent color"
-          subtitle="Personalize your TaskFlow experience"
-          iconBg="bg-pink-500/[0.1]"
-          iconColor="text-pink-400"
-        />
+    </div>
+  )
+}
 
-        <div className="flex items-end gap-5 flex-wrap">
-          {accents.map((a) => (
-            <button
-              key={a.color}
-              type="button"
-              onClick={() => {
-                setAccent(a.color)
-                toast(`${a.label} accent — coming soon!`)
-              }}
-              className="flex flex-col items-center gap-2 group"
-              title={a.label}
-            >
-              <div className="relative">
-                {/* Selected ring */}
-                {accent === a.color && (
-                  <div
-                    className="absolute -inset-[3px] rounded-full border-2 opacity-70 transition-all"
-                    style={{ borderColor: a.color }}
-                  />
-                )}
-                <div
-                  className="w-10 h-10 rounded-full transition-all duration-200 group-hover:scale-110 relative"
-                  style={{
-                    background: a.color,
-                    boxShadow: accent === a.color ? `0 0 16px ${a.color}60` : "none",
-                  }}
-                >
-                  {accent === a.color && (
-                    <div className="absolute inset-0 rounded-full flex items-center justify-center bg-black/25">
-                      <Check size={14} className="text-white" strokeWidth={2.5} />
-                    </div>
-                  )}
-                </div>
-              </div>
-              <span className="text-[10.5px] text-slate-400 dark:text-[#3a3a3a] group-hover:text-slate-500 dark:group-hover:text-[#555] transition-colors">{a.label}</span>
-            </button>
-          ))}
-        </div>
-      </Card>
-
+// Inline toggle preview used inside the Quick Toggle card
+function ThemeToggleInline() {
+  const { themeDef } = useStyleTheme()
+  const isDark = themeDef.type === "dark"
+  return (
+    <div className={[
+      "w-8 h-8 rounded-[9px] flex items-center justify-center flex-shrink-0 border",
+      isDark
+        ? "bg-amber-950/40 border-amber-700/40 text-amber-400"
+        : "bg-indigo-50 border-indigo-200 text-indigo-500",
+    ].join(" ")}>
+      {isDark ? <Sun size={14} /> : <Moon size={14} />}
     </div>
   )
 }

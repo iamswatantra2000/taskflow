@@ -1,37 +1,39 @@
 "use client"
 
-import { useTheme } from "next-themes"
 import { Sun, Moon } from "lucide-react"
 import { useEffect, useState } from "react"
+import { useStyleTheme, type StyleThemeId } from "@/context/ThemeStyleContext"
+
+// When toggling, use these counterpart themes
+const DARK_COUNTERPART:  Record<string, StyleThemeId> = {
+  cloud:     "midnight",
+  parchment: "ember",
+  arctic:    "nord",
+  blossom:   "obsidian",
+}
+const LIGHT_COUNTERPART: Record<string, StyleThemeId> = {
+  midnight: "cloud",
+  obsidian: "blossom",
+  nord:     "arctic",
+  ember:    "parchment",
+}
 
 export function ThemeToggle() {
-  const { resolvedTheme, setTheme } = useTheme()
-  const [mounted, setMounted]       = useState(false)
-  const [spinning, setSpinning]     = useState(false)
+  const { styleTheme, themeDef, setStyleTheme } = useStyleTheme()
+  const [mounted,  setMounted]  = useState(false)
+  const [spinning, setSpinning] = useState(false)
 
   useEffect(() => { setMounted(true) }, [])
 
-  // Avoid hydration mismatch — render a placeholder until mounted
   if (!mounted) return <div className="w-7 h-7 rounded-lg" />
 
-  const isDark = resolvedTheme === "dark"
+  const isDark = themeDef.type === "dark"
 
   function toggle() {
-    // Suppress all transitions while the theme class swaps to prevent
-    // hundreds of elements animating at once (causes perceived lag)
-    const style = document.createElement("style")
-    style.dataset.themeSwitch = "1"
-    style.textContent = "*,*::before,*::after{transition:none!important}"
-    document.head.appendChild(style)
-
-    setTheme(isDark ? "light" : "dark")
-
-    // Double rAF ensures the browser paints the new theme before
-    // transitions are restored, so re-enabling is invisible
-    requestAnimationFrame(() =>
-      requestAnimationFrame(() => document.head.removeChild(style))
-    )
-
+    const next = isDark
+      ? (LIGHT_COUNTERPART[styleTheme] ?? "cloud")
+      : (DARK_COUNTERPART[styleTheme]  ?? "midnight")
+    setStyleTheme(next)
     setSpinning(true)
     setTimeout(() => setSpinning(false), 350)
   }
