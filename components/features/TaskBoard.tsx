@@ -174,12 +174,10 @@ function TaskCard({
 
         {/* Left slot: drag handle dots (normal) or selection checkbox (hover/selection mode) */}
         <div className="relative flex-shrink-0 mt-[3px] w-[13px] h-[13px]">
-          {/* Drag handle — visible on hover when not in selection mode */}
+          {/* Drag handle — visual affordance only; drag is initiated via title listeners */}
           <div
             {...attributes}
-            {...listeners}
-            style={{ touchAction: "none" }}
-            className={`absolute inset-0 flex items-center justify-center cursor-grab active:cursor-grabbing text-slate-400 dark:text-[#333] transition-opacity
+            className={`absolute inset-0 flex items-center justify-center text-slate-400 dark:text-[#333] transition-opacity
               ${isSelected || selectionMode ? "opacity-0 pointer-events-none" : "opacity-0 group-hover:opacity-100"}
             `}
           >
@@ -221,7 +219,8 @@ function TaskCard({
           {...listeners}
           style={{ touchAction: "none" }}
           onClick={() => selectionMode ? onToggleSelect(task.id) : onSelect(task)}
-          className={`flex-1 text-[13px] font-semibold leading-snug cursor-pointer transition-colors
+          className={`flex-1 text-[13px] font-semibold leading-snug transition-colors select-none
+            ${selectionMode ? "cursor-pointer" : "cursor-grab active:cursor-grabbing"}
             ${isDone
               ? "text-slate-400 dark:text-[#555] line-through decoration-slate-300 dark:decoration-[#444]"
               : "text-slate-800 hover:text-slate-950 dark:text-[#ddd] dark:hover:text-white"
