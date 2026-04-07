@@ -27,6 +27,7 @@ import { DeleteTaskButton } from "./DeleteTaskButton"
 import { TaskDetailDialog } from "./TaskDetailDialog"
 import { TaskProjectMenu } from "./TaskProjectMenu"
 import { FocusMode } from "./FocusMode"
+import { BulkActionBar } from "./BulkActionBar"
 import { updateTaskStatus, reassignTask } from "@/lib/actions"
 import { AssigneeButton } from "./AssigneeButton"
 import { toast } from "sonner"
@@ -104,14 +105,20 @@ function TaskCard({
   members,
   onAssign,
   labels,
+  isSelected,
+  selectionMode,
+  onToggleSelect,
 }: {
-  task:     Task
-  onSelect: (task: Task) => void
-  onFocus:  (task: Task) => void
-  projects: { id: string; name: string; color: string }[]
-  members:  { id: string; name: string }[]
-  onAssign: (taskId: string, newId: string | null) => void
-  labels:   Label[]
+  task:            Task
+  onSelect:        (task: Task) => void
+  onFocus:         (task: Task) => void
+  projects:        { id: string; name: string; color: string }[]
+  members:         { id: string; name: string }[]
+  onAssign:        (taskId: string, newId: string | null) => void
+  labels:          Label[]
+  isSelected:      boolean
+  selectionMode:   boolean
+  onToggleSelect:  (taskId: string) => void
 }) {
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -151,12 +158,38 @@ function TaskCard({
         hover:-translate-y-[1px] hover:shadow-[0_6px_20px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_6px_20px_rgba(0,0,0,0.45)]
         transition-all duration-150 border
         ${menuOpen ? "z-[20]" : ""}
-        ${decayLevel > 0 ? decayBorderClass[decayLevel] : "border-slate-100 dark:border-white/[0.07] hover:border-slate-200 dark:hover:border-white/[0.13]"}
-        ${decayLevel === 3 ? "animate-pulse-slow" : ""}
+        ${isSelected
+          ? "border-indigo-400/70 dark:border-indigo-500/50 ring-2 ring-indigo-500/20 dark:ring-indigo-500/15 bg-indigo-50/40 dark:bg-indigo-950/[0.15]"
+          : decayLevel > 0
+            ? decayBorderClass[decayLevel]
+            : "border-slate-100 dark:border-white/[0.07] hover:border-slate-200 dark:hover:border-white/[0.13]"
+        }
+        ${decayLevel === 3 && !isSelected ? "animate-pulse-slow" : ""}
         ${leftAccent}
-        ${isDone ? "opacity-55" : ""}
+        ${isDone && !isSelected ? "opacity-55" : ""}
       `}
     >
+      {/* Selection checkbox — top-left, visible on hover or when in selection mode */}
+      <button
+        type="button"
+        onClick={(e) => { e.stopPropagation(); onToggleSelect(task.id) }}
+        className={`absolute top-2.5 left-2.5 z-10 w-[15px] h-[15px] rounded-[4px] border-2 flex items-center justify-center transition-all duration-100
+          ${isSelected
+            ? "opacity-100 bg-indigo-600 border-indigo-600"
+            : selectionMode
+              ? "opacity-100 bg-white dark:bg-[#111] border-slate-300 dark:border-[#555]"
+              : "opacity-0 group-hover:opacity-100 bg-white dark:bg-[#111] border-slate-300 dark:border-[#555] hover:border-indigo-400"
+          }
+        `}
+        aria-label={isSelected ? "Deselect task" : "Select task"}
+      >
+        {isSelected && (
+          <svg width="8" height="6" viewBox="0 0 8 6" fill="none">
+            <path d="M1 3L3 5L7 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )}
+      </button>
+
       {/* Top row: drag handle + title + action buttons */}
       <div className="flex items-start gap-2 mb-3">
         {/* Drag handle — only visible on hover */}
@@ -179,7 +212,7 @@ function TaskCard({
 
         {/** biome-ignore lint/a11y/useKeyWithClickEvents: intentional */}
         <p
-          onClick={() => onSelect(task)}
+          onClick={() => selectionMode ? onToggleSelect(task.id) : onSelect(task)}
           className={`flex-1 text-[13px] font-semibold leading-snug cursor-pointer transition-colors
             ${isDone
               ? "text-slate-400 dark:text-[#555] line-through decoration-slate-300 dark:decoration-[#444]"
@@ -332,6 +365,7 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects, m
   const [taskLabelMap, setTaskLabelMap]     = useState<Record<string, Label[]>>({})
   const [subtaskMap, setSubtaskMap]         = useState<Record<string, SubtaskItem[]>>({})
   const [workspaceLabels, setWorkspaceLabels] = useState<Label[]>([])
+  const [selectedIds, setSelectedIds]       = useState<Set<string>>(new Set())
 
   useEffect(() => {
     setBoardColumns(columns)
@@ -485,6 +519,49 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects, m
     await updateTaskStatus(activeId, finalColumn.id)
   }
 
+  function handleToggleSelect(taskId: string) {
+    setSelectedIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(taskId)) next.delete(taskId)
+      else next.add(taskId)
+      return next
+    })
+  }
+
+  function handleBulkAction(type: "status" | "assign" | "delete", value?: string) {
+    setBoardColumns((prev) => {
+      if (type === "delete") {
+        return prev.map((col) => ({
+          ...col,
+          tasks: col.tasks.filter((t) => !selectedIds.has(t.id)),
+        }))
+      }
+      if (type === "status" && value) {
+        const moved: Task[] = []
+        const pruned = prev.map((col) => ({
+          ...col,
+          tasks: col.tasks.filter((t) => {
+            if (selectedIds.has(t.id)) { moved.push({ ...t, status: value }); return false }
+            return true
+          }),
+        }))
+        return pruned.map((col) =>
+          col.id === value ? { ...col, tasks: [...col.tasks, ...moved] } : col
+        )
+      }
+      if (type === "assign") {
+        return prev.map((col) => ({
+          ...col,
+          tasks: col.tasks.map((t) =>
+            selectedIds.has(t.id) ? { ...t, assigneeId: value || null } : t
+          ),
+        }))
+      }
+      return prev
+    })
+    setSelectedIds(new Set())
+  }
+
   return (
     <>
       <DndContext
@@ -562,6 +639,9 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects, m
                       members={members}
                       onAssign={handleAssign}
                       labels={taskLabelMap[task.id] ?? []}
+                      isSelected={selectedIds.has(task.id)}
+                      selectionMode={selectedIds.size > 0}
+                      onToggleSelect={handleToggleSelect}
                     />
                   ))}
 
@@ -609,6 +689,15 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects, m
         <FocusMode
           task={focusTask}
           onClose={() => setFocusTask(null)}
+        />
+      )}
+
+      {selectedIds.size > 0 && (
+        <BulkActionBar
+          selectedIds={selectedIds}
+          members={members}
+          onClear={() => setSelectedIds(new Set())}
+          onAction={handleBulkAction}
         />
       )}
     </>

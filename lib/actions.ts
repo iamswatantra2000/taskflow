@@ -454,6 +454,36 @@ export async function upgradePlan(plan: "free" | "pro" | "enterprise") {
   revalidatePath("/dashboard")
 }
 
+// ——— Bulk: move tasks to a new status ———
+export async function bulkUpdateStatus(taskIds: string[], status: string) {
+  await requireAuth()
+  if (taskIds.length === 0) return
+  await db
+    .update(tasks)
+    .set({ status: status as "TODO" | "IN_PROGRESS" | "IN_REVIEW" | "DONE", updatedAt: new Date() })
+    .where(inArray(tasks.id, taskIds))
+  revalidatePath("/")
+}
+
+// ——— Bulk: reassign tasks ———
+export async function bulkAssign(taskIds: string[], assigneeId: string | null) {
+  await requireAuth()
+  if (taskIds.length === 0) return
+  await db
+    .update(tasks)
+    .set({ assigneeId: assigneeId || null, updatedAt: new Date() })
+    .where(inArray(tasks.id, taskIds))
+  revalidatePath("/")
+}
+
+// ——— Bulk: delete tasks ———
+export async function bulkDelete(taskIds: string[]) {
+  await requireAuth()
+  if (taskIds.length === 0) return
+  await db.delete(tasks).where(inArray(tasks.id, taskIds))
+  revalidatePath("/")
+}
+
 // ——— Save a focus session ———
 export async function saveFocusSession(data: {
   taskId:    string
