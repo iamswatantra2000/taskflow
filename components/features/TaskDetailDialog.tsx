@@ -169,14 +169,17 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId }
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-white dark:bg-[#111] border-slate-200 dark:border-[#1f1f1f] text-slate-800 dark:text-[#e0e0e0] max-w-xl">
-        <DialogHeader>
+      <DialogContent className="bg-white dark:bg-[#111] border-slate-200 dark:border-[#1f1f1f] text-slate-800 dark:text-[#e0e0e0] max-w-xl flex flex-col max-h-[90vh] p-0 gap-0">
+        {/* ── Fixed header ── */}
+        <DialogHeader className="px-5 pt-5 pb-3 flex-shrink-0 border-b border-slate-100 dark:border-[#1a1a1a]">
           <DialogTitle className="text-[15px] font-semibold text-slate-900 dark:text-[#f0f0f0]">
             Task detail
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4 mt-2">
+        {/* ── Scrollable body ── */}
+        <div className="flex-1 overflow-y-auto px-5 py-4">
+        <div className="space-y-4">
 
           {/* Title */}
           <div className="space-y-1.5">
@@ -283,42 +286,41 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId }
             />
           </div>
 
-          {/* Actions */}
-          <div className="flex items-center justify-between pt-1">
-            <p className={`text-[12px] transition-opacity ${saved ? "text-emerald-600 dark:text-emerald-400 opacity-100" : "opacity-0"}`}>
-              Saved!
-            </p>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={onClose}
-                className="h-8 px-3.5 text-[12px] font-medium text-slate-500 dark:text-[#555] hover:text-slate-700 dark:hover:text-[#888] bg-slate-50 dark:bg-[#111] hover:bg-slate-100 dark:hover:bg-[#161616] border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/15 rounded-[8px] shadow-[0_3px_0_0_rgba(0,0,0,0.08)] dark:shadow-[0_3px_0_0_rgba(0,0,0,0.5)] active:translate-y-[3px] active:shadow-none transition-all duration-100"
-              >
-                Close
-              </button>
-              <button
-                type="button"
-                onClick={handleSave}
-                disabled={loading}
-                className="h-8 px-3.5 text-[12px] font-semibold bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white border border-indigo-700/80 rounded-[8px] shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none transition-all duration-100"
-              >
-                {loading ? "Saving..." : "Save changes"}
-              </button>
-            </div>
-          </div>
-
         </div>
 
-        <SubtaskList taskId={task.id} />
+          <SubtaskList taskId={task.id} />
+          <FocusSessionHistory taskId={task.id} />
+          <CommentSection
+            taskId={task.id}
+            taskTitle={task.title}
+            members={members}
+            currentUserId={currentUserId}
+          />
+        </div>{/* end scrollable body */}
 
-        <FocusSessionHistory taskId={task.id} />
-
-        <CommentSection
-          taskId={task.id}
-          taskTitle={task.title}
-          members={members}
-          currentUserId={currentUserId}
-        />
+        {/* ── Fixed footer ── */}
+        <div className="flex-shrink-0 flex items-center justify-between px-5 py-3 border-t border-slate-100 dark:border-[#1a1a1a] bg-white dark:bg-[#111]">
+          <p className={`text-[12px] transition-opacity ${saved ? "text-emerald-600 dark:text-emerald-400 opacity-100" : "opacity-0"}`}>
+            Saved!
+          </p>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="h-8 px-3.5 text-[12px] font-medium text-slate-500 dark:text-[#555] hover:text-slate-700 dark:hover:text-[#888] bg-slate-50 dark:bg-[#111] hover:bg-slate-100 dark:hover:bg-[#161616] border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/15 rounded-[8px] shadow-[0_3px_0_0_rgba(0,0,0,0.08)] dark:shadow-[0_3px_0_0_rgba(0,0,0,0.5)] active:translate-y-[3px] active:shadow-none transition-all duration-100"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              onClick={handleSave}
+              disabled={loading}
+              className="h-8 px-3.5 text-[12px] font-semibold bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white border border-indigo-700/80 rounded-[8px] shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none transition-all duration-100"
+            >
+              {loading ? "Saving..." : "Save changes"}
+            </button>
+          </div>
+        </div>
 
       </DialogContent>
     </Dialog>
