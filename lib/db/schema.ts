@@ -1,6 +1,6 @@
 // lib/db/schema.ts
 import {
-  pgTable, pgEnum, text, timestamp, boolean, uniqueIndex, integer
+  pgTable, pgEnum, text, timestamp, boolean, uniqueIndex, integer, primaryKey
 } from "drizzle-orm/pg-core"
 
 export const invitationStatusEnum = pgEnum("invitation_status", ["PENDING", "ACCEPTED", "REVOKED"])
@@ -138,6 +138,23 @@ export const focusSessions = pgTable("focus_sessions", {
   notes:     text("notes"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 })
+
+// ——— Labels (workspace-level) ———
+export const labels = pgTable("labels", {
+  id:          text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  workspaceId: text("workspace_id").notNull().references(() => workspaces.id, { onDelete: "cascade" }),
+  name:        text("name").notNull(),
+  color:       text("color").notNull().default("#6366f1"),
+  createdAt:   timestamp("created_at").defaultNow().notNull(),
+})
+
+// ——— Task ↔ Labels (many-to-many) ———
+export const taskLabels = pgTable("task_labels", {
+  taskId:  text("task_id").notNull().references(() => tasks.id, { onDelete: "cascade" }),
+  labelId: text("label_id").notNull().references(() => labels.id, { onDelete: "cascade" }),
+}, (t) => ({
+  pk: primaryKey({ columns: [t.taskId, t.labelId] }),
+}))
 
 // ——— Subtasks ———
 export const subtasks = pgTable("subtasks", {

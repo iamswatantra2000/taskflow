@@ -12,6 +12,7 @@ import {
 import { toast } from "sonner"
 import { CommentSection } from "./CommentSection"
 import { SubtaskList } from "./SubtaskList"
+import { LabelPicker } from "./LabelPicker"
 
 type Member = { id: string; name: string }
 
@@ -31,6 +32,7 @@ type Props = {
   onClose:       () => void
   members:       Member[]
   currentUserId: string
+  workspaceId:   string
 }
 
 type FocusSession = {
@@ -119,7 +121,7 @@ function FocusSessionHistory({ taskId }: { taskId: string }) {
   )
 }
 
-export function TaskDetailDialog({ task, open, onClose, members, currentUserId }: Props) {
+export function TaskDetailDialog({ task, open, onClose, members, currentUserId, workspaceId }: Props) {
   const [title, setTitle]             = useState(task.title)
   const [description, setDescription] = useState(task.description ?? "")
   const [status, setStatus]           = useState(task.status)
@@ -288,6 +290,7 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId }
 
         </div>
 
+          <LabelPicker taskId={task.id} workspaceId={workspaceId} />
           <SubtaskList taskId={task.id} />
           <FocusSessionHistory taskId={task.id} />
           <CommentSection

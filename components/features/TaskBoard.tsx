@@ -62,6 +62,8 @@ type Props = {
   currentUserId: string
 }
 
+type Label = { id: string; name: string; color: string }
+
 const priorityConfig = {
   URGENT: { label: "Urgent", dot: "bg-red-500",    pill: "bg-red-50 text-red-600 border-red-200 dark:bg-red-500/[0.08] dark:text-red-400 dark:border-red-500/20"             },
   HIGH:   { label: "High",   dot: "bg-orange-500", pill: "bg-orange-50 text-orange-600 border-orange-200 dark:bg-orange-500/[0.08] dark:text-orange-400 dark:border-orange-500/20" },
@@ -100,6 +102,7 @@ function TaskCard({
   projects,
   members,
   onAssign,
+  labels,
 }: {
   task:     Task
   onSelect: (task: Task) => void
@@ -107,6 +110,7 @@ function TaskCard({
   projects: { id: string; name: string; color: string }[]
   members:  { id: string; name: string }[]
   onAssign: (taskId: string, newId: string | null) => void
+  labels:   Label[]
 }) {
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -203,6 +207,25 @@ function TaskCard({
           <DeleteTaskButton taskId={task.id} />
         </div>
       </div>
+
+      {/* Label chips */}
+      {labels.length > 0 && (
+        <div className="flex flex-wrap gap-1 pl-[17px] mb-2">
+          {labels.map((label) => (
+            <span
+              key={label.id}
+              className="text-[10px] font-semibold px-1.5 py-[2px] rounded-full"
+              style={{
+                background: `${label.color}22`,
+                border:     `1px solid ${label.color}55`,
+                color:      label.color,
+              }}
+            >
+              {label.name}
+            </span>
+          ))}
+        </div>
+      )}
 
       {/* Bottom row: priority badge + date + assignee */}
       <div className="flex items-center justify-between gap-2 pl-[17px]">
@@ -305,9 +328,20 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects, m
   const [focusTask, setFocusTask]           = useState<Task | null>(null)
   const [boardColumns, setBoardColumns]     = useState<Column[]>(columns)
   const [showCelebration, setShowCelebration] = useState(false)
+  const [taskLabelMap, setTaskLabelMap]     = useState<Record<string, Label[]>>({})
 
   useEffect(() => {
     setBoardColumns(columns)
+  }, [columns])
+
+  // Fetch label chips for all cards (batch, after mount)
+  useEffect(() => {
+    const taskIds = columns.flatMap((c) => c.tasks.map((t) => t.id))
+    if (taskIds.length === 0) return
+    fetch(`/api/labels/tasks?ids=${taskIds.join(",")}`)
+      .then((r) => r.json())
+      .then((d) => setTaskLabelMap(d.taskLabelMap ?? {}))
+      .catch(() => {})
   }, [columns])
 
   // ← Delayed celebration effect
@@ -516,6 +550,7 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects, m
                       projects={projects}
                       members={members}
                       onAssign={handleAssign}
+                      labels={taskLabelMap[task.id] ?? []}
                     />
                   ))}
 
@@ -552,6 +587,7 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects, m
           onClose={() => setSelectedTask(null)}
           members={members}
           currentUserId={currentUserId}
+          workspaceId={workspaceId}
         />
       )}
 
