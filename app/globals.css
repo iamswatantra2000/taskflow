@@ -373,6 +373,58 @@ html:not(.dark)[data-theme] aside {
   }
 }
 
+/* ════════════════════════════════════════
+   Landing page — fonts & animations
+   ════════════════════════════════════════ */
+
+/* Font utilities — only used on landing page */
+.font-bricolage { font-family: var(--font-bricolage), system-ui, sans-serif; }
+.font-geist     { font-family: var(--font-geist-sans), system-ui, sans-serif; }
+.font-inter-landing { font-family: var(--font-inter), system-ui, sans-serif; }
+
+/* Marquee — infinite scroll */
+@keyframes marquee-left {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes marquee-right {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+.animate-marquee-left {
+  animation: marquee-left 30s linear infinite;
+}
+.animate-marquee-right {
+  animation: marquee-right 30s linear infinite;
+}
+.animate-marquee-left:hover,
+.animate-marquee-right:hover {
+  animation-play-state: paused;
+}
+
+/* Floating orbs */
+@keyframes float-orb-1 {
+  0%, 100% { transform: translateY(0px) translateX(0px); }
+  33%       { transform: translateY(-20px) translateX(10px); }
+  66%       { transform: translateY(10px) translateX(-8px); }
+}
+@keyframes float-orb-2 {
+  0%, 100% { transform: translateY(0px) translateX(0px); }
+  33%       { transform: translateY(15px) translateX(-12px); }
+  66%       { transform: translateY(-10px) translateX(8px); }
+}
+.animate-float-orb-1 { animation: float-orb-1 8s ease-in-out infinite; }
+.animate-float-orb-2 { animation: float-orb-2 10s ease-in-out infinite; }
+
+/* Counter number reveal */
+@keyframes count-up-reveal {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-count-reveal {
+  animation: count-up-reveal 0.5s ease forwards;
+}
+
 /* ── Loader spin for toast icons ── */
 @keyframes tf-spin {
   from { transform: rotate(0deg); }

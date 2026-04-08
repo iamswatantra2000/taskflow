@@ -243,6 +243,16 @@ Pro gates: Activity feed, Analytics, AI tasks button, some settings
 | `components/features/ProjectClient.tsx` | `TimelineView` rebuilt as full Gantt chart (pixel-per-day, month headers, status bars, today marker) |
 | `app/api/search/route.ts` | **Created** — GET `/api/search?q=` full-text search across tasks + projects |
 | `components/features/CommandPalette.tsx` | Debounced live search with Tasks/Projects result groups |
+| `app/layout.tsx` | Added `Inter` + `GeistSans` fonts; variables `--font-inter`, `--font-geist-sans` |
+| `app/globals.css` | Marquee + float-orb keyframes; `.font-bricolage/geist/inter-landing` classes |
+| `components/landing/MagneticButton.tsx` | **Created** — GSAP magnetic hover + elastic spring-back |
+| `components/landing/LandingHero.tsx` | **Created** — GSAP timeline, floating orbs, magnetic CTAs, app mockup |
+| `components/landing/LandingMarquee.tsx` | **Created** — infinite CSS marquee strip |
+| `components/landing/LandingFeatures.tsx` | **Created** — bento grid + ScrollTrigger + 3D mouse-tilt |
+| `components/landing/LandingHowItWorks.tsx` | **Created** — GSAP ScrollTrigger step reveals |
+| `components/landing/LandingTestimonials.tsx` | **Created** — dual-row infinite marquee testimonials |
+| `components/landing/LandingCTA.tsx` | **Created** — magnetic CTA + gradient card |
+| `app/page.tsx` | Rebuilt with new landing components; Inter on nav buttons |
 
 ---
 
@@ -250,13 +260,21 @@ Pro gates: Activity feed, Analytics, AI tasks button, some settings
 
 **Session:** 2026-04-08
 **Changes:**
-- **8-theme system** — `context/ThemeStyleContext.tsx` created with `STYLE_THEMES` array (8 themes × full CSS var maps), `ThemeStyleProvider`, `applyThemeVars()`, `useStyleTheme()` hook
-- **`ThemePicker.tsx`** — visual 2×4 grid picker with `ThemePreview` mini kanban mockups, accent ring on selected, Dark/Light groups; embedded in Settings Appearance tab
-- **`ThemeToggle.tsx`** — updated to pair dark↔light themes: Midnight↔Cloud, Obsidian↔Blossom, Nord↔Arctic, Ember↔Parchment
-- **`app/globals.css`** — full `--tf-*` token system: 15 semantic tokens per theme (bg, border, accent, sidebar, text); `data-theme` per-theme overrides for all 8; sidebar override rule; Parchment serif + Ember tint
-- **Full token coverage** — three bulk Python passes (~1,200 replacements total) replaced all `dark:bg-[#...]`, `dark:text-[#...]`, `dark:border-[#...]`, `bg-white dark:...`, `text-slate-* dark:...` with CSS var tokens across 48 files including all loading skeletons, auth pages, landing page, and all dashboard components
-- **Text color tokens added** — `--tf-text-primary`, `--tf-text-secondary`, `--tf-text-tertiary` per theme; all 48 files updated
-- **Zero new TypeScript errors** — verified with `npx tsc --noEmit` after each pass
+
+### Landing page full redesign (GSAP + new fonts)
+- **Fonts** — added `Inter` (`--font-inter`) and `GeistSans` (`--font-geist-sans`) to `app/layout.tsx`; font utility classes `.font-bricolage`, `.font-geist`, `.font-inter-landing` added to `globals.css`
+- **`globals.css`** — new keyframes: `marquee-left`, `marquee-right`, `float-orb-1`, `float-orb-2`; utility classes: `animate-marquee-left/right`, `animate-float-orb-1/2`
+- **`components/landing/MagneticButton.tsx`** — GSAP magnetic hover effect with elastic spring-back
+- **`components/landing/LandingHero.tsx`** — full hero rebuild: GSAP entrance timeline (badge→headline→sub→CTAs→stats→mockup), floating orb background, magnetic CTA buttons with shine sweep, Bricolage Grotesque headlines, Geist body, Inter buttons
+- **`components/landing/LandingMarquee.tsx`** — infinite CSS marquee with company names (social proof strip between hero and features)
+- **`components/landing/LandingFeatures.tsx`** — bento grid with GSAP ScrollTrigger reveal + 3D mouse-tilt on cards; hover gradient overlay per feature color
+- **`components/landing/LandingHowItWorks.tsx`** — GSAP ScrollTrigger reveals, colored step numbers, connector lines
+- **`components/landing/LandingTestimonials.tsx`** — dual-row infinite marquee (opposite directions), edge fades, GSAP heading reveal
+- **`components/landing/LandingCTA.tsx`** — gradient card with magnetic CTA button, GSAP ScrollTrigger, glow effects
+- **`app/page.tsx`** — rebuilt to use all new landing components; old Hero/Features/HowItWorks/Testimonials/CTABanner removed; Inter font on navbar buttons
+
+### Previous session (same date)
+- **8-theme system**, **animations**, **drag-and-drop fixes**, **priority filter horizontal pills** — see git log
 
 ---
 

@@ -1,6 +1,7 @@
 // app/layout.tsx
 import type { Metadata } from "next"
-import { Inter_Tight, Raleway, Bricolage_Grotesque, Lora } from "next/font/google"
+import { Inter_Tight, Raleway, Bricolage_Grotesque, Lora, Inter } from "next/font/google"
+import { GeistSans } from "geist/font/sans"
 import "./globals.css"
 import { ClerkProvider } from "@clerk/nextjs"
 import { Toaster } from "sonner"
@@ -32,6 +33,14 @@ const bricolage = Bricolage_Grotesque({
   weight: ["600", "700", "800"],
 })
 
+// Landing page buttons
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+  weight: ["400", "500", "600", "700"],
+})
+
 // Parchment theme — editorial serif headings
 const lora = Lora({
   subsets: ["latin"],
@@ -55,7 +64,7 @@ export default function RootLayout({
       <html
         lang="en"
         suppressHydrationWarning
-        className={`${interTight.variable} ${raleway.variable} ${bricolage.variable} ${lora.variable}`}
+        className={`${interTight.variable} ${raleway.variable} ${bricolage.variable} ${lora.variable} ${inter.variable} ${GeistSans.variable}`}
       >
         <body className={interTight.className}>
           <ThemeProvider
