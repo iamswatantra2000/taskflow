@@ -229,7 +229,9 @@ function TaskCard({
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.35 : 1,
+    opacity:   isDragging ? 0.25 : 1,
+    boxShadow: isDragging ? "none" : undefined,
+    scale:     isDragging ? "0.98" : undefined,
   }
 
   const leftAccent =
@@ -246,7 +248,8 @@ function TaskCard({
         hover:-translate-y-[1px] hover:shadow-[0_6px_20px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_6px_20px_rgba(0,0,0,0.45)]
         transition-all duration-150 border
         ${menuOpen ? "z-[20]" : ""}
-        ${isSelected
+        ${isDragging ? "border-dashed border-indigo-400/40 dark:border-indigo-500/25" :
+          isSelected
           ? "border-indigo-400/70 dark:border-indigo-500/50 ring-2 ring-indigo-500/20 dark:ring-indigo-500/15 bg-indigo-50/40 dark:bg-indigo-950/[0.15]"
           : decayLevel > 0
             ? decayBorderClass[decayLevel]
@@ -432,7 +435,7 @@ function TaskCard({
 function DragOverlayCard({ task }: { task: Task }) {
   const priority = priorityConfig[task.priority as keyof typeof priorityConfig]
   return (
-    <div className="bg-[var(--tf-bg-card)] border border-indigo-300 dark:border-indigo-500/60 rounded-[10px] p-3.5 w-[230px] rotate-[1.5deg] shadow-[0_20px_60px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.7)] ring-1 ring-indigo-200 dark:ring-indigo-500/20">
+    <div className="animate-scale-in bg-[var(--tf-bg-card)] border border-indigo-300 dark:border-indigo-500/60 rounded-[10px] p-3.5 w-[230px] rotate-[1.5deg] shadow-[0_24px_70px_rgba(0,0,0,0.18)] dark:shadow-[0_24px_70px_rgba(0,0,0,0.75)] ring-2 ring-indigo-300/40 dark:ring-indigo-500/25" style={{ willChange: "transform" }}>
       <p className="text-[13px] font-semibold text-[var(--tf-text-primary)] leading-snug mb-3 pl-[17px]">{task.title}</p>
       <div className="pl-[17px]">
         <div className={`inline-flex items-center gap-1.5 text-[10.5px] font-semibold px-2 py-[3px] rounded-full border ${priority.pill}`}>
@@ -459,9 +462,9 @@ function DroppableColumn({
     <div
       ref={setNodeRef}
       id={col.id}
-      className={`border rounded-[10px] p-3 flex flex-col gap-2 min-h-[200px] transition-colors ${
+      className={`border rounded-[10px] p-3 flex flex-col gap-2 min-h-[200px] transition-all duration-200 ${
         isOver
-          ? "bg-indigo-950/25 border-indigo-500/50"
+          ? "bg-[var(--tf-accent)]/[0.06] border-[var(--tf-accent)]/50 ring-2 ring-[var(--tf-accent)]/15 ring-inset scale-[1.005]"
           : `${styles.bg} ${styles.borderColor}`
       }`}
     >

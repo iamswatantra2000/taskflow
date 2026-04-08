@@ -452,24 +452,26 @@ export function DashboardClient({
 								</div>
 							</div>
 
-							{boardView === "board" ? (
-								<TaskBoardWrapper
-									columns={columns}
-									userName={userName}
-									filters={filters}
-									projects={projects}
-									workspaceId={workspaceId}
-									members={members}
-									currentUserId={currentUserId}
-								/>
-							) : (
-								<WorkloadBalancer
-									tasks={columns.flatMap((c) => c.tasks)}
-									members={members}
-									projects={projects}
-									currentUserId={currentUserId}
-								/>
-							)}
+							<div key={boardView} className="animate-fade-in-up-sm">
+								{boardView === "board" ? (
+									<TaskBoardWrapper
+										columns={columns}
+										userName={userName}
+										filters={filters}
+										projects={projects}
+										workspaceId={workspaceId}
+										members={members}
+										currentUserId={currentUserId}
+									/>
+								) : (
+									<WorkloadBalancer
+										tasks={columns.flatMap((c) => c.tasks)}
+										members={members}
+										projects={projects}
+										currentUserId={currentUserId}
+									/>
+								)}
+							</div>
 						</div>
 
 					</div>

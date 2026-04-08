@@ -567,10 +567,19 @@ function TimelineView({ tasks }: { tasks: Task[] }) {
   )
 }
 
+const VIEW_ORDER: ViewType[] = ["board", "calendar", "timeline"]
+
 // ——— Main ProjectClient ———
 export function ProjectClient({ project, tasks, allProjects, currentUser, members }: Props) {
   const [view, setView]           = useState<ViewType>("board")
+  const [viewDir, setViewDir]     = useState<"right" | "left">("right")
   const [localTasks, setLocalTasks] = useState(tasks)
+
+  function changeView(next: ViewType) {
+    const dir = VIEW_ORDER.indexOf(next) >= VIEW_ORDER.indexOf(view) ? "right" : "left"
+    setViewDir(dir)
+    setView(next)
+  }
 
   async function handleAssign(taskId: string, newId: string | null) {
     setLocalTasks((prev) =>
@@ -612,7 +621,7 @@ export function ProjectClient({ project, tasks, allProjects, currentUser, member
               <button
                 key={v.id}
                 type="button"
-                onClick={() => setView(v.id as ViewType)}
+                onClick={() => changeView(v.id as ViewType)}
                 className={cn(
                   "flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-[6px] text-[12px] font-medium transition-all",
                   view === v.id
@@ -677,9 +686,14 @@ export function ProjectClient({ project, tasks, allProjects, currentUser, member
         </div>
 
         {/* View content */}
-        {view === "board"    && <BoardView    tasks={localTasks} project={project} members={members} onAssign={handleAssign} />}
-        {view === "calendar" && <CalendarView tasks={localTasks} />}
-        {view === "timeline" && <TimelineView tasks={localTasks} />}
+        <div
+          key={view}
+          style={{ animation: `${viewDir === "right" ? "slide-in-from-right" : "slide-in-from-left"} 0.22s ease both` }}
+        >
+          {view === "board"    && <BoardView    tasks={localTasks} project={project} members={members} onAssign={handleAssign} />}
+          {view === "calendar" && <CalendarView tasks={localTasks} />}
+          {view === "timeline" && <TimelineView tasks={localTasks} />}
+        </div>
 
       </div>
     </div>

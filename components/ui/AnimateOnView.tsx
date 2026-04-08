@@ -8,9 +8,26 @@ interface AnimateOnViewProps {
   className?: string
   /** Delay in ms before the animation starts after the element enters the viewport */
   delay?: number
+  /** Animation direction — default is "up" */
+  direction?: "up" | "left" | "right" | "fade"
+  /** Duration in ms */
+  duration?: number
 }
 
-export function AnimateOnView({ children, className, delay = 0 }: AnimateOnViewProps) {
+const ANIMATION_MAP: Record<string, string> = {
+  up:    "fade-in-up",
+  left:  "slide-in-from-left",
+  right: "slide-in-from-right",
+  fade:  "fade-in",
+}
+
+export function AnimateOnView({
+  children,
+  className,
+  delay = 0,
+  direction = "up",
+  duration = 500,
+}: AnimateOnViewProps) {
   const ref = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(false)
 
@@ -30,13 +47,15 @@ export function AnimateOnView({ children, className, delay = 0 }: AnimateOnViewP
     return () => observer.disconnect()
   }, [])
 
+  const animName = ANIMATION_MAP[direction] ?? "fade-in-up"
+
   return (
     <div
       ref={ref}
       className={cn(className)}
       style={
         visible
-          ? { animation: `fade-in-up 0.5s ease ${delay}ms both` }
+          ? { animation: `${animName} ${duration}ms ease ${delay}ms both` }
           : { opacity: 0 }
       }
     >

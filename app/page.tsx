@@ -7,6 +7,7 @@ import {
 import { OnboardingTour } from "@/components/features/OnboardingTour"
 import { PricingSection } from "@/components/features/PricingSection"
 import { AnimateOnView } from "@/components/ui/AnimateOnView"
+import { HeroMockup } from "@/components/ui/HeroMockup"
 import { NavLinks } from "@/components/ui/NavLinks"
 import { LogoMark } from "@/components/ui/LogoMark"
 import { ThemeToggle } from "@/components/ui/ThemeToggle"
@@ -169,7 +170,7 @@ function Hero() {
         </div>
 
         {/* App preview */}
-        <div style={{ animation: "fade-in-up 0.8s ease 0.75s both" }} className="relative">
+        <HeroMockup style={{ animation: "fade-in-up 0.8s ease 0.75s both" }} className="relative">
           <div className="absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-b from-transparent to-slate-50 dark:to-[#080808] z-10 pointer-events-none" />
           <div className="absolute -inset-px bg-gradient-to-r from-indigo-500/15 via-violet-500/10 to-indigo-500/15 rounded-[20px] blur-sm" />
           <div className="relative border border-[var(--tf-border)] rounded-[16px] sm:rounded-[20px] overflow-hidden bg-[var(--tf-bg-card)] shadow-[0_4px_24px_rgba(0,0,0,0.08)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.6)]">
@@ -254,7 +255,7 @@ function Hero() {
               </div>
             </div>
           </div>
-        </div>
+        </HeroMockup>
       </div>
     </section>
   )
@@ -325,7 +326,7 @@ function Features() {
 
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
           {features.map((f, index) => (
-            <AnimateOnView key={f.title} delay={index * 70}>
+            <AnimateOnView key={f.title} delay={index * 80} direction={index % 3 === 0 ? "left" : index % 3 === 2 ? "right" : "up"}>
             <div
               className="group p-5 sm:p-6 border border-[var(--tf-border-subtle)] bg-[var(--tf-bg-card)] hover:border-slate-300 dark:hover:border-white/10 hover:bg-[var(--tf-bg-hover)] shadow-sm dark:shadow-none rounded-[14px] sm:rounded-[16px] transition-all duration-200 h-full"
             >

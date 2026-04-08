@@ -54,8 +54,8 @@ function DialogContent({
         data-slot="dialog-content"
         className={cn(
           "fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-5 rounded-2xl border border-slate-200 dark:border-white/8 bg-[var(--tf-bg-card)] p-6 shadow-2xl shadow-black/10 dark:shadow-black/60 text-sm outline-none duration-150",
-          "data-open:animate-in data-open:fade-in-0 data-open:zoom-in-[0.97]",
-          "data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-[0.97]",
+          "data-open:animate-in data-open:fade-in-0 data-open:zoom-in-[0.97] data-open:slide-in-from-top-3",
+          "data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-[0.97] data-closed:slide-out-to-top-2",
           "sm:max-w-md",
           className
         )}

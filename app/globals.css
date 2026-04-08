@@ -285,6 +285,11 @@ html:not(.dark)[data-theme] aside {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes fade-in-up-sm {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 @keyframes fade-in-down {
   from { opacity: 0; transform: translateY(-10px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -298,6 +303,53 @@ html:not(.dark)[data-theme] aside {
 @keyframes fadeSlideIn {
   from { opacity: 0; transform: translateY(-6px) scale(0.98); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes slide-in-from-right {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slide-in-from-left {
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.94) rotate(0.5deg); }
+  to   { opacity: 1; transform: scale(1)    rotate(1.5deg); }
+}
+
+@keyframes shimmer {
+  from { background-position: -600px 0; }
+  to   { background-position: 600px 0; }
+}
+
+.animate-fade-in-up-sm {
+  animation: fade-in-up-sm 0.2s ease both;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-from-right 0.22s ease both;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-from-left 0.22s ease both;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.18s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--tf-bg-hover)    25%,
+    var(--tf-bg-dropdown) 50%,
+    var(--tf-bg-hover)    75%
+  );
+  background-size: 1200px 100%;
+  animation: shimmer 1.8s linear infinite;
 }
 
 /* Task decay — slow pulse for severely stale tasks (14+ days) */

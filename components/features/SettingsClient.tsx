@@ -690,7 +690,7 @@ export function SettingsClient({ user, workspace, members, userRole, pendingInvi
     setTimeout(() => {
       setActiveTab(id)
       setShow(true)
-    }, 110)
+    }, 80)
   }
 
   return (
@@ -745,8 +745,8 @@ export function SettingsClient({ user, workspace, members, userRole, pendingInvi
         <div
           style={{
             opacity:    show ? 1 : 0,
-            transform:  show ? "translateY(0)" : "translateY(8px)",
-            transition: "opacity 0.15s ease, transform 0.15s ease",
+            transform:  show ? "translateY(0)" : "translateY(6px)",
+            transition: show ? "opacity 0.13s ease, transform 0.13s ease" : "opacity 0.08s ease, transform 0.08s ease",
           }}
         >
           {activeTab === "profile"       && <ProfileTab user={user} />}
