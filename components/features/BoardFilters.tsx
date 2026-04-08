@@ -120,31 +120,23 @@ export function BoardFilters({ onFilterChange, compact = false }: Props) {
 					</button>
 				)}
 
-				{/* Filter dropdown */}
+				{/* Filter dropdown — horizontal */}
 				{open && (
-					<div className="absolute top-10 left-0 bg-[var(--tf-bg-dropdown)] border border-[var(--tf-border)] rounded-[10px] p-3 z-50 w-[200px] shadow-xl">
-						<p className="text-[11px] font-medium text-[var(--tf-text-tertiary)] uppercase tracking-wider mb-2">
-							Priority
-						</p>
-						<div className="space-y-1">
-							{priorities_list.map((p) => (
-								<button
-									key={p}
-									type="button"
-									onClick={() => togglePriority(p)}
-									className={`w-full flex items-center justify-between px-2 py-1.5 rounded-[6px] transition-colors ${
-										priorities.includes(p) ? "bg-indigo-50 dark:bg-[var(--tf-bg-dropdown)]" : "hover:bg-slate-50 dark:hover:bg-[var(--tf-bg-dropdown)]"
-									}`}
-								>
-									<span className={`text-[11px] font-medium px-2 py-0.5 rounded-[4px] border ${priorityColors[p]}`}>
-										{priorityLabels[p]}
-									</span>
-									{priorities.includes(p) && (
-										<span className="text-indigo-500 dark:text-indigo-400 text-[10px]">✓</span>
-									)}
-								</button>
-							))}
-						</div>
+					<div className="absolute top-10 left-0 bg-[var(--tf-bg-dropdown)] border border-[var(--tf-border)] rounded-[8px] px-2 py-1.5 z-50 shadow-lg flex items-center gap-1">
+						{priorities_list.map((p) => (
+							<button
+								key={p}
+								type="button"
+								onClick={() => togglePriority(p)}
+								className={`text-[11px] font-medium px-2 py-0.5 rounded-[5px] border transition-all ${
+									priorities.includes(p)
+										? priorityColors[p]
+										: "border-[var(--tf-border)] text-[var(--tf-text-secondary)] hover:border-slate-300 dark:hover:border-white/20"
+								}`}
+							>
+								{priorityLabels[p]}
+							</button>
+						))}
 					</div>
 				)}
 			</div>
@@ -206,31 +198,23 @@ export function BoardFilters({ onFilterChange, compact = false }: Props) {
 				)}
 			</div>
 
-			{/* Filter dropdown */}
+			{/* Filter dropdown — horizontal */}
 			{open && (
-				<div className="absolute top-10 right-0 bg-[var(--tf-bg-dropdown)] border border-[var(--tf-border)] rounded-[10px] p-3 z-50 w-[200px] shadow-xl">
-					<p className="text-[11px] font-medium text-[var(--tf-text-tertiary)] uppercase tracking-wider mb-2">
-						Priority
-					</p>
-					<div className="space-y-1">
-						{priorities_list.map((p) => (
-							<button
-								key={p}
-								type="button"
-								onClick={() => togglePriority(p)}
-								className={`w-full flex items-center justify-between px-2 py-1.5 rounded-[6px] transition-colors ${
-									priorities.includes(p) ? "bg-indigo-50 dark:bg-[var(--tf-bg-dropdown)]" : "hover:bg-slate-50 dark:hover:bg-[var(--tf-bg-dropdown)]"
-								}`}
-							>
-								<span className={`text-[11px] font-medium px-2 py-0.5 rounded-[4px] border ${priorityColors[p]}`}>
-									{priorityLabels[p]}
-								</span>
-								{priorities.includes(p) && (
-									<span className="text-indigo-500 dark:text-indigo-400 text-[10px]">✓</span>
-								)}
-							</button>
-						))}
-					</div>
+				<div className="absolute top-10 right-0 bg-[var(--tf-bg-dropdown)] border border-[var(--tf-border)] rounded-[8px] px-2 py-1.5 z-50 shadow-lg flex items-center gap-1">
+					{priorities_list.map((p) => (
+						<button
+							key={p}
+							type="button"
+							onClick={() => togglePriority(p)}
+							className={`text-[11px] font-medium px-2 py-0.5 rounded-[5px] border transition-all ${
+								priorities.includes(p)
+									? priorityColors[p]
+									: "border-[var(--tf-border)] text-[var(--tf-text-secondary)] hover:border-slate-300 dark:hover:border-white/20"
+							}`}
+						>
+							{priorityLabels[p]}
+						</button>
+					))}
 				</div>
 			)}
 		</div>
