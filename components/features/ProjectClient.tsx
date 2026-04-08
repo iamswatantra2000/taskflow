@@ -688,7 +688,7 @@ export function ProjectClient({ project, tasks, allProjects, currentUser, member
         {/* View content */}
         <div
           key={view}
-          style={{ animation: `${viewDir === "right" ? "slide-in-from-right" : "slide-in-from-left"} 0.22s ease both` }}
+          style={{ animation: `${viewDir === "right" ? "slide-in-from-right" : "slide-in-from-left"} 0.22s ease backwards` }}
         >
           {view === "board"    && <BoardView    tasks={localTasks} project={project} members={members} onAssign={handleAssign} />}
           {view === "calendar" && <CalendarView tasks={localTasks} />}

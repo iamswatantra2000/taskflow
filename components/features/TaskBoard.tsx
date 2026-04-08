@@ -231,7 +231,6 @@ function TaskCard({
     transition,
     opacity:   isDragging ? 0.25 : 1,
     boxShadow: isDragging ? "none" : undefined,
-    scale:     isDragging ? "0.98" : undefined,
   }
 
   const leftAccent =
@@ -464,7 +463,7 @@ function DroppableColumn({
       id={col.id}
       className={`border rounded-[10px] p-3 flex flex-col gap-2 min-h-[200px] transition-all duration-200 ${
         isOver
-          ? "bg-[var(--tf-accent)]/[0.06] border-[var(--tf-accent)]/50 ring-2 ring-[var(--tf-accent)]/15 ring-inset scale-[1.005]"
+          ? "bg-[var(--tf-accent)]/[0.06] border-[var(--tf-accent)]/50 ring-2 ring-[var(--tf-accent)]/15 ring-inset"
           : `${styles.bg} ${styles.borderColor}`
       }`}
     >
