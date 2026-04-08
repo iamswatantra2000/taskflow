@@ -133,6 +133,14 @@ Pro gates: Activity feed, Analytics, AI tasks button, some settings
 - [x] ProGate component — locks Pro features with tooltip for free users
 - [x] AppSidebar — collapsible, with project list, nav items, upgrade CTA
 - [x] Sonner toasts — custom styled for light + dark mode
+- [x] **8 Style Themes** — Midnight, Obsidian, Nord, Ember (dark) + Cloud, Parchment, Arctic, Blossom (light).
+      `context/ThemeStyleContext.tsx` manages `data-theme` attribute + CSS var injection. `ThemePicker.tsx`
+      visual 2×4 grid with mini kanban previews. Paired dark↔light toggle. Lora serif font for Parchment.
+      `--tf-*` CSS custom property token system: bg-card, bg-panel, bg-overlay, bg-dropdown, bg-input,
+      bg-hover, bg-immersive, border, border-subtle, accent, accent-muted, accent-text, sidebar-bg,
+      sidebar-border, text-primary, text-secondary, text-tertiary. All 8 themes define every token.
+      **Full coverage**: every hardcoded `dark:bg-[#...]`, `dark:text-[#...]`, `dark:border-[#...]` across
+      all 48+ files replaced with CSS var tokens — ~1,200 total replacements across 3 sessions.
 
 ### Real-time Collaboration
 - [x] **Presence avatars on project board** — stacked circular avatars in the topbar showing
@@ -240,19 +248,15 @@ Pro gates: Activity feed, Analytics, AI tasks button, some settings
 
 ## Last Worked On
 
-**Session:** 2026-04-07 (continued)
+**Session:** 2026-04-08
 **Changes:**
-- **Instant dialog open** — batch-fetch subtasks + workspace labels + task-label map at `TaskBoard` mount via single `Promise.all`; data threaded as `initialItems`/`initialWorkspaceLabels`/`initialAppliedIds` props to skip child component fetches → `TaskDetailDialog` opens instantly with no loading skeletons
-- **`SubtaskList.tsx`** — added `initialItems?: Subtask[]` prop; skips fetch when provided; `useState(initialItems === undefined)` for loading guard
-- **`LabelPicker.tsx`** — added `initialWorkspaceLabels?` and `initialAppliedIds?` props; skips both fetch calls when provided
-- **`TaskDetailDialog.tsx`** — added `initialSubtasks`, `initialWorkspaceLabels`, `initialAppliedLabelIds` optional props; passes them to children
-- **Bulk Actions** — multi-select kanban cards via checkbox (shows on hover); floating `BulkActionBar` at bottom center with Move to / Assign / Delete; `lib/actions.ts` has `bulkUpdateStatus`, `bulkAssign`, `bulkDelete` using `inArray`; optimistic updates in `TaskBoard`; `BulkActionBar.tsx` created
-- **Checkbox alignment fix** — checkbox and drag handle share inline `relative w-[13px] h-[13px]` flex slot; both `absolute inset-0` inside, no more absolute card-level positioning
-- **Drag fix** — `{...listeners}` moved from drag handle div to title `<p>` only; drag handle keeps only `{...attributes}`; fixed dnd-kit conflict
-- **Subtask progress chip on cards** — mini progress bar + `done/total` count rendered on `TaskCard` when task has subtasks; emerald when 100%, indigo otherwise
-- **Inline task creation** — `+` button in column headers; `InlineTaskForm` component (text input + Enter to save, Esc to cancel); optimistic temp card with `temp-${Date.now()}` id; `createTask` server action + `revalidatePath`
-- **Gantt / Timeline view** — `TimelineView` in `ProjectClient.tsx` rebuilt: pixel-per-day (DAY_PX=36, LABEL_W=220), two-row header (month segments + day numbers with today highlight), status-colored bars, today vertical line, weekend shading, dashed placeholder for tasks with no due date, status legend
-- **Global search** — `app/api/search/route.ts` created: GET `/api/search?q=` searches tasks by title + projects by name via `ilike`, scoped to user's workspace; `CommandPalette.tsx` updated with debounced fetch (280ms), `SearchTask`/`SearchProject` types, `STATUS_DOT` map, searching spinner, conditional Tasks/Projects result groups vs default navigation groups
+- **8-theme system** — `context/ThemeStyleContext.tsx` created with `STYLE_THEMES` array (8 themes × full CSS var maps), `ThemeStyleProvider`, `applyThemeVars()`, `useStyleTheme()` hook
+- **`ThemePicker.tsx`** — visual 2×4 grid picker with `ThemePreview` mini kanban mockups, accent ring on selected, Dark/Light groups; embedded in Settings Appearance tab
+- **`ThemeToggle.tsx`** — updated to pair dark↔light themes: Midnight↔Cloud, Obsidian↔Blossom, Nord↔Arctic, Ember↔Parchment
+- **`app/globals.css`** — full `--tf-*` token system: 15 semantic tokens per theme (bg, border, accent, sidebar, text); `data-theme` per-theme overrides for all 8; sidebar override rule; Parchment serif + Ember tint
+- **Full token coverage** — three bulk Python passes (~1,200 replacements total) replaced all `dark:bg-[#...]`, `dark:text-[#...]`, `dark:border-[#...]`, `bg-white dark:...`, `text-slate-* dark:...` with CSS var tokens across 48 files including all loading skeletons, auth pages, landing page, and all dashboard components
+- **Text color tokens added** — `--tf-text-primary`, `--tf-text-secondary`, `--tf-text-tertiary` per theme; all 48 files updated
+- **Zero new TypeScript errors** — verified with `npx tsc --noEmit` after each pass
 
 ---
 
@@ -261,6 +265,8 @@ Pro gates: Activity feed, Analytics, AI tasks button, some settings
 - Activity and Analytics routes still do a full server render on navigation (they are separate routes). Could be inlined as lazy-fetched tabs in `DashboardClient` if needed.
 - The `/my-tasks` route still exists and works (direct URL); sidebar no longer links to it.
 - Search currently only covers task titles and project names — could extend to comments if needed.
+- FocusMode timer SVG ring and timer text colors are still hardcoded dark hex values (intentional — it's an always-dark immersive overlay, not themed). If needed, these can be mapped to Ember/Nord theme accent colors.
+- Chart colors in AnalyticsClient (Recharts `stroke`/`fill` attributes) are hardcoded `#6366f1`/`#10b981` — these are data series colors, not UI chrome, so they're acceptable as-is.
 
 ---
 
