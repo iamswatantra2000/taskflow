@@ -130,7 +130,7 @@ function Hero() {
         </div>
 
         {/* Headline */}
-        <h1 data-hero className={`${$.h1} text-[48px] sm:text-[76px] md:text-[92px] mb-6`}>
+        <h1 data-hero className={`${$.h1} text-[36px] sm:text-[54px] md:text-[68px] mb-6`}>
           The workspace where<br />
           <span className="bg-gradient-to-r from-indigo-500 via-violet-500 to-indigo-500 dark:from-indigo-400 dark:via-violet-300 dark:to-indigo-400 bg-clip-text text-transparent">
             great teams ship
