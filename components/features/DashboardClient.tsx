@@ -258,9 +258,13 @@ export function DashboardClient({
 						</>
 					)}
 
+				</div>
+
+				{/* Always visible on all screens */}
+				<div className="flex items-center gap-1.5 flex-shrink-0">
 					<NotificationBell />
-				<ThemeToggle />
-				<ProfileDropdown user={user} />
+					<ThemeToggle />
+					<ProfileDropdown user={user} />
 				</div>
 			</div>
 
