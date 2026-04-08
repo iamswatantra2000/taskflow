@@ -56,7 +56,7 @@ const loadLabel: Record<LoadLevel, string> = {
 }
 
 const statusBar: Record<string, { bg: string; label: string }> = {
-  TODO:        { bg: "bg-slate-300 dark:bg-[#333]",    label: "Todo"        },
+  TODO:        { bg: "bg-slate-300 dark:bg-[var(--tf-bg-dropdown)]",    label: "Todo"        },
   IN_PROGRESS: { bg: "bg-indigo-500",                  label: "In Progress" },
   IN_REVIEW:   { bg: "bg-amber-400",                   label: "In Review"   },
   DONE:        { bg: "bg-emerald-400/50",              label: "Done"        },
@@ -99,15 +99,15 @@ function ReassignDropdown({
         type="button"
         onClick={(e) => { e.stopPropagation(); setOpen((o) => !o) }}
         title="Reassign task"
-        className="w-5 h-5 rounded-[4px] flex items-center justify-center text-slate-400 dark:text-[#444] hover:text-indigo-500 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors flex-shrink-0"
+        className="w-5 h-5 rounded-[4px] flex items-center justify-center text-[var(--tf-text-tertiary)] hover:text-indigo-500 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors flex-shrink-0"
       >
         <UserMinus size={10} />
       </button>
 
       {open && (
-        <div className="absolute right-0 top-6 z-50 w-[160px] bg-white dark:bg-[#161616] border border-slate-200 dark:border-[#2a2a2a] rounded-[10px] shadow-xl overflow-hidden">
-          <div className="px-3 py-2 border-b border-slate-100 dark:border-[#1f1f1f]">
-            <p className="text-[10px] font-semibold text-slate-400 dark:text-[#555] uppercase tracking-wider truncate">
+        <div className="absolute right-0 top-6 z-50 w-[160px] bg-[var(--tf-bg-dropdown)] border border-[var(--tf-border)] rounded-[10px] shadow-xl overflow-hidden">
+          <div className="px-3 py-2 border-b border-[var(--tf-border-subtle)]">
+            <p className="text-[10px] font-semibold text-[var(--tf-text-tertiary)] uppercase tracking-wider truncate">
               {task.title}
             </p>
           </div>
@@ -116,11 +116,11 @@ function ReassignDropdown({
             <button
               type="button"
               onClick={() => { onReassign(task.id, null); setOpen(false) }}
-              className="w-full flex items-center gap-2 px-3 py-1.5 text-[12px] text-slate-500 dark:text-[#666] hover:bg-slate-50 dark:hover:bg-[#1f1f1f] transition-colors"
+              className="w-full flex items-center gap-2 px-3 py-1.5 text-[12px] text-[var(--tf-text-secondary)] hover:bg-[var(--tf-bg-hover)] transition-colors"
             >
-              <div className="w-5 h-5 rounded-full border border-dashed border-slate-300 dark:border-[#333] flex-shrink-0" />
+              <div className="w-5 h-5 rounded-full border border-dashed border-slate-300 dark:border-[var(--tf-border)] flex-shrink-0" />
               Unassigned
-              {!currentAssigneeId && <Check size={10} className="ml-auto text-indigo-400" />}
+              {!currentAssigneeId && <Check size={10} className="ml-auto text-[var(--tf-accent-text)]" />}
             </button>
 
             {members.map((m) => (
@@ -128,7 +128,7 @@ function ReassignDropdown({
                 key={m.id}
                 type="button"
                 onClick={() => { onReassign(task.id, m.id); setOpen(false) }}
-                className="w-full flex items-center gap-2 px-3 py-1.5 text-[12px] text-slate-700 dark:text-[#ccc] hover:bg-slate-50 dark:hover:bg-[#1f1f1f] transition-colors"
+                className="w-full flex items-center gap-2 px-3 py-1.5 text-[12px] text-[var(--tf-text-primary)] hover:bg-[var(--tf-bg-hover)] transition-colors"
               >
                 <div
                   className="w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-bold text-white flex-shrink-0"
@@ -137,7 +137,7 @@ function ReassignDropdown({
                   {getInitials(m.name)}
                 </div>
                 <span className="truncate">{m.name}</span>
-                {m.id === currentAssigneeId && <Check size={10} className="ml-auto text-indigo-400 flex-shrink-0" />}
+                {m.id === currentAssigneeId && <Check size={10} className="ml-auto text-[var(--tf-accent-text)] flex-shrink-0" />}
               </button>
             ))}
           </div>
@@ -190,11 +190,11 @@ function MemberRow({
   const SHOW_MAX = 4
 
   return (
-    <div className="border border-slate-100 dark:border-[#1f1f1f] rounded-[12px] overflow-hidden">
+    <div className="border border-[var(--tf-border-subtle)] rounded-[12px] overflow-hidden">
 
       {/* Row header — always visible */}
       <div
-        className="flex items-center gap-3 px-4 py-3 bg-white dark:bg-[#111] cursor-pointer hover:bg-slate-50 dark:hover:bg-[#141414] transition-colors select-none"
+        className="flex items-center gap-3 px-4 py-3 bg-[var(--tf-bg-card)] cursor-pointer hover:bg-[var(--tf-bg-hover)] transition-colors select-none"
         onClick={() => setExpanded((e) => !e)}
       >
         {/* Avatar */}
@@ -208,7 +208,7 @@ function MemberRow({
         {/* Name + badges */}
         <div className="flex items-center gap-2 min-w-0 flex-1">
           <span className={cn(
-            "text-[13px] font-semibold text-slate-800 dark:text-[#e0e0e0] truncate",
+            "text-[13px] font-semibold text-[var(--tf-text-primary)] truncate",
           )}>
             {name}
           </span>
@@ -229,24 +229,24 @@ function MemberRow({
 
         {/* Task count + expand */}
         <div className="flex items-center gap-2 flex-shrink-0">
-          <span className="text-[12px] font-semibold text-slate-500 dark:text-[#555]">
+          <span className="text-[12px] font-semibold text-[var(--tf-text-tertiary)]">
             {total} task{total !== 1 ? "s" : ""}
           </span>
           {expanded
-            ? <ChevronUp size={13} className="text-slate-400 dark:text-[#444]" />
-            : <ChevronDown size={13} className="text-slate-400 dark:text-[#444]" />
+            ? <ChevronUp size={13} className="text-[var(--tf-text-tertiary)]" />
+            : <ChevronDown size={13} className="text-[var(--tf-text-tertiary)]" />
           }
         </div>
       </div>
 
       {/* Bar + details */}
-      <div className="px-4 pb-3 bg-white dark:bg-[#111] space-y-2.5 border-t border-slate-50 dark:border-[#171717]">
+      <div className="px-4 pb-3 bg-[var(--tf-bg-card)] space-y-2.5 border-t border-[var(--tf-border-subtle)]">
 
         {/* Workload bar */}
         {total > 0 ? (
           <div className="flex items-center gap-2 pt-2.5">
             {/* Normalized bar */}
-            <div className="flex-1 h-[6px] bg-slate-100 dark:bg-[#1a1a1a] rounded-full overflow-hidden">
+            <div className="flex-1 h-[6px] bg-slate-100 dark:bg-[var(--tf-bg-dropdown)] rounded-full overflow-hidden">
               <div
                 className="h-full flex rounded-full overflow-hidden transition-all duration-500"
                 style={{ width: `${barWidth}%` }}
@@ -267,14 +267,14 @@ function MemberRow({
               {segments.map((seg) => (
                 <div key={seg.status} className="flex items-center gap-[3px]">
                   <div className={cn("w-[6px] h-[6px] rounded-full", statusBar[seg.status]?.bg ?? "bg-slate-400")} />
-                  <span className="text-[10px] text-slate-500 dark:text-[#555]">{seg.count}</span>
+                  <span className="text-[10px] text-[var(--tf-text-tertiary)]">{seg.count}</span>
                 </div>
               ))}
             </div>
           </div>
         ) : (
           <div className="pt-2.5">
-            <p className="text-[11px] text-slate-400 dark:text-[#333] italic">No tasks assigned</p>
+            <p className="text-[11px] text-[var(--tf-text-tertiary)] italic">No tasks assigned</p>
           </div>
         )}
 
@@ -286,7 +286,7 @@ function MemberRow({
               return (
                 <div
                   key={task.id}
-                  className="flex items-center gap-2 px-2.5 py-1.5 rounded-[7px] bg-slate-50 dark:bg-[#0f0f0f] border border-slate-100 dark:border-[#1a1a1a] group"
+                  className="flex items-center gap-2 px-2.5 py-1.5 rounded-[7px] bg-[var(--tf-bg-panel)] border border-[var(--tf-border-subtle)] group"
                 >
                   {/* Priority dot */}
                   <div className={cn("w-[5px] h-[5px] rounded-full flex-shrink-0", priorityDot[task.priority] ?? "bg-slate-400")} />
@@ -295,8 +295,8 @@ function MemberRow({
                   <p className={cn(
                     "flex-1 text-[11.5px] truncate",
                     task.status === "DONE"
-                      ? "text-slate-400 dark:text-[#444] line-through"
-                      : "text-slate-700 dark:text-[#bbb]"
+                      ? "text-[var(--tf-text-tertiary)] line-through"
+                      : "text-[var(--tf-text-primary)]"
                   )}>
                     {task.title}
                   </p>
@@ -315,7 +315,7 @@ function MemberRow({
                     task.status === "IN_PROGRESS" ? "bg-indigo-50 text-indigo-500 dark:bg-indigo-500/10 dark:text-indigo-400" :
                     task.status === "IN_REVIEW"   ? "bg-amber-50 text-amber-500 dark:bg-amber-500/10 dark:text-amber-400" :
                     task.status === "DONE"        ? "bg-emerald-50 text-emerald-500 dark:bg-emerald-500/10 dark:text-emerald-400" :
-                                                    "bg-slate-100 text-slate-500 dark:bg-white/[0.04] dark:text-[#555]"
+                                                    "bg-slate-100 text-slate-500 dark:bg-white/[0.04] dark:text-[var(--tf-text-tertiary)]"
                   )}>
                     {statusBar[task.status]?.label ?? task.status}
                   </div>
@@ -334,7 +334,7 @@ function MemberRow({
             })}
 
             {memberTasks.length > SHOW_MAX && (
-              <p className="text-[11px] text-slate-400 dark:text-[#444] pl-2">
+              <p className="text-[11px] text-[var(--tf-text-tertiary)] pl-2">
                 +{memberTasks.length - SHOW_MAX} more tasks
               </p>
             )}
@@ -410,8 +410,8 @@ export function WorkloadBalancer({ tasks, members, projects, currentUserId }: Pr
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Users size={15} className="text-slate-400 dark:text-[#444]" />
-          <h2 className="text-[14px] font-semibold text-slate-700 dark:text-[#ccc] tracking-tight">
+          <Users size={15} className="text-[var(--tf-text-tertiary)]" />
+          <h2 className="text-[14px] font-semibold text-[var(--tf-text-primary)] tracking-tight">
             Team Workload
           </h2>
         </div>
@@ -421,7 +421,7 @@ export function WorkloadBalancer({ tasks, members, projects, currentUserId }: Pr
               {unassigned} unassigned
             </span>
           )}
-          <span className="text-[11px] font-medium text-slate-500 dark:text-[#555] bg-slate-100 dark:bg-white/[0.04] border border-slate-200 dark:border-white/[0.07] rounded-full px-2.5 py-0.5">
+          <span className="text-[11px] font-medium text-[var(--tf-text-tertiary)] bg-[var(--tf-bg-hover)] border border-[var(--tf-border)] rounded-full px-2.5 py-0.5">
             {totalActive} active task{totalActive !== 1 ? "s" : ""}
           </span>
         </div>

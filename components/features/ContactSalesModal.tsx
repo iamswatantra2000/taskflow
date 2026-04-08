@@ -80,18 +80,18 @@ export function ContactSalesModal({ open, onClose }: ContactSalesModalProps) {
             </div>
 
             <div>
-              <h3 className="text-[20px] font-semibold text-slate-900 dark:text-white mb-2">
+              <h3 className="text-[20px] font-semibold text-[var(--tf-text-primary)] mb-2">
                 We&apos;ve received your message!
               </h3>
-              <p className="text-[13px] text-slate-500 dark:text-[#555] leading-relaxed max-w-[320px] mx-auto">
-                Thanks, <span className="text-slate-900 dark:text-white font-medium">{name}</span>. Our sales team will reach out to{" "}
+              <p className="text-[13px] text-[var(--tf-text-tertiary)] leading-relaxed max-w-[320px] mx-auto">
+                Thanks, <span className="text-[var(--tf-text-primary)] font-medium">{name}</span>. Our sales team will reach out to{" "}
                 <span className="text-indigo-400 font-medium">{email}</span> within 24 hours.
               </p>
             </div>
 
             {/* What happens next */}
-            <div className="w-full bg-slate-50 dark:bg-white/[0.02] border border-slate-100 dark:border-white/[0.06] rounded-[14px] p-5 text-left">
-              <p className="text-[10.5px] font-semibold text-slate-400 dark:text-[#3a3a3a] uppercase tracking-[0.1em] mb-4">
+            <div className="w-full bg-slate-50 dark:bg-white/[0.02] border border-slate-100 dark:border-[var(--tf-border-subtle)] rounded-[14px] p-5 text-left">
+              <p className="text-[10.5px] font-semibold text-[var(--tf-text-tertiary)] uppercase tracking-[0.1em] mb-4">
                 What happens next
               </p>
               <div className="space-y-4">
@@ -101,7 +101,7 @@ export function ContactSalesModal({ open, onClose }: ContactSalesModalProps) {
                       <span className="text-[10px] font-bold text-indigo-400">{n}</span>
                     </div>
                     <div className="flex-1">
-                      <p className="text-[12.5px] text-slate-500 dark:text-[#666]">{text}</p>
+                      <p className="text-[12.5px] text-[var(--tf-text-secondary)]">{text}</p>
                       {i < NEXT_STEPS.length - 1 && (
                         <div className="ml-[-15px] mt-2 w-px h-3 bg-indigo-500/15" />
                       )}
@@ -112,20 +112,20 @@ export function ContactSalesModal({ open, onClose }: ContactSalesModalProps) {
             </div>
 
             {/* Confirmation detail */}
-            <div className="w-full flex items-center gap-3 p-3.5 rounded-[10px] bg-slate-50 dark:bg-white/[0.02] border border-slate-100 dark:border-white/[0.06]">
+            <div className="w-full flex items-center gap-3 p-3.5 rounded-[10px] bg-slate-50 dark:bg-white/[0.02] border border-slate-100 dark:border-[var(--tf-border-subtle)]">
               <div className="w-8 h-8 rounded-[8px] bg-indigo-600/10 border border-indigo-500/20 flex items-center justify-center flex-shrink-0">
                 <Mail size={13} className="text-indigo-400" />
               </div>
               <div className="min-w-0">
-                <p className="text-[11px] text-slate-400 dark:text-[#444]">Confirmation sent to</p>
-                <p className="text-[12.5px] font-medium text-slate-900 dark:text-white truncate">{email}</p>
+                <p className="text-[11px] text-[var(--tf-text-tertiary)]">Confirmation sent to</p>
+                <p className="text-[12.5px] font-medium text-[var(--tf-text-primary)] truncate">{email}</p>
               </div>
             </div>
 
             <button
               type="button"
               onClick={handleClose}
-              className="w-full h-10 flex items-center justify-center gap-2 text-[13px] font-semibold bg-white dark:bg-[#111] hover:bg-slate-50 dark:hover:bg-[#161616] text-slate-500 dark:text-[#888] hover:text-slate-900 dark:hover:text-white rounded-[9px] border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/18 shadow-[0_3px_0_0_rgba(0,0,0,0.12)] dark:shadow-[0_3px_0_0_rgba(0,0,0,0.55)] active:translate-y-[3px] active:shadow-none transition-all duration-150"
+              className="w-full h-10 flex items-center justify-center gap-2 text-[13px] font-semibold bg-[var(--tf-bg-card)] hover:bg-slate-50 dark:hover:bg-[var(--tf-bg-dropdown)] text-[var(--tf-text-secondary)] hover:text-slate-900 dark:hover:text-white rounded-[9px] border border-[var(--tf-border)] hover:border-slate-300 dark:hover:border-white/18 shadow-[0_3px_0_0_rgba(0,0,0,0.12)] dark:shadow-[0_3px_0_0_rgba(0,0,0,0.55)] active:translate-y-[3px] active:shadow-none transition-all duration-150"
             >
               Close
             </button>
@@ -135,7 +135,7 @@ export function ContactSalesModal({ open, onClose }: ContactSalesModalProps) {
           /* ── FORM ─────────────────────────────────────────────────────── */
           <>
             {/* Header */}
-            <div className="relative px-6 pt-6 pb-5 border-b border-slate-100 dark:border-white/[0.06] overflow-hidden">
+            <div className="relative px-6 pt-6 pb-5 border-b border-slate-100 dark:border-[var(--tf-border-subtle)] overflow-hidden">
               {/* Subtle glow */}
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-80 h-24 bg-indigo-500/[0.05] rounded-full blur-[60px] pointer-events-none" />
 
@@ -146,7 +146,7 @@ export function ContactSalesModal({ open, onClose }: ContactSalesModalProps) {
                 <DialogHeader>
                   <DialogTitle className="text-[18px]">Talk to our sales team</DialogTitle>
                 </DialogHeader>
-                <p className="text-[12.5px] text-slate-500 dark:text-[#555] mt-1.5 leading-relaxed">
+                <p className="text-[12.5px] text-[var(--tf-text-tertiary)] mt-1.5 leading-relaxed">
                   Tell us about your team and we&apos;ll craft a custom Enterprise plan that fits perfectly.
                 </p>
               </div>
@@ -169,7 +169,7 @@ export function ContactSalesModal({ open, onClose }: ContactSalesModalProps) {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[11.5px] text-slate-500 dark:text-[#555] mb-1.5">
+                  <label className="block text-[11.5px] text-[var(--tf-text-tertiary)] mb-1.5">
                     Full name <span className="text-indigo-500">*</span>
                   </label>
                   <Input
@@ -180,7 +180,7 @@ export function ContactSalesModal({ open, onClose }: ContactSalesModalProps) {
                   />
                 </div>
                 <div>
-                  <label className="block text-[11.5px] text-slate-500 dark:text-[#555] mb-1.5">
+                  <label className="block text-[11.5px] text-[var(--tf-text-tertiary)] mb-1.5">
                     Work email <span className="text-indigo-500">*</span>
                   </label>
                   <Input
@@ -195,7 +195,7 @@ export function ContactSalesModal({ open, onClose }: ContactSalesModalProps) {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[11.5px] text-slate-500 dark:text-[#555] mb-1.5">
+                  <label className="block text-[11.5px] text-[var(--tf-text-tertiary)] mb-1.5">
                     Company <span className="text-indigo-500">*</span>
                   </label>
                   <Input
@@ -206,7 +206,7 @@ export function ContactSalesModal({ open, onClose }: ContactSalesModalProps) {
                   />
                 </div>
                 <div>
-                  <label className="block text-[11.5px] text-slate-500 dark:text-[#555] mb-1.5">
+                  <label className="block text-[11.5px] text-[var(--tf-text-tertiary)] mb-1.5">
                     Team size <span className="text-indigo-500">*</span>
                   </label>
                   <div className="relative">
@@ -214,14 +214,14 @@ export function ContactSalesModal({ open, onClose }: ContactSalesModalProps) {
                       required
                       value={teamSize}
                       onChange={(e) => setTeamSize(e.target.value)}
-                      className="h-9 w-full appearance-none rounded-[9px] border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.03] px-3 pr-8 text-[13px] text-foreground outline-none transition-all duration-150 focus-visible:border-indigo-500/60 focus-visible:shadow-[0_0_0_3px_hsl(var(--ring)/0.15)] [&>option]:bg-white dark:[&>option]:bg-[#111]"
+                      className="h-9 w-full appearance-none rounded-[9px] border border-[var(--tf-border)] bg-[var(--tf-bg-hover)] px-3 pr-8 text-[13px] text-foreground outline-none transition-all duration-150 focus-visible:border-indigo-500/60 focus-visible:shadow-[0_0_0_3px_hsl(var(--ring)/0.15)] [&>option]:bg-white dark:[&>option]:bg-[var(--tf-bg-card)]"
                     >
                       <option value="" disabled>Select…</option>
                       {TEAM_TIERS.map((t) => (
                         <option key={t.label} value={t.label}>{t.label}</option>
                       ))}
                     </select>
-                    <Users size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-[#444] pointer-events-none" />
+                    <Users size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--tf-text-tertiary)] pointer-events-none" />
                   </div>
                 </div>
               </div>
@@ -238,40 +238,40 @@ export function ContactSalesModal({ open, onClose }: ContactSalesModalProps) {
                   }`}>
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <p className="text-[10.5px] font-semibold text-slate-400 dark:text-[#444] uppercase tracking-wider mb-1">
+                        <p className="text-[10.5px] font-semibold text-[var(--tf-text-tertiary)] uppercase tracking-wider mb-1">
                           Estimated monthly cost
                         </p>
                         {isCustom ? (
                           <p className="text-[18px] font-bold text-violet-300">Custom pricing</p>
                         ) : est ? (
-                          <p className="text-[18px] font-bold text-slate-900 dark:text-white">
+                          <p className="text-[18px] font-bold text-[var(--tf-text-primary)]">
                             ${est.min.toLocaleString()}
-                            <span className="text-slate-500 dark:text-[#555] font-normal text-[13px]"> – </span>
+                            <span className="text-[var(--tf-text-tertiary)] font-normal text-[13px]"> – </span>
                             ${est.max.toLocaleString()}
-                            <span className="text-slate-500 dark:text-[#555] font-normal text-[13px]"> / mo</span>
+                            <span className="text-[var(--tf-text-tertiary)] font-normal text-[13px]"> / mo</span>
                           </p>
                         ) : null}
                         {!isCustom && est && (
-                          <p className="text-[11px] text-slate-400 dark:text-[#444] mt-0.5">
+                          <p className="text-[11px] text-[var(--tf-text-tertiary)] mt-0.5">
                             ${est.perUser}/user · {est.range}
                           </p>
                         )}
                         {isCustom && (
-                          <p className="text-[11px] text-slate-500 dark:text-[#555] mt-0.5">
+                          <p className="text-[11px] text-[var(--tf-text-tertiary)] mt-0.5">
                             Our team will build a tailored quote for you
                           </p>
                         )}
                       </div>
                       {!isCustom && (
                         <div className="text-right flex-shrink-0">
-                          <p className="text-[10px] text-slate-400 dark:text-[#444] mb-1">Per user / month</p>
+                          <p className="text-[10px] text-[var(--tf-text-tertiary)] mb-1">Per user / month</p>
                           <p className="text-[16px] font-bold text-indigo-400">
                             ${getEstimate(teamSize)?.perUser}
                           </p>
                         </div>
                       )}
                     </div>
-                    <p className="text-[10.5px] text-slate-400 dark:text-[#3a3a3a] mt-3 pt-3 border-t border-slate-200 dark:border-white/[0.05]">
+                    <p className="text-[10.5px] text-[var(--tf-text-tertiary)] mt-3 pt-3 border-t border-[var(--tf-border-subtle)]">
                       Final pricing confirmed by our sales team after the call
                     </p>
                   </div>
@@ -279,7 +279,7 @@ export function ContactSalesModal({ open, onClose }: ContactSalesModalProps) {
               })()}
 
               <div>
-                <label className="block text-[11.5px] text-slate-500 dark:text-[#555] mb-1.5">
+                <label className="block text-[11.5px] text-[var(--tf-text-tertiary)] mb-1.5">
                   How can we help?
                 </label>
                 <textarea
@@ -287,19 +287,19 @@ export function ContactSalesModal({ open, onClose }: ContactSalesModalProps) {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   rows={3}
-                  className="w-full rounded-[9px] border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.03] px-3 py-2.5 text-[13px] text-foreground placeholder:text-muted-foreground/50 outline-none transition-all duration-150 focus-visible:border-indigo-500/60 focus-visible:shadow-[0_0_0_3px_hsl(var(--ring)/0.15)] resize-none"
+                  className="w-full rounded-[9px] border border-[var(--tf-border)] bg-[var(--tf-bg-hover)] px-3 py-2.5 text-[13px] text-foreground placeholder:text-muted-foreground/50 outline-none transition-all duration-150 focus-visible:border-indigo-500/60 focus-visible:shadow-[0_0_0_3px_hsl(var(--ring)/0.15)] resize-none"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full h-11 flex items-center justify-center gap-2 text-[13.5px] font-semibold bg-indigo-600 hover:bg-indigo-500 text-white rounded-[9px] border border-indigo-700/80 shadow-[0_4px_0_0_#3730a3] active:translate-y-[4px] active:shadow-none transition-all duration-150 mt-1"
+                className="w-full h-11 flex items-center justify-center gap-2 text-[13.5px] font-semibold bg-[var(--tf-accent)] hover:brightness-110 text-white rounded-[9px] border border-indigo-700/80 shadow-[0_4px_0_0_#3730a3] active:translate-y-[4px] active:shadow-none transition-all duration-150 mt-1"
               >
                 Submit enquiry
                 <ArrowRight size={14} />
               </button>
 
-              <p className="text-center text-[11px] text-slate-400 dark:text-[#2d2d2d]">
+              <p className="text-center text-[11px] text-slate-400 dark:text-[var(--tf-text-tertiary)]">
                 We typically reply within 1 business day · No spam, ever
               </p>
             </form>

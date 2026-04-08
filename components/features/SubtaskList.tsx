@@ -108,16 +108,16 @@ export function SubtaskList({ taskId, initialItems }: { taskId: string; initialI
   }
 
   if (loading) return (
-    <div className="space-y-3 pt-4 border-t border-slate-100 dark:border-[#1f1f1f]">
+    <div className="space-y-3 pt-4 border-t border-slate-100 dark:border-[var(--tf-border)]">
       <div className="flex items-center gap-1.5">
-        <div className="w-3 h-3 rounded bg-slate-100 dark:bg-[#1f1f1f] animate-pulse" />
-        <div className="h-3 w-16 rounded bg-slate-100 dark:bg-[#1f1f1f] animate-pulse" />
+        <div className="w-3 h-3 rounded bg-slate-100 dark:bg-[var(--tf-bg-dropdown)] animate-pulse" />
+        <div className="h-3 w-16 rounded bg-slate-100 dark:bg-[var(--tf-bg-dropdown)] animate-pulse" />
       </div>
       <div className="space-y-2">
         {[1, 2].map((i) => (
           <div key={i} className="flex items-center gap-2.5 px-1">
-            <div className="w-4 h-4 rounded-[4px] bg-slate-100 dark:bg-[#1f1f1f] animate-pulse flex-shrink-0" />
-            <div className="h-3 rounded bg-slate-100 dark:bg-[#1f1f1f] animate-pulse flex-1" style={{ width: `${55 + i * 15}%` }} />
+            <div className="w-4 h-4 rounded-[4px] bg-slate-100 dark:bg-[var(--tf-bg-dropdown)] animate-pulse flex-shrink-0" />
+            <div className="h-3 rounded bg-slate-100 dark:bg-[var(--tf-bg-dropdown)] animate-pulse flex-1" style={{ width: `${55 + i * 15}%` }} />
           </div>
         ))}
       </div>
@@ -125,23 +125,23 @@ export function SubtaskList({ taskId, initialItems }: { taskId: string; initialI
   )
 
   return (
-    <div className="space-y-3 pt-4 border-t border-slate-100 dark:border-[#1f1f1f]">
+    <div className="space-y-3 pt-4 border-t border-slate-100 dark:border-[var(--tf-border)]">
 
       {/* Header + progress */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5">
           <CheckSquare size={12} className="text-indigo-400" />
-          <span className="text-[12px] font-semibold text-slate-700 dark:text-[#ccc]">
+          <span className="text-[12px] font-semibold text-[var(--tf-text-primary)]">
             Checklist
           </span>
           {total > 0 && (
-            <span className="text-[11px] text-slate-400 dark:text-[#555] tabular-nums">
+            <span className="text-[11px] text-[var(--tf-text-tertiary)] tabular-nums">
               {completed}/{total}
             </span>
           )}
         </div>
         {total > 0 && (
-          <span className="text-[11px] font-medium text-slate-400 dark:text-[#555]">
+          <span className="text-[11px] font-medium text-[var(--tf-text-tertiary)]">
             {progress}%
           </span>
         )}
@@ -149,7 +149,7 @@ export function SubtaskList({ taskId, initialItems }: { taskId: string; initialI
 
       {/* Progress bar */}
       {total > 0 && (
-        <div className="h-1 bg-slate-100 dark:bg-[#1f1f1f] rounded-full overflow-hidden">
+        <div className="h-1 bg-slate-100 dark:bg-[var(--tf-bg-dropdown)] rounded-full overflow-hidden">
           <div
             className="h-full bg-emerald-500 rounded-full transition-all duration-300"
             style={{ width: `${progress}%` }}
@@ -194,14 +194,14 @@ export function SubtaskList({ taskId, initialItems }: { taskId: string; initialI
                     if (e.key === "Enter") handleRenameCommit(item.id)
                     if (e.key === "Escape") setEditingId(null)
                   }}
-                  className="flex-1 text-[13px] bg-white dark:bg-[#0d0d0d] border border-indigo-400 rounded-[5px] px-2 py-0.5 outline-none text-slate-800 dark:text-[#e0e0e0]"
+                  className="flex-1 text-[13px] bg-[var(--tf-bg-card)] border border-indigo-400 rounded-[5px] px-2 py-0.5 outline-none text-[var(--tf-text-primary)]"
                 />
               ) : (
                 <span
                   className={`flex-1 text-[13px] cursor-pointer select-none ${
                     item.completed
-                      ? "line-through text-slate-400 dark:text-[#444]"
-                      : "text-slate-700 dark:text-[#ccc]"
+                      ? "line-through text-[var(--tf-text-tertiary)]"
+                      : "text-[var(--tf-text-primary)]"
                   }`}
                   onClick={() => {
                     setEditingId(item.id)
@@ -216,7 +216,7 @@ export function SubtaskList({ taskId, initialItems }: { taskId: string; initialI
               <button
                 type="button"
                 onClick={() => handleDelete(item.id)}
-                className="opacity-0 group-hover:opacity-100 flex-shrink-0 p-0.5 rounded-[4px] text-slate-300 hover:text-red-400 dark:text-[#333] dark:hover:text-red-400 transition-all"
+                className="opacity-0 group-hover:opacity-100 flex-shrink-0 p-0.5 rounded-[4px] text-slate-300 hover:text-red-400 dark:text-[var(--tf-text-tertiary)] dark:hover:text-red-400 transition-all"
                 aria-label="Delete subtask"
               >
                 <Trash2 size={11} />
@@ -228,14 +228,14 @@ export function SubtaskList({ taskId, initialItems }: { taskId: string; initialI
 
       {/* Add new subtask */}
       <div className="flex items-center gap-2">
-        <div className="flex-shrink-0 w-4 h-4 rounded-[4px] border-2 border-dashed border-slate-300 dark:border-[#333]" />
+        <div className="flex-shrink-0 w-4 h-4 rounded-[4px] border-2 border-dashed border-slate-300 dark:border-[var(--tf-border)]" />
         <input
           ref={inputRef}
           value={newTitle}
           onChange={(e) => setNewTitle(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Add a subtask..."
-          className="flex-1 text-[13px] bg-transparent placeholder-slate-300 dark:placeholder-[#444] text-slate-700 dark:text-[#ccc] outline-none"
+          className="flex-1 text-[13px] bg-transparent placeholder-slate-300 dark:placeholder-[#444] text-[var(--tf-text-primary)] outline-none"
         />
         {newTitle.trim() && (
           <button

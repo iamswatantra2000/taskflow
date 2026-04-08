@@ -131,13 +131,13 @@ export function NotificationBell() {
         className={`relative w-7 h-7 flex items-center justify-center rounded-[8px] border transition-all duration-150
           ${open
             ? "text-slate-600 bg-slate-100 dark:bg-white/[0.06] border-slate-200 dark:border-white/[0.1]"
-            : "text-slate-400 dark:text-[#555] hover:text-slate-600 dark:hover:text-[#888] hover:bg-slate-100 dark:hover:bg-white/[0.05] border-transparent hover:border-slate-200 dark:hover:border-white/[0.08]"
+            : "text-[var(--tf-text-tertiary)] hover:text-slate-600 dark:hover:text-[#888] hover:bg-slate-100 dark:hover:bg-white/[0.05] border-transparent hover:border-slate-200 dark:hover:border-white/[0.08]"
           }`}
       >
         <Bell size={14} className={unread > 0 ? "animate-[wiggle_0.4s_ease-in-out]" : ""} />
         {unread > 0 && (
           <span className="absolute -top-1 -right-1 min-w-[16px] h-4 flex items-center justify-center
-            bg-indigo-500 text-white text-[9px] font-bold rounded-full px-1 leading-none
+            bg-[var(--tf-accent)] text-white text-[9px] font-bold rounded-full px-1 leading-none
             ring-2 ring-white dark:ring-[#080808]">
             {unread > 9 ? "9+" : unread}
           </span>
@@ -147,7 +147,7 @@ export function NotificationBell() {
       {/* Dropdown */}
       {open && (
         <div
-          className="absolute right-0 top-full mt-2 w-[340px] bg-white dark:bg-[#0d0d0d] border border-slate-200 dark:border-white/[0.08] rounded-[16px] overflow-hidden z-[200]"
+          className="absolute right-0 top-full mt-2 w-[340px] bg-[var(--tf-bg-dropdown)] border border-[var(--tf-border)] rounded-[16px] overflow-hidden z-[200]"
           style={{
             boxShadow: isDark
               ? "0 32px 80px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.04)"
@@ -159,12 +159,12 @@ export function NotificationBell() {
           <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
 
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 dark:border-white/[0.06]">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--tf-border-subtle)]">
             <div className="flex items-center gap-2.5">
               <div className="w-6 h-6 rounded-[7px] bg-indigo-50 dark:bg-indigo-500/[0.12] border border-indigo-200 dark:border-indigo-500/20 flex items-center justify-center">
                 <Bell size={11} className="text-indigo-600 dark:text-indigo-400" />
               </div>
-              <span className="text-[13px] font-bold text-slate-900 dark:text-white tracking-tight">Notifications</span>
+              <span className="text-[13px] font-bold text-[var(--tf-text-primary)] tracking-tight">Notifications</span>
               {unread > 0 && (
                 <span className="text-[10px] font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-100 dark:bg-indigo-500/[0.12] border border-indigo-200 dark:border-indigo-500/25 rounded-full px-1.5 py-0.5 leading-none">
                   {unread} new
@@ -172,13 +172,13 @@ export function NotificationBell() {
               )}
             </div>
             <div className="flex items-center gap-1">
-              {pending && <Loader2 size={11} className="animate-spin text-slate-400 dark:text-[#333] mr-1" />}
+              {pending && <Loader2 size={11} className="animate-spin text-[var(--tf-text-tertiary)] mr-1" />}
               {unread > 0 && (
                 <button
                   type="button"
                   onClick={handleMarkAll}
                   title="Mark all read"
-                  className="w-6 h-6 flex items-center justify-center rounded-[6px] text-slate-400 dark:text-[#333] hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/[0.08] transition-all"
+                  className="w-6 h-6 flex items-center justify-center rounded-[6px] text-[var(--tf-text-tertiary)] hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/[0.08] transition-all"
                 >
                   <CheckCheck size={12} />
                 </button>
@@ -188,7 +188,7 @@ export function NotificationBell() {
                   type="button"
                   onClick={handleClearAll}
                   title="Clear all"
-                  className="w-6 h-6 flex items-center justify-center rounded-[6px] text-slate-400 dark:text-[#333] hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/[0.08] transition-all"
+                  className="w-6 h-6 flex items-center justify-center rounded-[6px] text-[var(--tf-text-tertiary)] hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/[0.08] transition-all"
                 >
                   <Trash2 size={11} />
                 </button>
@@ -200,18 +200,18 @@ export function NotificationBell() {
           <div className="max-h-[380px] overflow-y-auto">
             {items.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-                <div className="w-12 h-12 rounded-[12px] bg-slate-50 border border-slate-100 dark:bg-white/[0.03] dark:border-white/[0.06] flex items-center justify-center mb-3">
-                  <Bell size={18} className="text-slate-300 dark:text-[#1f1f1f]" />
+                <div className="w-12 h-12 rounded-[12px] bg-slate-50 border border-slate-100 dark:bg-white/[0.03] dark:border-[var(--tf-border-subtle)] flex items-center justify-center mb-3">
+                  <Bell size={18} className="text-slate-300 dark:text-[var(--tf-text-tertiary)]" />
                 </div>
-                <p className="text-[12.5px] font-semibold text-slate-500 dark:text-[#333]">All caught up</p>
-                <p className="text-[11px] text-slate-400 dark:text-[#222] mt-1">Assignments, mentions & due dates appear here</p>
+                <p className="text-[12.5px] font-semibold text-[var(--tf-text-tertiary)]">All caught up</p>
+                <p className="text-[11px] text-slate-400 dark:text-[var(--tf-text-tertiary)] mt-1">Assignments, mentions & due dates appear here</p>
               </div>
             ) : (
               groups.map(({ label, items: groupItems }) => (
                 <div key={label}>
                   {/* Date group label */}
-                  <div className="px-4 py-1.5 sticky top-0 bg-white/95 dark:bg-[#0d0d0d]/95 backdrop-blur-sm z-10">
-                    <span className="text-[10px] font-semibold text-slate-400 dark:text-[#2a2a2a] uppercase tracking-[0.08em]">{label}</span>
+                  <div className="px-4 py-1.5 sticky top-0 bg-white/95 dark:bg-[var(--tf-bg-dropdown)]/95 backdrop-blur-sm z-10">
+                    <span className="text-[10px] font-semibold text-slate-400 dark:text-[var(--tf-text-tertiary)] uppercase tracking-[0.08em]">{label}</span>
                   </div>
 
                   {groupItems.map((n) => {
@@ -222,29 +222,29 @@ export function NotificationBell() {
                         key={n.id}
                         type="button"
                         onClick={() => handleClickItem(n)}
-                        className={`flex items-start gap-3 w-full px-4 py-3 text-left border-b border-slate-100 dark:border-white/[0.04] last:border-0
+                        className={`flex items-start gap-3 w-full px-4 py-3 text-left border-b border-[var(--tf-border-subtle)] last:border-0
                           border-l-2 transition-colors duration-100
                           ${n.isRead
-                            ? `border-l-transparent hover:bg-slate-50 dark:hover:bg-white/[0.02]`
-                            : `${meta.accent} bg-slate-50 dark:bg-white/[0.025] hover:bg-slate-100 dark:hover:bg-white/[0.04]`
+                            ? `border-l-transparent hover:bg-[var(--tf-bg-hover)]`
+                            : `${meta.accent} bg-slate-50 dark:bg-white/[0.025] hover:bg-slate-100 dark:hover:bg-[var(--tf-bg-hover)]`
                           }`}
                       >
                         {/* Icon chip */}
-                        <div className={`w-7 h-7 rounded-[8px] ${meta.iconBg} border border-slate-100 dark:border-white/[0.06] flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                        <div className={`w-7 h-7 rounded-[8px] ${meta.iconBg} border border-slate-100 dark:border-[var(--tf-border-subtle)] flex items-center justify-center flex-shrink-0 mt-0.5`}>
                           <Icon size={13} className={meta.iconColor} />
                         </div>
 
                         {/* Text */}
                         <div className="flex-1 min-w-0">
-                          <p className={`text-[12.5px] leading-snug ${n.isRead ? "text-slate-400 dark:text-[#444]" : "text-slate-700 dark:text-[#aaa]"}`}>
+                          <p className={`text-[12.5px] leading-snug ${n.isRead ? "text-[var(--tf-text-tertiary)]" : "text-[var(--tf-text-secondary)]"}`}>
                             {n.message}
                           </p>
-                          <p className="text-[10.5px] text-slate-400 dark:text-[#2e2e2e] mt-0.5">{timeAgo(n.createdAt)}</p>
+                          <p className="text-[10.5px] text-[var(--tf-text-tertiary)] mt-0.5">{timeAgo(n.createdAt)}</p>
                         </div>
 
                         {/* Unread dot */}
                         {!n.isRead && (
-                          <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 flex-shrink-0 mt-2" />
+                          <div className="w-1.5 h-1.5 rounded-full bg-[var(--tf-accent-text)] flex-shrink-0 mt-2" />
                         )}
                       </button>
                     )

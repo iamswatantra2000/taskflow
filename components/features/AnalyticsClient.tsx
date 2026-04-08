@@ -71,8 +71,8 @@ type BarShapeProps = {
 function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
 	if (!active || !payload?.length) return null;
 	return (
-		<div className="bg-white dark:bg-[#1a1a1a] border border-slate-200 dark:border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[12px] shadow-lg">
-			{label && <p className="text-slate-500 dark:text-[#888] mb-1">{label}</p>}
+		<div className="bg-[var(--tf-bg-dropdown)] border border-[var(--tf-border)] rounded-[8px] px-3 py-2 text-[12px] shadow-lg">
+			{label && <p className="text-[var(--tf-text-secondary)] mb-1">{label}</p>}
 			{payload.map((entry) => (
 				<p key={entry.name} style={{ color: entry.color ?? entry.fill }}>
 					{entry.name}: <span className="font-semibold">{entry.value}</span>
@@ -95,10 +95,10 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
 	return (
 		<div className="flex-1 overflow-auto">
 			{/* Topbar */}
-			<div className="h-[50px] border-b border-slate-100 dark:border-[#1a1a1a] flex items-center justify-between pl-14 pr-5 md:px-5 bg-white dark:bg-[#0d0d0d] sticky top-0 z-10">
+			<div className="h-[50px] border-b border-[var(--tf-border-subtle)] flex items-center justify-between pl-14 pr-5 md:px-5 bg-[var(--tf-bg-card)] sticky top-0 z-10">
 				<div className="flex items-center gap-2">
-					<span className="text-[13px] text-slate-400 dark:text-[#555] hidden sm:inline">Workspace /</span>
-					<span className="text-[13px] font-medium text-slate-800 dark:text-[#e0e0e0]">
+					<span className="text-[13px] text-[var(--tf-text-tertiary)] hidden sm:inline">Workspace /</span>
+					<span className="text-[13px] font-medium text-[var(--tf-text-primary)]">
 						Analytics
 					</span>
 				</div>
@@ -108,10 +108,10 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
 			<div className="p-4 sm:p-6 space-y-4 sm:space-y-6 max-w-7xl mx-auto">
 				{/* Header */}
 				<div>
-					<h1 className="text-[18px] font-semibold text-slate-900 dark:text-[#f0f0f0] tracking-tight">
+					<h1 className="text-[18px] font-semibold text-[var(--tf-text-primary)] tracking-tight">
 						Analytics
 					</h1>
-					<p className="text-[13px] text-slate-400 dark:text-[#555] mt-1">
+					<p className="text-[13px] text-[var(--tf-text-tertiary)] mt-1">
 						Track your team progress and productivity
 					</p>
 				</div>
@@ -123,7 +123,7 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
 							label: "Total tasks",
 							value: summary.totalTasks,
 							icon: CheckSquare,
-							color: "text-slate-800 dark:text-[#e0e0e0]",
+							color: "text-[var(--tf-text-primary)]",
 						},
 						{
 							label: "Completed",
@@ -158,11 +158,11 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
 					].map((stat) => (
 						<div
 							key={stat.label}
-							className="bg-white dark:bg-[#111] border border-slate-100 dark:border-[#1f1f1f] rounded-[10px] p-4 hover:border-slate-200 dark:hover:border-[#2a2a2a] transition-colors"
+							className="bg-[var(--tf-bg-card)] border border-[var(--tf-border-subtle)] rounded-[10px] p-4 hover:border-[var(--tf-border)] transition-colors"
 						>
 							<div className="flex items-center gap-2 mb-2">
-								<stat.icon size={13} className="text-slate-400 dark:text-[#555]" />
-								<p className="text-[11px] font-medium text-slate-400 dark:text-[#555]">
+								<stat.icon size={13} className="text-[var(--tf-text-tertiary)]" />
+								<p className="text-[11px] font-medium text-[var(--tf-text-tertiary)]">
 									{stat.label}
 								</p>
 							</div>
@@ -178,11 +178,11 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
 				{/* Charts row 1 — Velocity + Status */}
 				<div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
 					{/* Velocity chart */}
-					<div className="lg:col-span-2 bg-white dark:bg-[#111] border border-slate-100 dark:border-[#1f1f1f] rounded-[12px] p-5">
-						<h3 className="text-[13px] font-semibold text-slate-800 dark:text-[#e0e0e0] mb-1">
+					<div className="lg:col-span-2 bg-[var(--tf-bg-card)] border border-[var(--tf-border-subtle)] rounded-[12px] p-5">
+						<h3 className="text-[13px] font-semibold text-[var(--tf-text-primary)] mb-1">
 							Task velocity
 						</h3>
-						<p className="text-[11px] text-slate-400 dark:text-[#555] mb-4">
+						<p className="text-[11px] text-[var(--tf-text-tertiary)] mb-4">
 							Tasks created vs completed over last 7 days
 						</p>
 						<ResponsiveContainer width="100%" height={220}>
@@ -228,11 +228,11 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
 					</div>
 
 					{/* Status donut chart */}
-					<div className="bg-white dark:bg-[#111] border border-slate-100 dark:border-[#1f1f1f] rounded-[12px] p-5">
-						<h3 className="text-[13px] font-semibold text-slate-800 dark:text-[#e0e0e0] mb-1">
+					<div className="bg-[var(--tf-bg-card)] border border-[var(--tf-border-subtle)] rounded-[12px] p-5">
+						<h3 className="text-[13px] font-semibold text-[var(--tf-text-primary)] mb-1">
 							Status breakdown
 						</h3>
-						<p className="text-[11px] text-slate-400 dark:text-[#555] mb-4">
+						<p className="text-[11px] text-[var(--tf-text-tertiary)] mb-4">
 							Distribution by status
 						</p>
 						<ResponsiveContainer width="100%" height={160}>
@@ -263,9 +263,9 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
 											className="w-2 h-2 rounded-full"
 											style={{ background: item.fill }}
 										/>
-										<span className="text-[11px] text-slate-500 dark:text-[#888]">{item.name}</span>
+										<span className="text-[11px] text-[var(--tf-text-secondary)]">{item.name}</span>
 									</div>
-									<span className="text-[11px] font-medium text-slate-700 dark:text-[#ccc]">
+									<span className="text-[11px] font-medium text-[var(--tf-text-primary)]">
 										{item.value}
 									</span>
 								</div>
@@ -277,11 +277,11 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
 				{/* Charts row 2 — Priority + Projects */}
 				<div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 					{/* Priority bar chart */}
-					<div className="bg-white dark:bg-[#111] border border-slate-100 dark:border-[#1f1f1f] rounded-[12px] p-5">
-						<h3 className="text-[13px] font-semibold text-slate-800 dark:text-[#e0e0e0] mb-1">
+					<div className="bg-[var(--tf-bg-card)] border border-[var(--tf-border-subtle)] rounded-[12px] p-5">
+						<h3 className="text-[13px] font-semibold text-[var(--tf-text-primary)] mb-1">
 							Priority distribution
 						</h3>
-						<p className="text-[11px] text-slate-400 dark:text-[#555] mb-4">
+						<p className="text-[11px] text-[var(--tf-text-tertiary)] mb-4">
 							Tasks grouped by priority level
 						</p>
 						<ResponsiveContainer width="100%" height={200}>
@@ -328,17 +328,17 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
 					</div>
 
 					{/* Projects breakdown */}
-					<div className="bg-white dark:bg-[#111] border border-slate-100 dark:border-[#1f1f1f] rounded-[12px] p-5">
-						<h3 className="text-[13px] font-semibold text-slate-800 dark:text-[#e0e0e0] mb-1">
+					<div className="bg-[var(--tf-bg-card)] border border-[var(--tf-border-subtle)] rounded-[12px] p-5">
+						<h3 className="text-[13px] font-semibold text-[var(--tf-text-primary)] mb-1">
 							Project breakdown
 						</h3>
-						<p className="text-[11px] text-slate-400 dark:text-[#555] mb-4">
+						<p className="text-[11px] text-[var(--tf-text-tertiary)] mb-4">
 							Tasks per project with completion
 						</p>
 
 						{tasksByProject.length === 0 ? (
 							<div className="flex items-center justify-center h-[200px]">
-								<p className="text-[12px] text-slate-400 dark:text-[#444]">No projects yet</p>
+								<p className="text-[12px] text-[var(--tf-text-tertiary)]">No projects yet</p>
 							</div>
 						) : (
 							<ResponsiveContainer width="100%" height={200}>

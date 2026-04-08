@@ -62,14 +62,14 @@ function MarkdownToolbar({ textareaRef }: { textareaRef: React.RefObject<HTMLTex
   ]
 
   return (
-    <div className="flex items-center gap-0.5 px-1 py-1 bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/[0.06] rounded-[8px] w-fit">
+    <div className="flex items-center gap-0.5 px-1 py-1 bg-slate-50 dark:bg-white/[0.02] border border-[var(--tf-border-subtle)] rounded-[8px] w-fit">
       {btns.map(({ icon: Icon, title, action }) => (
         <button
           key={title}
           type="button"
           title={title}
           onMouseDown={(e) => { e.preventDefault(); action() }}
-          className="w-6 h-6 flex items-center justify-center rounded-[5px] text-slate-400 dark:text-[#444]
+          className="w-6 h-6 flex items-center justify-center rounded-[5px] text-[var(--tf-text-tertiary)]
             hover:text-slate-600 dark:hover:text-[#888] hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-colors"
         >
           <Icon size={11} />
@@ -91,21 +91,21 @@ function MDContent({ content }: { content: string }) {
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       components={{
-        p:      ({ children }) => <p className="text-[12.5px] text-slate-500 dark:text-[#555] leading-relaxed mb-1 last:mb-0">{children}</p>,
-        strong: ({ children }) => <strong className="font-semibold text-slate-600 dark:text-[#888]">{children}</strong>,
-        em:     ({ children }) => <em className="italic text-slate-500 dark:text-[#666]">{children}</em>,
-        del:    ({ children }) => <del className="line-through text-slate-400 dark:text-[#444]">{children}</del>,
+        p:      ({ children }) => <p className="text-[12.5px] text-[var(--tf-text-tertiary)] leading-relaxed mb-1 last:mb-0">{children}</p>,
+        strong: ({ children }) => <strong className="font-semibold text-[var(--tf-text-secondary)]">{children}</strong>,
+        em:     ({ children }) => <em className="italic text-[var(--tf-text-secondary)]">{children}</em>,
+        del:    ({ children }) => <del className="line-through text-[var(--tf-text-tertiary)]">{children}</del>,
         code:   ({ children, className }) => {
           const isBlock = className?.includes("language-")
           return isBlock
-            ? <code className="block bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/[0.08] rounded-[6px] px-3 py-2 text-[11.5px] text-indigo-600 dark:text-indigo-300 font-mono my-1 overflow-x-auto">{children}</code>
-            : <code className="bg-slate-50 dark:bg-white/[0.06] border border-slate-200 dark:border-white/[0.08] rounded-[4px] px-1 py-0.5 text-[11.5px] text-indigo-600 dark:text-indigo-300 font-mono">{children}</code>
+            ? <code className="block bg-slate-50 dark:bg-white/[0.04] border border-[var(--tf-border)] rounded-[6px] px-3 py-2 text-[11.5px] text-indigo-600 dark:text-indigo-300 font-mono my-1 overflow-x-auto">{children}</code>
+            : <code className="bg-slate-50 dark:bg-white/[0.06] border border-[var(--tf-border)] rounded-[4px] px-1 py-0.5 text-[11.5px] text-indigo-600 dark:text-indigo-300 font-mono">{children}</code>
         },
         a:      ({ children, href }) => <a href={href} className="text-indigo-400 underline underline-offset-2 hover:text-indigo-300" target="_blank" rel="noopener noreferrer">{children}</a>,
-        ul:     ({ children }) => <ul className="list-disc list-inside text-[12.5px] text-slate-500 dark:text-[#555] space-y-0.5 my-1">{children}</ul>,
-        ol:     ({ children }) => <ol className="list-decimal list-inside text-[12.5px] text-slate-500 dark:text-[#555] space-y-0.5 my-1">{children}</ol>,
+        ul:     ({ children }) => <ul className="list-disc list-inside text-[12.5px] text-[var(--tf-text-tertiary)] space-y-0.5 my-1">{children}</ul>,
+        ol:     ({ children }) => <ol className="list-decimal list-inside text-[12.5px] text-[var(--tf-text-tertiary)] space-y-0.5 my-1">{children}</ol>,
         li:     ({ children }) => <li>{children}</li>,
-        blockquote: ({ children }) => <blockquote className="border-l-2 border-indigo-500/40 pl-3 my-1 text-slate-500 dark:text-[#444] italic">{children}</blockquote>,
+        blockquote: ({ children }) => <blockquote className="border-l-2 border-indigo-500/40 pl-3 my-1 text-slate-500 dark:text-[var(--tf-text-tertiary)] italic">{children}</blockquote>,
       }}
     >
       {content}
@@ -159,7 +159,7 @@ function ReplyInput({
           onClick={() => content.trim() && onSubmit(content, mentionedIds)}
           disabled={!content.trim() || pending}
           className="flex items-center gap-1.5 h-6 px-2.5 text-[11px] font-semibold
-            bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white
+            bg-[var(--tf-accent)] hover:brightness-110 disabled:opacity-40 text-white
             border border-indigo-700/80 rounded-[7px] shadow-[0_2px_0_0_#3730a3]
             active:translate-y-[2px] active:shadow-none transition-all duration-100"
         >
@@ -169,11 +169,11 @@ function ReplyInput({
         <button
           type="button"
           onClick={onCancel}
-          className="h-6 px-2.5 text-[11px] text-slate-400 dark:text-[#444] hover:text-slate-600 dark:hover:text-[#666] transition-colors"
+          className="h-6 px-2.5 text-[11px] text-[var(--tf-text-tertiary)] hover:text-slate-600 dark:hover:text-[#666] transition-colors"
         >
           Cancel
         </button>
-        <span className="text-[10px] text-slate-300 dark:text-[#222] ml-auto">⌘↵ to post</span>
+        <span className="text-[10px] text-slate-300 dark:text-[var(--tf-text-tertiary)] ml-auto">⌘↵ to post</span>
       </div>
     </div>
   )
@@ -229,16 +229,16 @@ function CommentThread({
         <div className="flex-1 min-w-0">
           {/* Header */}
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-[12px] font-semibold text-slate-500 dark:text-[#777]">
+            <span className="text-[12px] font-semibold text-[var(--tf-text-secondary)]">
               {isOwn ? "You" : comment.userName}
             </span>
-            <span className="text-[10px] text-slate-300 dark:text-[#2e2e2e]">{timeAgo(comment.createdAt)}</span>
+            <span className="text-[10px] text-slate-300 dark:text-[var(--tf-text-tertiary)]">{timeAgo(comment.createdAt)}</span>
             {depth === 0 && (
               <button
                 type="button"
                 onClick={() => setReplyOpen((v) => !v)}
                 className="ml-auto opacity-0 group-hover:opacity-100 flex items-center gap-1
-                  text-[10.5px] text-slate-300 dark:text-[#333] hover:text-indigo-500 dark:hover:text-indigo-400 transition-all duration-150"
+                  text-[10.5px] text-[var(--tf-text-tertiary)] hover:text-indigo-500 dark:hover:text-indigo-400 transition-all duration-150"
               >
                 <CornerDownRight size={10} />
                 Reply
@@ -255,7 +255,7 @@ function CommentThread({
 
       {/* Replies */}
       {replies.length > 0 && (
-        <div className="ml-9 mt-2 pl-3 border-l border-slate-100 dark:border-white/[0.06] space-y-2.5">
+        <div className="ml-9 mt-2 pl-3 border-l border-slate-100 dark:border-[var(--tf-border-subtle)] space-y-2.5">
           {replies.map((r) => (
             <CommentThread
               key={r.id}
@@ -333,12 +333,12 @@ export function CommentSection({ taskId, taskTitle, members, currentUserId }: Pr
   }
 
   return (
-    <div className="border-t border-slate-100 dark:border-white/[0.06] pt-4 mt-1 space-y-4">
+    <div className="border-t border-slate-100 dark:border-[var(--tf-border-subtle)] pt-4 mt-1 space-y-4">
 
       {/* Header */}
       <div className="flex items-center gap-2">
-        <MessageSquare size={12} className="text-slate-400 dark:text-[#444]" />
-        <span className="text-[11px] font-semibold text-slate-400 dark:text-[#3a3a3a] uppercase tracking-[0.08em]">
+        <MessageSquare size={12} className="text-[var(--tf-text-tertiary)]" />
+        <span className="text-[11px] font-semibold text-[var(--tf-text-tertiary)] uppercase tracking-[0.08em]">
           Comments{totalCount > 0 && ` · ${totalCount}`}
         </span>
       </div>
@@ -346,11 +346,11 @@ export function CommentSection({ taskId, taskTitle, members, currentUserId }: Pr
       {/* Thread list */}
       {loading ? (
         <div className="flex items-center gap-2">
-          <Loader2 size={11} className="animate-spin text-slate-300 dark:text-[#333]" />
-          <span className="text-[12px] text-slate-400 dark:text-[#333]">Loading…</span>
+          <Loader2 size={11} className="animate-spin text-[var(--tf-text-tertiary)]" />
+          <span className="text-[12px] text-[var(--tf-text-tertiary)]">Loading…</span>
         </div>
       ) : topLevel.length === 0 ? (
-        <p className="text-[12px] text-slate-400 dark:text-[#2a2a2a]">No comments yet. Supports **markdown** and @mentions.</p>
+        <p className="text-[12px] text-slate-400 dark:text-[var(--tf-text-tertiary)]">No comments yet. Supports **markdown** and @mentions.</p>
       ) : (
         <div className="space-y-4 max-h-[180px] overflow-y-auto pr-1 scrollbar-thin">
           {topLevel.map((c) => (
@@ -380,7 +380,7 @@ export function CommentSection({ taskId, taskTitle, members, currentUserId }: Pr
             className={`text-[10.5px] font-medium px-2 py-0.5 rounded-[5px] transition-colors
               ${preview
                 ? "text-indigo-400 bg-indigo-500/[0.1] border border-indigo-500/20"
-                : "text-slate-400 dark:text-[#333] hover:text-slate-600 dark:hover:text-[#555]"
+                : "text-[var(--tf-text-tertiary)] hover:text-slate-600 dark:hover:text-[#555]"
               }`}
           >
             {preview ? "Edit" : "Preview"}
@@ -388,10 +388,10 @@ export function CommentSection({ taskId, taskTitle, members, currentUserId }: Pr
         </div>
 
         {preview ? (
-          <div className="min-h-[60px] bg-slate-50 dark:bg-[#0d0d0d] border border-slate-200 dark:border-white/[0.08] rounded-[10px] px-3 py-2.5">
+          <div className="min-h-[60px] bg-[var(--tf-bg-panel)] border border-[var(--tf-border)] rounded-[10px] px-3 py-2.5">
             {content.trim()
               ? <MDContent content={content} />
-              : <span className="text-[12px] text-slate-300 dark:text-[#2a2a2a]">Nothing to preview</span>
+              : <span className="text-[12px] text-[var(--tf-text-tertiary)]">Nothing to preview</span>
             }
           </div>
         ) : (
@@ -407,7 +407,7 @@ export function CommentSection({ taskId, taskTitle, members, currentUserId }: Pr
         )}
 
         <div className="flex items-center justify-between">
-          <p className="text-[10.5px] text-slate-300 dark:text-[#222]">
+          <p className="text-[10.5px] text-slate-300 dark:text-[var(--tf-text-tertiary)]">
             **bold** · *italic* · `code` · ~~strike~~ · @mention
           </p>
           <button
@@ -415,7 +415,7 @@ export function CommentSection({ taskId, taskTitle, members, currentUserId }: Pr
             onClick={handleSubmit}
             disabled={!content.trim() || pending}
             className="flex items-center gap-1.5 h-7 px-3 text-[11.5px] font-semibold
-              bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed
+              bg-[var(--tf-accent)] hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed
               text-white border border-indigo-700/80 rounded-[8px]
               shadow-[0_2px_0_0_#3730a3] active:translate-y-[2px] active:shadow-none
               transition-all duration-100"

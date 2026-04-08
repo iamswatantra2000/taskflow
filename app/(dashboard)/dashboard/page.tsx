@@ -31,7 +31,7 @@ export default async function DashboardPage() {
       projectId={null}
       projects={[]}
       stats={[
-        { label: "Total tasks", value: 0, sub: "across all projects", valueColor: "text-slate-800 dark:text-[#e0e0e0]" },
+        { label: "Total tasks", value: 0, sub: "across all projects", valueColor: "text-[var(--tf-text-primary)]" },
         { label: "In progress", value: 0, sub: "currently active",    valueColor: "text-indigo-400"  },
         { label: "Completed",   value: 0, sub: "great work!",         valueColor: "text-emerald-400" },
         { label: "Todo",        value: 0, sub: "up next",             valueColor: "text-amber-400"   },
@@ -80,14 +80,14 @@ export default async function DashboardPage() {
   const doneTasks       = allTasks.filter((t) => t.status === "DONE")
 
   const columns = [
-    { id: "TODO",        label: "Todo",        tasks: todoTasks,       dot: "bg-slate-400 dark:bg-[#555]"      },
+    { id: "TODO",        label: "Todo",        tasks: todoTasks,       dot: "bg-slate-400 dark:bg-[var(--tf-text-tertiary)]"      },
     { id: "IN_PROGRESS", label: "In progress", tasks: inProgressTasks, dot: "bg-indigo-500"  },
     { id: "IN_REVIEW",   label: "In review",   tasks: inReviewTasks,   dot: "bg-amber-500"   },
     { id: "DONE",        label: "Done",        tasks: doneTasks,       dot: "bg-emerald-500" },
   ]
 
  const stats = [
-  { label: "Total tasks", value: allTasks.length,        sub: "across all projects", valueColor: "text-slate-800 dark:text-[#e0e0e0]"   },
+  { label: "Total tasks", value: allTasks.length,        sub: "across all projects", valueColor: "text-[var(--tf-text-primary)]"   },
   { label: "In progress", value: inProgressTasks.length, sub: "currently active",    valueColor: "text-indigo-400"  },
   { label: "Completed",   value: doneTasks.length,       sub: "great work!",         valueColor: "text-emerald-400" },
   { label: "Todo",        value: todoTasks.length,       sub: "up next",             valueColor: "text-amber-400"   },

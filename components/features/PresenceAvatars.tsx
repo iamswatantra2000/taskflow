@@ -34,7 +34,7 @@ export function PresenceAvatars({ projectId, currentUser }: Props) {
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
           <span className="relative inline-flex rounded-full h-[7px] w-[7px] bg-emerald-500" />
         </span>
-        <span className="text-[11px] text-slate-400 dark:text-[#555] font-medium">
+        <span className="text-[11px] text-[var(--tf-text-tertiary)] font-medium">
           {users.length} online
         </span>
       </div>
@@ -73,7 +73,7 @@ export function PresenceAvatars({ projectId, currentUser }: Props) {
           <div
             title={`${hidden} more people`}
             style={{ marginLeft: "-7px", zIndex: 0 }}
-            className="w-[26px] h-[26px] rounded-full border-2 border-white dark:border-[#0d0d0d] bg-slate-200 dark:bg-[#2a2a2a] flex items-center justify-center text-[9px] font-semibold text-slate-600 dark:text-[#aaa]"
+            className="w-[26px] h-[26px] rounded-full border-2 border-white dark:border-[var(--tf-bg-panel)] bg-slate-200 dark:bg-[var(--tf-bg-hover)] flex items-center justify-center text-[9px] font-semibold text-[var(--tf-text-secondary)]"
           >
             +{hidden}
           </div>

@@ -134,7 +134,7 @@ export function OnboardingTour() {
 
       {/* Card */}
       <div
-        className="relative w-full max-w-[480px] rounded-[22px] border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#0d0d0d] overflow-hidden flex flex-col"
+        className="relative w-full max-w-[480px] rounded-[22px] border border-[var(--tf-border)] bg-[var(--tf-bg-card)] overflow-hidden flex flex-col"
         style={{
           height:     "500px",
           boxShadow: "0 40px 100px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04)",
@@ -171,7 +171,7 @@ export function OnboardingTour() {
         <button
           type="button"
           onClick={dismiss}
-          className="absolute top-5 right-5 w-7 h-7 flex items-center justify-center rounded-[8px] text-slate-400 dark:text-[#3a3a3a] hover:text-slate-600 dark:hover:text-[#888] hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-all z-10"
+          className="absolute top-5 right-5 w-7 h-7 flex items-center justify-center rounded-[8px] text-[var(--tf-text-tertiary)] hover:text-slate-600 dark:hover:text-[#888] hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-all z-10"
         >
           <X size={14} />
         </button>
@@ -198,18 +198,18 @@ export function OnboardingTour() {
               <span className={`inline-flex text-[10px] font-bold uppercase tracking-[0.1em] px-2.5 py-1 rounded-full border ${cur.badge}`}>
                 {cur.badgeText}
               </span>
-              <span className="text-[10.5px] font-medium text-slate-400 dark:text-[#333]">
+              <span className="text-[10.5px] font-medium text-[var(--tf-text-tertiary)]">
                 {step + 1} / {steps.length}
               </span>
             </div>
 
             {/* Title */}
-            <h2 className="text-[22px] font-bold text-slate-900 dark:text-white leading-tight tracking-[-0.03em] mb-3">
+            <h2 className="text-[22px] font-bold text-[var(--tf-text-primary)] leading-tight tracking-[-0.03em] mb-3">
               {cur.title}
             </h2>
 
             {/* Description */}
-            <p className="text-[13.5px] text-slate-500 dark:text-[#666] leading-[1.75] mb-5 min-h-[88px]">
+            <p className="text-[13.5px] text-[var(--tf-text-secondary)] leading-[1.75] mb-5 min-h-[88px]">
               {cur.description}
             </p>
 
@@ -218,9 +218,9 @@ export function OnboardingTour() {
               {cur.highlights.map((h) => (
                 <span
                   key={h}
-                  className="inline-flex items-center gap-1.5 text-[11.5px] font-medium text-slate-500 dark:text-[#777] bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/[0.07] rounded-full px-3 py-1 hover:border-slate-300 dark:hover:border-white/[0.12] hover:text-slate-700 dark:hover:text-[#999] transition-colors"
+                  className="inline-flex items-center gap-1.5 text-[11.5px] font-medium text-[var(--tf-text-secondary)] bg-[var(--tf-bg-hover)] border border-[var(--tf-border)] rounded-full px-3 py-1 hover:border-slate-300 dark:hover:border-white/[0.12] hover:text-slate-700 dark:hover:text-[#999] transition-colors"
                 >
-                  <Check size={9} className="text-slate-400 dark:text-[#555]" />
+                  <Check size={9} className="text-[var(--tf-text-tertiary)]" />
                   {h}
                 </span>
               ))}
@@ -228,7 +228,7 @@ export function OnboardingTour() {
           </div>
 
           {/* ── Keyboard hint ── */}
-          <p className="text-center text-[10px] text-slate-300 dark:text-[#252525] mt-5 mb-4 select-none">
+          <p className="text-center text-[10px] text-[var(--tf-text-tertiary)] mt-5 mb-4 select-none">
             Use ← → arrow keys to navigate
           </p>
 
@@ -237,7 +237,7 @@ export function OnboardingTour() {
             <button
               type="button"
               onClick={dismiss}
-              className="text-[12px] font-medium text-slate-400 dark:text-[#333] hover:text-slate-600 dark:hover:text-[#666] transition-colors"
+              className="text-[12px] font-medium text-[var(--tf-text-tertiary)] hover:text-slate-600 dark:hover:text-[#666] transition-colors"
             >
               Skip tour
             </button>
@@ -247,7 +247,7 @@ export function OnboardingTour() {
                 <button
                   type="button"
                   onClick={prev}
-                  className="flex items-center gap-1 h-9 px-4 text-[12.5px] font-medium text-slate-500 dark:text-[#555] hover:text-slate-700 dark:hover:text-[#bbb] bg-slate-50 dark:bg-white/[0.03] hover:bg-slate-100 dark:hover:bg-white/[0.06] border border-slate-200 dark:border-white/[0.08] hover:border-slate-300 dark:hover:border-white/[0.14] rounded-[10px] transition-all duration-150"
+                  className="flex items-center gap-1 h-9 px-4 text-[12.5px] font-medium text-[var(--tf-text-tertiary)] hover:text-slate-700 dark:hover:text-[#bbb] bg-[var(--tf-bg-hover)] hover:bg-slate-100 dark:hover:bg-white/[0.06] border border-[var(--tf-border)] hover:border-slate-300 dark:hover:border-white/[0.14] rounded-[10px] transition-all duration-150"
                 >
                   <ChevronLeft size={13} />
                   Back

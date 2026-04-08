@@ -67,14 +67,14 @@ const STAT_META: Record<string, {
 	iconBg:    string;
 	iconColor: string;
 }> = {
-	"Total tasks": { icon: ListTodo,     accentBg: "bg-slate-200 dark:bg-white/[0.12]",      iconBg: "bg-slate-100 dark:bg-white/[0.06]",       iconColor: "text-slate-500 dark:text-[#888]"         },
+	"Total tasks": { icon: ListTodo,     accentBg: "bg-slate-200 dark:bg-white/[0.12]",      iconBg: "bg-slate-100 dark:bg-white/[0.06]",       iconColor: "text-[var(--tf-text-secondary)]"         },
 	"In progress": { icon: Zap,          accentBg: "bg-indigo-500/50",     iconBg: "bg-indigo-500/[0.12]",  iconColor: "text-indigo-400"     },
 	"Completed":   { icon: CheckCircle2, accentBg: "bg-emerald-500/50",    iconBg: "bg-emerald-500/[0.12]", iconColor: "text-emerald-400"    },
 	"Todo":        { icon: Circle,       accentBg: "bg-amber-500/50",      iconBg: "bg-amber-500/[0.12]",   iconColor: "text-amber-400"      },
 };
 
 const MY_TASK_STATUS: Record<string, { label: string; dot: string; badge: string }> = {
-	TODO:        { label: "Todo",        dot: "bg-slate-400 dark:bg-[#555]",  badge: "bg-slate-100 text-slate-600 border-slate-200 dark:bg-[#1a1a1a] dark:text-[#888] dark:border-[#2a2a2a]"             },
+	TODO:        { label: "Todo",        dot: "bg-slate-400 dark:bg-[var(--tf-text-tertiary)]",  badge: "bg-slate-100 text-slate-600 border-slate-200 dark:bg-[var(--tf-bg-dropdown)] dark:text-[var(--tf-text-secondary)] dark:border-[var(--tf-border)]"             },
 	IN_PROGRESS: { label: "In progress", dot: "bg-indigo-500",                badge: "bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950 dark:text-indigo-400 dark:border-indigo-900"   },
 	IN_REVIEW:   { label: "In review",   dot: "bg-amber-500",                 badge: "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-400 dark:border-amber-900"         },
 	DONE:        { label: "Done",        dot: "bg-emerald-500",               badge: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-400 dark:border-emerald-900" },
@@ -132,17 +132,17 @@ function ProGate({
 				onMouseLeave={scheduleHide}
 			>
 				{isTop && (
-					<div className="w-2 h-2 bg-white dark:bg-[#1c1c1c] border-slate-200 dark:border-white/10 border-r border-b rotate-45 mx-auto mb-[-4px] relative z-[-1]" />
+					<div className="w-2 h-2 bg-[var(--tf-bg-card)] border-[var(--tf-border)] border-r border-b rotate-45 mx-auto mb-[-4px] relative z-[-1]" />
 				)}
-				<div className="bg-white dark:bg-[#1c1c1c] border border-slate-200 dark:border-white/10 rounded-[8px] px-3 py-1.5 flex items-center gap-2 whitespace-nowrap shadow-xl">
+				<div className="bg-[var(--tf-bg-card)] border border-[var(--tf-border)] rounded-[8px] px-3 py-1.5 flex items-center gap-2 whitespace-nowrap shadow-xl">
 					<Lock size={9} className="text-amber-400 flex-shrink-0" />
-					<span className="text-[11px] text-slate-700 dark:text-[#ccc]">{label}</span>
-					<a href="/upgrade" className="text-[11px] font-semibold text-indigo-400 hover:text-indigo-300">
+					<span className="text-[11px] text-[var(--tf-text-primary)]">{label}</span>
+					<a href="/upgrade" className="text-[11px] font-semibold text-[var(--tf-accent-text)] hover:text-indigo-300">
 						Upgrade →
 					</a>
 				</div>
 				{!isTop && (
-					<div className="w-2 h-2 bg-white dark:bg-[#1c1c1c] border-slate-200 dark:border-white/10 border-l border-t rotate-45 mx-auto mt-[-4px] relative z-[-1]" />
+					<div className="w-2 h-2 bg-[var(--tf-bg-card)] border-[var(--tf-border)] border-l border-t rotate-45 mx-auto mt-[-4px] relative z-[-1]" />
 				)}
 			</div>
 		</div>
@@ -236,7 +236,7 @@ export function DashboardClient({
 					{projectId && (
 						<>
 							<NewTaskDialog projectId={projectId}>
-								<div className="h-7 px-3 text-[12px] bg-indigo-600 hover:bg-indigo-500 text-white rounded-[8px] border border-indigo-700/80 shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none cursor-pointer flex items-center font-semibold transition-all duration-100 whitespace-nowrap">
+								<div className="h-7 px-3 text-[12px] bg-[var(--tf-accent)] hover:brightness-110 text-white rounded-[8px] border border-indigo-700/80 shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none cursor-pointer flex items-center font-semibold transition-all duration-100 whitespace-nowrap">
 									+ New task
 								</div>
 							</NewTaskDialog>
@@ -269,7 +269,7 @@ export function DashboardClient({
 				<BoardFilters onFilterChange={setFilters} compact />
 				{projectId && (
 					<NewTaskDialog projectId={projectId}>
-						<div className="h-8 px-3 text-[12px] bg-indigo-600 hover:bg-indigo-500 text-white rounded-[8px] border border-indigo-700/80 shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none cursor-pointer flex items-center gap-1.5 font-semibold transition-all duration-100 flex-shrink-0 whitespace-nowrap">
+						<div className="h-8 px-3 text-[12px] bg-[var(--tf-accent)] hover:brightness-110 text-white rounded-[8px] border border-indigo-700/80 shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none cursor-pointer flex items-center gap-1.5 font-semibold transition-all duration-100 flex-shrink-0 whitespace-nowrap">
 							+ New task
 						</div>
 					</NewTaskDialog>
@@ -311,13 +311,13 @@ export function DashboardClient({
 												return (
 													<div
 														key={task.id}
-														className="flex items-center gap-3 bg-white dark:bg-[#111] border border-slate-100 dark:border-white/[0.07] rounded-[9px] px-4 py-3 hover:border-slate-200 dark:hover:border-white/[0.12] transition-colors"
+														className="flex items-center gap-3 bg-[var(--tf-bg-card)] border border-[var(--tf-border-subtle)] rounded-[9px] px-4 py-3 hover:border-[var(--tf-border)] transition-colors"
 													>
 														<div
 															className="w-[6px] h-[6px] rounded-full flex-shrink-0"
 															style={{ background: proj?.color ?? "#6366f1" }}
 														/>
-														<p className="flex-1 text-[13px] text-slate-700 dark:text-[#ccc] truncate">{task.title}</p>
+														<p className="flex-1 text-[13px] text-[var(--tf-text-primary)] truncate">{task.title}</p>
 														{proj && (
 															<span className="text-[11px] text-muted-foreground hidden sm:block shrink-0">{proj.name}</span>
 														)}
@@ -337,11 +337,11 @@ export function DashboardClient({
 
 							{myTasks.length === 0 && (
 								<div className="flex flex-col items-center justify-center py-20 text-center">
-									<div className="w-14 h-14 rounded-full bg-slate-100 dark:bg-white/[0.04] flex items-center justify-center mb-4">
-										<ListTodo size={22} className="text-slate-400 dark:text-[#444]" />
+									<div className="w-14 h-14 rounded-full bg-[var(--tf-bg-hover)] flex items-center justify-center mb-4">
+										<ListTodo size={22} className="text-[var(--tf-text-tertiary)]" />
 									</div>
-									<p className="text-[14px] font-medium text-slate-500 dark:text-[#555]">No tasks assigned to you</p>
-									<p className="text-[12px] text-slate-400 dark:text-[#333] mt-1">Tasks assigned to you will appear here</p>
+									<p className="text-[14px] font-medium text-[var(--tf-text-tertiary)]">No tasks assigned to you</p>
+									<p className="text-[12px] text-[var(--tf-text-tertiary)] mt-1">Tasks assigned to you will appear here</p>
 								</div>
 							)}
 						</div>
@@ -352,23 +352,23 @@ export function DashboardClient({
 						{/* ── Welcome ── */}
 						<div className="flex items-start justify-between gap-4">
 							<div>
-								<p className="text-[11px] font-semibold text-slate-400 dark:text-[#3a3a3a] uppercase tracking-[0.1em] mb-2">
+								<p className="text-[11px] font-semibold text-[var(--tf-text-tertiary)] uppercase tracking-[0.1em] mb-2">
 									{formatDate()}
 								</p>
 								<h1 className="text-[26px] sm:text-[30px] font-bold tracking-tight leading-tight">
 									Good day,{" "}
 									<span className="text-indigo-600 dark:text-indigo-400">{firstName}</span>
 								</h1>
-								<p className="text-[13px] text-slate-500 dark:text-[#555] mt-1.5">
+								<p className="text-[13px] text-[var(--tf-text-tertiary)] mt-1.5">
 									Here&apos;s what&apos;s happening across your projects.
 								</p>
 							</div>
 
 							{/* Quick task count bubble — desktop only */}
 							<div className="hidden sm:flex flex-col items-end gap-1 flex-shrink-0 pt-1">
-								<div className="flex items-center gap-2 px-3 py-1.5 rounded-[10px] bg-slate-50 border border-slate-200 dark:bg-white/[0.03] dark:border-white/[0.07]">
-									<KanbanSquare size={13} className="text-slate-400 dark:text-[#444]" />
-									<span className="text-[12px] font-semibold text-slate-500 dark:text-[#666]">
+								<div className="flex items-center gap-2 px-3 py-1.5 rounded-[10px] bg-[var(--tf-bg-card)] border border-[var(--tf-border)]">
+									<KanbanSquare size={13} className="text-[var(--tf-text-tertiary)]" />
+									<span className="text-[12px] font-semibold text-[var(--tf-text-secondary)]">
 										{totalTasks} task{totalTasks !== 1 ? "s" : ""} total
 									</span>
 								</div>
@@ -383,8 +383,8 @@ export function DashboardClient({
 								return (
 									<div
 										key={stat.label}
-										className="relative bg-white dark:bg-[#111] border border-slate-100 dark:border-white/[0.07] rounded-[12px] p-4 overflow-hidden
-											hover:border-slate-200 dark:hover:border-white/[0.13] hover:-translate-y-[1px] hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_8px_24px_rgba(0,0,0,0.45)]
+										className="relative bg-[var(--tf-bg-card)] border border-[var(--tf-border-subtle)] rounded-[12px] p-4 overflow-hidden
+											hover:border-[var(--tf-border)] hover:-translate-y-[1px] hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_8px_24px_rgba(0,0,0,0.45)]
 											transition-all duration-150 group"
 									>
 										{/* Top accent bar */}
@@ -392,7 +392,7 @@ export function DashboardClient({
 
 										{/* Label + icon */}
 										<div className="flex items-start justify-between mb-4 mt-1">
-											<p className="text-[10.5px] font-semibold text-slate-400 dark:text-[#444] uppercase tracking-[0.08em] leading-none">
+											<p className="text-[10.5px] font-semibold text-[var(--tf-text-tertiary)] uppercase tracking-[0.08em] leading-none">
 												{stat.label}
 											</p>
 											<div className={`w-7 h-7 rounded-[7px] flex items-center justify-center flex-shrink-0 ${meta.iconBg}`}>
@@ -406,7 +406,7 @@ export function DashboardClient({
 										</p>
 
 										{/* Sub */}
-										<p className="text-[11px] text-slate-400 dark:text-[#3a3a3a] font-medium">{stat.sub}</p>
+										<p className="text-[11px] text-[var(--tf-text-tertiary)] font-medium">{stat.sub}</p>
 									</div>
 								);
 							})}
@@ -416,14 +416,14 @@ export function DashboardClient({
 						<div>
 							{/* Section header with view toggle */}
 							<div className="flex items-center justify-between mb-4">
-								<div className="flex items-center bg-slate-50 dark:bg-[#161616] border border-slate-200 dark:border-[#2a2a2a] rounded-[8px] p-0.5">
+								<div className="flex items-center bg-[var(--tf-bg-dropdown)] border border-[var(--tf-border)] rounded-[8px] p-0.5">
 									<button
 										type="button"
 										onClick={() => setBoardView("board")}
 										className={`flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-[12px] font-medium transition-all ${
 											boardView === "board"
-												? "bg-white dark:bg-[#2a2a2a] text-slate-800 dark:text-[#e0e0e0] shadow-sm"
-												: "text-slate-400 dark:text-[#555] hover:text-slate-700 dark:hover:text-[#999]"
+												? "bg-[var(--tf-bg-card)] text-[var(--tf-text-primary)] shadow-sm"
+												: "text-[var(--tf-text-tertiary)] hover:text-slate-700 dark:hover:text-[#999]"
 										}`}
 									>
 										<KanbanSquare size={12} />
@@ -434,8 +434,8 @@ export function DashboardClient({
 										onClick={() => setBoardView("people")}
 										className={`flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-[12px] font-medium transition-all ${
 											boardView === "people"
-												? "bg-white dark:bg-[#2a2a2a] text-slate-800 dark:text-[#e0e0e0] shadow-sm"
-												: "text-slate-400 dark:text-[#555] hover:text-slate-700 dark:hover:text-[#999]"
+												? "bg-[var(--tf-bg-card)] text-[var(--tf-text-primary)] shadow-sm"
+												: "text-[var(--tf-text-tertiary)] hover:text-slate-700 dark:hover:text-[#999]"
 										}`}
 									>
 										<Users size={12} />
@@ -445,7 +445,7 @@ export function DashboardClient({
 
 								<div className="flex items-center gap-2">
 									{totalTasks > 0 && (
-										<span className="text-[10.5px] font-semibold text-slate-500 bg-slate-100 border border-slate-200 dark:text-[#444] dark:bg-white/[0.04] dark:border-white/[0.07] rounded-full px-2.5 py-0.5">
+										<span className="text-[10.5px] font-semibold text-slate-500 bg-slate-100 border border-slate-200 dark:text-[var(--tf-text-tertiary)] dark:bg-white/[0.04] dark:border-[var(--tf-border)] rounded-full px-2.5 py-0.5">
 											{totalTasks} task{totalTasks !== 1 ? "s" : ""}
 										</span>
 									)}

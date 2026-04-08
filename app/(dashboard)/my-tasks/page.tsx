@@ -6,7 +6,7 @@ import { DeleteTaskButton } from "@/components/features/DeleteTaskButton"
 import { ThemeToggle } from "@/components/ui/ThemeToggle"
 
 const statusConfig = {
-  TODO:        { label: "Todo",        class: "bg-slate-100 text-slate-500 border-slate-200 dark:bg-[#1a1a1a] dark:text-[#888] dark:border-[#2a2a2a]"            },
+  TODO:        { label: "Todo",        class: "bg-slate-100 text-slate-500 border-slate-200 dark:bg-[var(--tf-bg-hover)] dark:text-[var(--tf-text-secondary)] dark:border-[var(--tf-border)]"            },
   IN_PROGRESS: { label: "In progress", class: "bg-indigo-100 text-indigo-700 border-indigo-200 dark:bg-indigo-950 dark:text-indigo-400 dark:border-indigo-900"      },
   IN_REVIEW:   { label: "In review",   class: "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-400 dark:border-amber-900"         },
   DONE:        { label: "Done",        class: "bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-400 dark:border-emerald-900"   },
@@ -49,10 +49,10 @@ const myTasks = await db
     <div className="flex-1 overflow-auto">
 
       {/* Topbar */}
-      <div className="h-[50px] border-b border-slate-100 dark:border-[#1a1a1a] flex items-center justify-between pl-14 pr-5 md:px-5 bg-white dark:bg-[#0d0d0d]">
+      <div className="h-[50px] border-b border-slate-100 dark:border-[var(--tf-border)] flex items-center justify-between pl-14 pr-5 md:px-5 bg-[var(--tf-bg-panel)]">
         <div className="flex items-center gap-2">
-          <span className="text-[13px] text-slate-400 dark:text-[#555] hidden sm:inline">Workspace /</span>
-          <span className="text-[13px] font-medium text-slate-800 dark:text-[#e0e0e0]">My tasks</span>
+          <span className="text-[13px] text-[var(--tf-text-tertiary)] hidden sm:inline">Workspace /</span>
+          <span className="text-[13px] font-medium text-[var(--tf-text-primary)]">My tasks</span>
         </div>
         <ThemeToggle />
       </div>
@@ -61,10 +61,10 @@ const myTasks = await db
 
         {/* Header */}
         <div>
-          <h1 className="text-[18px] font-semibold text-slate-900 dark:text-[#f0f0f0] tracking-tight">
+          <h1 className="text-[18px] font-semibold text-[var(--tf-text-primary)] tracking-tight">
             My tasks
           </h1>
-          <p className="text-[13px] text-slate-400 dark:text-[#555] mt-1">
+          <p className="text-[13px] text-[var(--tf-text-tertiary)] mt-1">
             {myTasks.length} task{myTasks.length !== 1 ? "s" : ""} assigned to you
           </p>
         </div>
@@ -80,7 +80,7 @@ const myTasks = await db
                 <span className={`text-[11px] font-medium px-2 py-0.5 rounded-[5px] border ${statusInfo.class}`}>
                   {statusInfo.label}
                 </span>
-                <span className="text-[11px] text-slate-400 dark:text-[#444]">{groupTasks.length}</span>
+                <span className="text-[11px] text-[var(--tf-text-tertiary)]">{groupTasks.length}</span>
               </div>
 
               <div className="space-y-1">
@@ -89,7 +89,7 @@ const myTasks = await db
                   return (
                     <div
                       key={task.id}
-                      className="group flex items-center gap-2 sm:gap-4 bg-white dark:bg-[#111] border border-slate-100 dark:border-[#1a1a1a] rounded-[8px] px-3 sm:px-4 py-3 hover:border-slate-200 dark:hover:border-[#2a2a2a] transition-colors"
+                      className="group flex items-center gap-2 sm:gap-4 bg-[var(--tf-bg-card)] border border-slate-100 dark:border-[var(--tf-border)] rounded-[8px] px-3 sm:px-4 py-3 hover:border-slate-200 dark:hover:border-[#2a2a2a] transition-colors"
                     >
                       {/* Color dot from project */}
                       <div
@@ -98,10 +98,10 @@ const myTasks = await db
                       />
 
                       {/* Title */}
-                      <p className="flex-1 text-[13px] text-slate-700 dark:text-[#ccc]">{task.title}</p>
+                      <p className="flex-1 text-[13px] text-[var(--tf-text-primary)]">{task.title}</p>
 
                       {/* Project name */}
-                      <span className="text-[11px] text-slate-400 dark:text-[#444] hidden sm:block">
+                      <span className="text-[11px] text-[var(--tf-text-tertiary)] hidden sm:block">
                         {task.projectName}
                       </span>
 
@@ -112,7 +112,7 @@ const myTasks = await db
 
                       {/* Due date */}
                       {task.dueDate && (
-                        <span className="text-[11px] text-slate-400 dark:text-[#444] hidden sm:block">
+                        <span className="text-[11px] text-[var(--tf-text-tertiary)] hidden sm:block">
                           {new Date(task.dueDate).toLocaleDateString()}
                         </span>
                       )}
@@ -130,11 +130,11 @@ const myTasks = await db
         {/* Empty state */}
         {myTasks.length === 0 && (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-[#1a1a1a] flex items-center justify-center mb-4">
+            <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-[var(--tf-bg-hover)] flex items-center justify-center mb-4">
               <span className="text-[20px]">✓</span>
             </div>
-            <p className="text-[14px] font-medium text-slate-400 dark:text-[#555]">No tasks assigned to you</p>
-            <p className="text-[12px] text-slate-300 dark:text-[#333] mt-1">Tasks assigned to you will appear here</p>
+            <p className="text-[14px] font-medium text-[var(--tf-text-tertiary)]">No tasks assigned to you</p>
+            <p className="text-[12px] text-[var(--tf-text-tertiary)] mt-1">Tasks assigned to you will appear here</p>
           </div>
         )}
 

@@ -44,21 +44,21 @@ function ChangeNameForm({ currentName, onDone }: { currentName: string; onDone: 
   return (
     <form onSubmit={handleSubmit} className="p-3 space-y-3">
       <div className="flex items-center gap-2 mb-1">
-        <button type="button" onClick={onDone} className="text-slate-400 dark:text-[#555] hover:text-slate-700 dark:hover:text-[#999] transition-colors">
+        <button type="button" onClick={onDone} className="text-[var(--tf-text-tertiary)] hover:text-slate-700 dark:hover:text-[#999] transition-colors">
           <X size={13} />
         </button>
-        <span className="text-[12px] font-medium text-slate-800 dark:text-[#e0e0e0]">Change name</span>
+        <span className="text-[12px] font-medium text-[var(--tf-text-primary)]">Change name</span>
       </div>
       <input
         value={name}
         onChange={(e) => setName(e.target.value)}
         required
-        className="w-full bg-white dark:bg-[#0d0d0d] border border-slate-200 dark:border-[#2a2a2a] rounded-[7px] px-3 py-1.5 text-[12px] text-slate-800 dark:text-[#e0e0e0] outline-none focus:border-indigo-500 transition-colors"
+        className="w-full bg-[var(--tf-bg-input)] border border-[var(--tf-border)] rounded-[7px] px-3 py-1.5 text-[12px] text-[var(--tf-text-primary)] outline-none focus:border-[var(--tf-accent)] transition-colors"
       />
       <button
         type="submit"
         disabled={loading || !name.trim()}
-        className="w-full h-8 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white text-[12px] font-semibold border border-indigo-700/80 rounded-[8px] shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none transition-all duration-150"
+        className="w-full h-8 bg-[var(--tf-accent)] hover:brightness-110 disabled:opacity-40 text-white text-[12px] font-semibold border border-indigo-700/80 rounded-[8px] shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none transition-all duration-150"
       >
         {loading ? "Saving…" : "Save name"}
       </button>
@@ -105,12 +105,12 @@ export function ProfileDropdown({ user }: Props) {
 
       {/* Dropdown */}
       {open && (
-        <div className="absolute right-0 top-9 w-[240px] bg-white dark:bg-[#161616] border border-slate-200 dark:border-[#2a2a2a] rounded-[12px] shadow-2xl z-50 overflow-hidden">
+        <div className="absolute right-0 top-9 w-[240px] bg-[var(--tf-bg-dropdown)] border border-[var(--tf-border)] rounded-[12px] shadow-2xl z-50 overflow-hidden">
 
           {view === "menu" && (
             <>
               {/* Profile header */}
-              <div className="p-3 border-b border-slate-100 dark:border-[#222]">
+              <div className="p-3 border-b border-[var(--tf-border-subtle)]">
                 <div className="flex items-center gap-3">
                   <Avatar className="h-9 w-9">
                     <AvatarImage src={clerkUser?.imageUrl} className="object-cover" />
@@ -119,8 +119,8 @@ export function ProfileDropdown({ user }: Props) {
                     </AvatarFallback>
                   </Avatar>
                   <div className="min-w-0">
-                    <p className="text-[13px] font-medium text-slate-800 dark:text-[#f0f0f0] truncate">{user.name}</p>
-                    <p className="text-[11px] text-slate-400 dark:text-[#555] truncate">{user.email}</p>
+                    <p className="text-[13px] font-medium text-[var(--tf-text-primary)] truncate">{user.name}</p>
+                    <p className="text-[11px] text-[var(--tf-text-tertiary)] truncate">{user.email}</p>
                   </div>
                 </div>
               </div>
@@ -131,26 +131,26 @@ export function ProfileDropdown({ user }: Props) {
                 <button
                   type="button"
                   onClick={() => setView("name")}
-                  className="w-full flex items-center justify-between px-2.5 py-2 rounded-[7px] hover:bg-slate-50 dark:hover:bg-[#1f1f1f] transition-colors group"
+                  className="w-full flex items-center justify-between px-2.5 py-2 rounded-[7px] hover:bg-[var(--tf-bg-hover)] transition-colors group"
                 >
                   <div className="flex items-center gap-2.5">
-                    <User size={13} className="text-slate-400 dark:text-[#555]" />
-                    <span className="text-[12px] text-slate-700 dark:text-[#ccc]">Change name</span>
+                    <User size={13} className="text-[var(--tf-text-tertiary)]" />
+                    <span className="text-[12px] text-[var(--tf-text-primary)]">Change name</span>
                   </div>
-                  <ChevronRight size={12} className="text-slate-400 dark:text-[#444] group-hover:text-slate-600 dark:group-hover:text-[#666] transition-colors" />
+                  <ChevronRight size={12} className="text-[var(--tf-text-tertiary)] group-hover:text-slate-600 dark:group-hover:text-[#666] transition-colors" />
                 </button>
 
               </div>
 
               {/* Sign out */}
-              <div className="p-1.5 border-t border-slate-100 dark:border-[#1f1f1f]">
+              <div className="p-1.5 border-t border-[var(--tf-border-subtle)]">
                 <button
                   type="button"
                   onClick={() => signOut({ redirectUrl: "/login" })}
                   className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-[7px] hover:bg-red-50 dark:hover:bg-red-950 transition-colors group"
                 >
-                  <LogOut size={13} className="text-slate-400 dark:text-[#555] group-hover:text-red-500 dark:group-hover:text-red-400 transition-colors" />
-                  <span className="text-[12px] text-slate-500 dark:text-[#888] group-hover:text-red-500 dark:group-hover:text-red-400 transition-colors">Sign out</span>
+                  <LogOut size={13} className="text-[var(--tf-text-tertiary)] group-hover:text-red-500 dark:group-hover:text-red-400 transition-colors" />
+                  <span className="text-[12px] text-[var(--tf-text-secondary)] group-hover:text-red-500 dark:group-hover:text-red-400 transition-colors">Sign out</span>
                 </button>
               </div>
             </>

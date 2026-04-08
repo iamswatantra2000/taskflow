@@ -18,10 +18,10 @@ const buttonVariants = cva(
           "bg-indigo-600 hover:bg-indigo-500 text-white border-indigo-700/80 shadow-[0_3px_0_0_#3730a3] active:shadow-none",
         // ── Outline — dark surface 3D ────────────────────────────
         outline:
-          "bg-slate-50 dark:bg-[#111] hover:bg-slate-100 dark:hover:bg-[#161616] text-slate-500 dark:text-[#999] hover:text-slate-900 dark:hover:text-white border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/18 shadow-[0_3px_0_0_rgba(0,0,0,0.08)] dark:shadow-[0_3px_0_0_rgba(0,0,0,0.55)] active:shadow-none",
+          "bg-[var(--tf-bg-card)] hover:bg-slate-100 dark:hover:bg-[#161616] text-[var(--tf-text-secondary)] hover:text-slate-900 dark:hover:text-white border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/18 shadow-[0_3px_0_0_rgba(0,0,0,0.08)] dark:shadow-[0_3px_0_0_rgba(0,0,0,0.55)] active:shadow-none",
         // ── Secondary — muted 3D ─────────────────────────────────
         secondary:
-          "bg-slate-100 dark:bg-[#181818] hover:bg-slate-200 dark:hover:bg-[#1e1e1e] text-slate-500 dark:text-[#777] hover:text-slate-700 dark:hover:text-[#aaa] border-slate-200 dark:border-white/8 shadow-[0_3px_0_0_rgba(0,0,0,0.08)] dark:shadow-[0_3px_0_0_rgba(0,0,0,0.55)] active:shadow-none",
+          "bg-[var(--tf-bg-dropdown)] hover:bg-slate-200 dark:hover:bg-[#1e1e1e] text-[var(--tf-text-secondary)] hover:text-slate-700 dark:hover:text-[#aaa] border-slate-200 dark:border-white/8 shadow-[0_3px_0_0_rgba(0,0,0,0.08)] dark:shadow-[0_3px_0_0_rgba(0,0,0,0.55)] active:shadow-none",
         // ── Ghost — no depth, just hover fill ────────────────────
         ghost:
           "border-transparent bg-transparent hover:bg-slate-100 dark:hover:bg-white/[0.05] text-muted-foreground hover:text-foreground active:translate-y-0",

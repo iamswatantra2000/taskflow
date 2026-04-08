@@ -80,7 +80,7 @@ function getDateMeta(dueDate: Date, status: string) {
   const done  = status === "DONE"
   if (!done && diff < 0)  return { color: "text-red-400",   label: new Date(dueDate).toLocaleDateString("en-US", { month: "short", day: "numeric" }) }
   if (!done && diff === 0) return { color: "text-amber-400", label: "Today" }
-  return { color: "text-slate-400 dark:text-[#555]", label: new Date(dueDate).toLocaleDateString("en-US", { month: "short", day: "numeric" }) }
+  return { color: "text-[var(--tf-text-tertiary)]", label: new Date(dueDate).toLocaleDateString("en-US", { month: "short", day: "numeric" }) }
 }
 
 // Per-column color treatment
@@ -90,7 +90,7 @@ const columnStyles: Record<string, {
   labelColor:  string
   countStyle:  string
 }> = {
-  TODO:        { bg: "bg-slate-50 dark:bg-[#0f0f0f]",                   borderColor: "border-slate-200 dark:border-white/[0.07]",    labelColor: "text-slate-500 dark:text-[#777]",    countStyle: "text-slate-400 border-slate-200 bg-white dark:text-[#3a3a3a] dark:border-white/[0.08] dark:bg-white/[0.03]"           },
+  TODO:        { bg: "bg-[var(--tf-bg-panel)]",                   borderColor: "border-[var(--tf-border)]",    labelColor: "text-[var(--tf-text-secondary)]",    countStyle: "text-slate-400 border-slate-200 bg-white dark:text-[var(--tf-text-tertiary)] dark:border-[var(--tf-border)] dark:bg-white/[0.03]"           },
   IN_PROGRESS: { bg: "bg-indigo-50/40 dark:bg-indigo-950/[0.15]",       borderColor: "border-indigo-200 dark:border-indigo-500/20",   labelColor: "text-indigo-600 dark:text-indigo-400", countStyle: "text-indigo-600/70 border-indigo-200 bg-indigo-50 dark:text-indigo-400/60 dark:border-indigo-500/20 dark:bg-indigo-500/[0.07]" },
   IN_REVIEW:   { bg: "bg-amber-50/40 dark:bg-amber-950/[0.12]",         borderColor: "border-amber-200 dark:border-amber-500/20",    labelColor: "text-amber-600 dark:text-amber-400",  countStyle: "text-amber-600/70 border-amber-200 bg-amber-50 dark:text-amber-400/60 dark:border-amber-500/20 dark:bg-amber-500/[0.07]"   },
   DONE:        { bg: "bg-emerald-50/30 dark:bg-emerald-950/[0.10]",     borderColor: "border-emerald-200 dark:border-emerald-500/15",  labelColor: "text-emerald-600 dark:text-emerald-400", countStyle: "text-emerald-600/70 border-emerald-200 bg-emerald-50 dark:text-emerald-400/60 dark:border-emerald-500/20 dark:bg-emerald-500/[0.07]" },
@@ -122,7 +122,7 @@ function InlineTaskForm({
   }
 
   return (
-    <div className="rounded-[8px] border border-indigo-300/60 dark:border-indigo-500/30 bg-white dark:bg-[#0d0d0d] p-2.5 space-y-2 shadow-sm">
+    <div className="rounded-[8px] border border-indigo-300/60 dark:border-indigo-500/30 bg-[var(--tf-bg-card)] p-2.5 space-y-2 shadow-sm">
       <input
         ref={inputRef}
         value={title}
@@ -132,7 +132,7 @@ function InlineTaskForm({
           if (e.key === "Escape") onCancel()
         }}
         placeholder="Task title…"
-        className="w-full text-[13px] bg-transparent text-slate-800 dark:text-[#e0e0e0] placeholder-slate-300 dark:placeholder-[#444] outline-none"
+        className="w-full text-[13px] bg-transparent text-[var(--tf-text-primary)] placeholder-slate-300 dark:placeholder-[#444] outline-none"
       />
 
       {/* Project pills — only shown when workspace has multiple projects */}
@@ -146,7 +146,7 @@ function InlineTaskForm({
               className={`flex items-center gap-1 text-[10px] px-1.5 py-[2px] rounded-full border transition-colors ${
                 projectId === p.id
                   ? "border-transparent text-white"
-                  : "border-slate-200 dark:border-[#2a2a2a] text-slate-500 dark:text-[#666] hover:border-slate-300"
+                  : "border-[var(--tf-border)] text-[var(--tf-text-secondary)] hover:border-slate-300"
               }`}
               style={projectId === p.id ? { background: p.color } : {}}
             >
@@ -165,7 +165,7 @@ function InlineTaskForm({
           type="button"
           onClick={submit}
           disabled={!title.trim() || adding}
-          className="flex-1 h-6 text-[11px] font-semibold bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white rounded-[5px] transition-colors flex items-center justify-center gap-1"
+          className="flex-1 h-6 text-[11px] font-semibold bg-[var(--tf-accent)] hover:brightness-110 disabled:opacity-40 text-white rounded-[5px] transition-colors flex items-center justify-center gap-1"
         >
           {adding && <Loader2 size={10} className="animate-spin" />}
           {adding ? "Adding…" : "Add task"}
@@ -173,7 +173,7 @@ function InlineTaskForm({
         <button
           type="button"
           onClick={onCancel}
-          className="h-6 px-2 text-[11px] text-slate-400 dark:text-[#555] hover:text-slate-600 dark:hover:text-[#888] transition-colors"
+          className="h-6 px-2 text-[11px] text-[var(--tf-text-tertiary)] hover:text-slate-600 dark:hover:text-[#888] transition-colors"
         >
           Cancel
         </button>
@@ -241,8 +241,8 @@ function TaskCard({
     <div
       ref={setNodeRef}
       style={style}
-      className={`group relative bg-white dark:bg-[#111] rounded-[10px] p-3.5
-        hover:bg-slate-50 dark:hover:bg-[#141414]
+      className={`group relative bg-[var(--tf-bg-card)] rounded-[10px] p-3.5
+        hover:bg-slate-50 dark:hover:bg-[var(--tf-bg-card)]
         hover:-translate-y-[1px] hover:shadow-[0_6px_20px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_6px_20px_rgba(0,0,0,0.45)]
         transition-all duration-150 border
         ${menuOpen ? "z-[20]" : ""}
@@ -250,7 +250,7 @@ function TaskCard({
           ? "border-indigo-400/70 dark:border-indigo-500/50 ring-2 ring-indigo-500/20 dark:ring-indigo-500/15 bg-indigo-50/40 dark:bg-indigo-950/[0.15]"
           : decayLevel > 0
             ? decayBorderClass[decayLevel]
-            : "border-slate-100 dark:border-white/[0.07] hover:border-slate-200 dark:hover:border-white/[0.13]"
+            : "border-slate-100 dark:border-[var(--tf-border)] hover:border-slate-200 dark:hover:border-white/[0.13]"
         }
         ${decayLevel === 3 && !isSelected ? "animate-pulse-slow" : ""}
         ${leftAccent}
@@ -265,7 +265,7 @@ function TaskCard({
           {/* Drag handle — visual affordance only; drag is initiated via title listeners */}
           <div
             {...attributes}
-            className={`absolute inset-0 flex items-center justify-center text-slate-400 dark:text-[#333] transition-opacity
+            className={`absolute inset-0 flex items-center justify-center text-[var(--tf-text-tertiary)] transition-opacity
               ${isSelected || selectionMode ? "opacity-0 pointer-events-none" : "opacity-0 group-hover:opacity-100"}
             `}
           >
@@ -288,8 +288,8 @@ function TaskCard({
               ${isSelected
                 ? "opacity-100 bg-indigo-600 border-indigo-600"
                 : selectionMode
-                  ? "opacity-100 bg-white dark:bg-[#111] border-slate-300 dark:border-[#555] hover:border-indigo-400"
-                  : "opacity-0 group-hover:opacity-100 bg-white dark:bg-[#111] border-slate-300 dark:border-[#555] hover:border-indigo-400"
+                  ? "opacity-100 bg-[var(--tf-bg-card)] border-slate-300 dark:border-[var(--tf-border)] hover:border-indigo-400"
+                  : "opacity-0 group-hover:opacity-100 bg-[var(--tf-bg-card)] border-slate-300 dark:border-[var(--tf-border)] hover:border-indigo-400"
               }
             `}
             aria-label={isSelected ? "Deselect task" : "Select task"}
@@ -310,8 +310,8 @@ function TaskCard({
           className={`flex-1 text-[13px] font-semibold leading-snug transition-colors select-none
             ${selectionMode ? "cursor-pointer" : "cursor-grab active:cursor-grabbing"}
             ${isDone
-              ? "text-slate-400 dark:text-[#555] line-through decoration-slate-300 dark:decoration-[#444]"
-              : "text-slate-800 hover:text-slate-950 dark:text-[#ddd] dark:hover:text-white"
+              ? "text-[var(--tf-text-tertiary)] line-through decoration-slate-300 dark:decoration-[#444]"
+              : "text-slate-800 hover:text-slate-950 dark:text-[var(--tf-text-primary)] dark:hover:text-white"
             }`}
         >
           {task.title}
@@ -323,7 +323,7 @@ function TaskCard({
             type="button"
             onClick={(e) => { e.stopPropagation(); onFocus(task) }}
             title="Focus on this task"
-            className="w-6 h-6 rounded-[5px] flex items-center justify-center text-slate-400 hover:text-indigo-500 dark:text-[#444] dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors"
+            className="w-6 h-6 rounded-[5px] flex items-center justify-center text-slate-400 hover:text-indigo-500 dark:text-[var(--tf-text-tertiary)] dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors"
           >
             <Focus size={11} />
           </button>
@@ -363,13 +363,13 @@ function TaskCard({
         const pct   = Math.round((done / total) * 100)
         return (
           <div className="flex items-center gap-2 pl-[17px] mb-2">
-            <div className="flex-1 h-[3px] bg-slate-100 dark:bg-[#222] rounded-full overflow-hidden">
+            <div className="flex-1 h-[3px] bg-slate-100 dark:bg-[var(--tf-bg-hover)] rounded-full overflow-hidden">
               <div
                 className={`h-full rounded-full transition-all duration-300 ${pct === 100 ? "bg-emerald-500" : "bg-indigo-400"}`}
                 style={{ width: `${pct}%` }}
               />
             </div>
-            <span className={`text-[10px] font-medium tabular-nums flex-shrink-0 ${pct === 100 ? "text-emerald-500" : "text-slate-400 dark:text-[#555]"}`}>
+            <span className={`text-[10px] font-medium tabular-nums flex-shrink-0 ${pct === 100 ? "text-emerald-500" : "text-[var(--tf-text-tertiary)]"}`}>
               {done}/{total}
             </span>
           </div>
@@ -432,8 +432,8 @@ function TaskCard({
 function DragOverlayCard({ task }: { task: Task }) {
   const priority = priorityConfig[task.priority as keyof typeof priorityConfig]
   return (
-    <div className="bg-white dark:bg-[#141414] border border-indigo-300 dark:border-indigo-500/60 rounded-[10px] p-3.5 w-[230px] rotate-[1.5deg] shadow-[0_20px_60px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.7)] ring-1 ring-indigo-200 dark:ring-indigo-500/20">
-      <p className="text-[13px] font-semibold text-slate-900 dark:text-white leading-snug mb-3 pl-[17px]">{task.title}</p>
+    <div className="bg-[var(--tf-bg-card)] border border-indigo-300 dark:border-indigo-500/60 rounded-[10px] p-3.5 w-[230px] rotate-[1.5deg] shadow-[0_20px_60px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.7)] ring-1 ring-indigo-200 dark:ring-indigo-500/20">
+      <p className="text-[13px] font-semibold text-[var(--tf-text-primary)] leading-snug mb-3 pl-[17px]">{task.title}</p>
       <div className="pl-[17px]">
         <div className={`inline-flex items-center gap-1.5 text-[10.5px] font-semibold px-2 py-[3px] rounded-full border ${priority.pill}`}>
           <span className={`w-[5px] h-[5px] rounded-full flex-shrink-0 ${priority.dot}`} />
@@ -775,7 +775,7 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects, m
                             type="button"
                             onClick={() => setInlineColumn(inlineColumn === col.id ? null : col.id)}
                             title={`Add task to ${col.label}`}
-                            className="w-5 h-5 flex items-center justify-center rounded-[5px] text-slate-400 hover:text-indigo-500 dark:text-[#444] dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors"
+                            className="w-5 h-5 flex items-center justify-center rounded-[5px] text-slate-400 hover:text-indigo-500 dark:text-[var(--tf-text-tertiary)] dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors"
                           >
                             <Plus size={11} />
                           </button>
@@ -818,11 +818,11 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects, m
 
                   {/* Empty state */}
                   {col.tasks.length === 0 && inlineColumn !== col.id && (
-                    <div className="flex-1 flex flex-col items-center justify-center py-10 gap-3 border border-dashed border-slate-200 dark:border-white/[0.05] rounded-[10px]">
-                      <div className="w-9 h-9 rounded-full border-2 border-dashed border-slate-200 dark:border-white/[0.08] flex items-center justify-center">
-                        <ArrowDownToLine size={13} className="text-slate-400 dark:text-[#2a2a2a]" />
+                    <div className="flex-1 flex flex-col items-center justify-center py-10 gap-3 border border-dashed border-[var(--tf-border-subtle)] rounded-[10px]">
+                      <div className="w-9 h-9 rounded-full border-2 border-dashed border-[var(--tf-border)] flex items-center justify-center">
+                        <ArrowDownToLine size={13} className="text-slate-400 dark:text-[var(--tf-text-tertiary)]" />
                       </div>
-                      <p className="text-[11.5px] font-medium text-slate-500 dark:text-[#2d2d2d]">
+                      <p className="text-[11.5px] font-medium text-slate-500 dark:text-[var(--tf-text-tertiary)]">
                         {filters.priority.length > 0 || filters.search
                           ? "No matching tasks"
                           : "Drop tasks here"

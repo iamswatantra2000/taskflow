@@ -51,7 +51,7 @@ const priorityConfig = {
 }
 
 const statusConfig: Record<string, { label: string; dot: string; border: string }> = {
-  TODO:        { label: "Todo",        dot: "bg-slate-400 dark:bg-[#555]",      border: "border-slate-400 dark:border-[#555]"      },
+  TODO:        { label: "Todo",        dot: "bg-slate-400 dark:bg-[var(--tf-text-tertiary)]",      border: "border-slate-400 dark:border-[var(--tf-border)]"      },
   IN_PROGRESS: { label: "In Progress", dot: "bg-indigo-500",  border: "border-indigo-500"  },
   IN_REVIEW:   { label: "In Review",   dot: "bg-amber-500",   border: "border-amber-500"   },
   DONE:        { label: "Done",        dot: "bg-emerald-500", border: "border-emerald-500" },
@@ -87,7 +87,7 @@ function BoardView({
   onAssign: (taskId: string, newId: string | null) => void
 }) {
   const columns = [
-    { id: "TODO",        label: "Todo",        dot: "bg-slate-400 dark:bg-[#555]"      },
+    { id: "TODO",        label: "Todo",        dot: "bg-slate-400 dark:bg-[var(--tf-text-tertiary)]"      },
     { id: "IN_PROGRESS", label: "In progress", dot: "bg-indigo-500"  },
     { id: "IN_REVIEW",   label: "In review",   dot: "bg-amber-500"   },
     { id: "DONE",        label: "Done",        dot: "bg-emerald-500" },
@@ -100,14 +100,14 @@ function BoardView({
         return (
           <div
             key={col.id}
-            className="bg-white dark:bg-[#111] border border-slate-100 dark:border-[#1a1a1a] rounded-[10px] p-3 flex flex-col gap-2 min-h-[120px]"
+            className="bg-[var(--tf-bg-card)] border border-[var(--tf-border-subtle)] rounded-[10px] p-3 flex flex-col gap-2 min-h-[120px]"
           >
             <div className="flex items-center justify-between mb-1">
               <div className="flex items-center gap-1.5">
                 <div className={`w-[7px] h-[7px] rounded-full ${col.dot}`} />
-                <span className="text-[11px] font-medium text-slate-500 dark:text-[#666]">{col.label}</span>
+                <span className="text-[11px] font-medium text-[var(--tf-text-secondary)]">{col.label}</span>
               </div>
-              <span className="text-[10px] text-slate-400 dark:text-[#444] bg-slate-100 dark:bg-[#1a1a1a] rounded-full px-2 py-0.5">
+              <span className="text-[10px] text-[var(--tf-text-tertiary)] bg-slate-100 dark:bg-[var(--tf-bg-dropdown)] rounded-full px-2 py-0.5">
                 {colTasks.length}
               </span>
             </div>
@@ -120,17 +120,17 @@ function BoardView({
               return (
                 <div
                   key={task.id}
-                  className={`group bg-white dark:bg-[#161616] rounded-[8px] p-3 transition-all border
+                  className={`group bg-[var(--tf-bg-dropdown)] rounded-[8px] p-3 transition-all border
                     ${decayLevel > 0
                       ? decayBorderClass[decayLevel]
-                      : "border-slate-100 dark:border-[#222] hover:border-slate-200 dark:hover:border-[#333]"
+                      : "border-slate-100 dark:border-[var(--tf-border)] hover:border-slate-200 dark:hover:border-[#333]"
                     }
                     ${task.status === "IN_PROGRESS" ? "border-l-2 border-l-indigo-500" : ""}
                     ${task.status === "DONE" ? "opacity-50" : ""}
                   `}
                 >
                   <div className="flex items-start justify-between gap-2 mb-2">
-                    <p className="text-[12px] text-slate-700 dark:text-[#ccc] leading-[1.45] flex-1">{task.title}</p>
+                    <p className="text-[12px] text-[var(--tf-text-primary)] leading-[1.45] flex-1">{task.title}</p>
                     <DeleteTaskButton taskId={task.id} />
                   </div>
                   <div className="flex items-center justify-between gap-1">
@@ -150,7 +150,7 @@ function BoardView({
                     </div>
                     <div className="flex items-center gap-1.5">
                       {task.dueDate && (
-                        <span className={`text-[10px] ${overdue ? "text-red-400" : "text-slate-400 dark:text-[#555]"}`}>
+                        <span className={`text-[10px] ${overdue ? "text-red-400" : "text-[var(--tf-text-tertiary)]"}`}>
                           {formatDate(task.dueDate)}
                         </span>
                       )}
@@ -168,7 +168,7 @@ function BoardView({
 
             {colTasks.length === 0 && (
               <div className="flex-1 flex items-center justify-center py-6">
-                <p className="text-[11px] text-slate-300 dark:text-[#333]">No tasks</p>
+                <p className="text-[11px] text-[var(--tf-text-tertiary)]">No tasks</p>
               </div>
             )}
           </div>
@@ -219,32 +219,32 @@ function CalendarView({ tasks }: { tasks: Task[] }) {
   const dayNums = Array.from({ length: daysInMonth }, (_, i) => i + 1)
 
   return (
-    <div className="bg-white dark:bg-[#111] border border-slate-100 dark:border-[#1a1a1a] rounded-[12px] overflow-hidden">
+    <div className="bg-[var(--tf-bg-card)] border border-[var(--tf-border-subtle)] rounded-[12px] overflow-hidden">
 
       {/* Calendar header */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-[#1a1a1a]">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--tf-border-subtle)]">
         <button
           type="button"
           onClick={prevMonth}
-          className="w-7 h-7 rounded-[6px] border border-slate-200 dark:border-[#2a2a2a] flex items-center justify-center text-slate-400 dark:text-[#555] hover:text-slate-700 dark:hover:text-[#ccc] hover:border-slate-300 dark:hover:border-[#3a3a3a] transition-colors"
+          className="w-7 h-7 rounded-[6px] border border-[var(--tf-border)] flex items-center justify-center text-[var(--tf-text-tertiary)] hover:text-slate-700 dark:hover:text-[#ccc] hover:border-slate-300 dark:hover:border-[#3a3a3a] transition-colors"
         >
           ‹
         </button>
-        <h3 className="text-[13px] font-semibold text-slate-800 dark:text-[#e0e0e0]">{monthName}</h3>
+        <h3 className="text-[13px] font-semibold text-[var(--tf-text-primary)]">{monthName}</h3>
         <button
           type="button"
           onClick={nextMonth}
-          className="w-7 h-7 rounded-[6px] border border-slate-200 dark:border-[#2a2a2a] flex items-center justify-center text-slate-400 dark:text-[#555] hover:text-slate-700 dark:hover:text-[#ccc] hover:border-slate-300 dark:hover:border-[#3a3a3a] transition-colors"
+          className="w-7 h-7 rounded-[6px] border border-[var(--tf-border)] flex items-center justify-center text-[var(--tf-text-tertiary)] hover:text-slate-700 dark:hover:text-[#ccc] hover:border-slate-300 dark:hover:border-[#3a3a3a] transition-colors"
         >
           ›
         </button>
       </div>
 
       {/* Day headers */}
-      <div className="grid grid-cols-7 border-b border-slate-100 dark:border-[#1a1a1a]">
+      <div className="grid grid-cols-7 border-b border-[var(--tf-border-subtle)]">
         {days.map((day) => (
           <div key={day} className="px-2 py-2 text-center">
-            <span className="text-[10px] font-medium text-slate-400 dark:text-[#555]">{day}</span>
+            <span className="text-[10px] font-medium text-[var(--tf-text-tertiary)]">{day}</span>
           </div>
         ))}
       </div>
@@ -253,7 +253,7 @@ function CalendarView({ tasks }: { tasks: Task[] }) {
       <div className="grid grid-cols-7">
         {/* Blank cells */}
         {blanks.map((i) => (
-          <div key={`blank-${i}`} className="min-h-[90px] border-r border-b border-slate-100 dark:border-[#1a1a1a] p-1.5 bg-slate-50 dark:bg-[#0d0d0d]" />
+          <div key={`blank-${i}`} className="min-h-[90px] border-r border-b border-[var(--tf-border-subtle)] p-1.5 bg-[var(--tf-bg-panel)]" />
         ))}
 
         {/* Day cells */}
@@ -268,7 +268,7 @@ function CalendarView({ tasks }: { tasks: Task[] }) {
           return (
             <div
               key={day}
-              className={`min-h-[90px] border-r border-b border-slate-100 dark:border-[#1a1a1a] p-1.5 transition-colors hover:bg-slate-50 dark:hover:bg-[#141414] ${
+              className={`min-h-[90px] border-r border-b border-[var(--tf-border-subtle)] p-1.5 transition-colors hover:bg-slate-50 dark:hover:bg-[var(--tf-bg-card)] ${
                 isToday ? "bg-indigo-50 dark:bg-indigo-950/20" : ""
               }`}
             >
@@ -278,7 +278,7 @@ function CalendarView({ tasks }: { tasks: Task[] }) {
                   "text-[11px] font-medium w-5 h-5 flex items-center justify-center rounded-full",
                   isToday
                     ? "bg-indigo-600 text-white"
-                    : "text-slate-400 dark:text-[#555]"
+                    : "text-[var(--tf-text-tertiary)]"
                 )}>
                   {day}
                 </span>
@@ -306,7 +306,7 @@ function CalendarView({ tasks }: { tasks: Task[] }) {
                   )
                 })}
                 {dayTasks.length > 3 && (
-                  <p className="text-[9px] text-slate-400 dark:text-[#555] pl-1">
+                  <p className="text-[9px] text-[var(--tf-text-tertiary)] pl-1">
                     +{dayTasks.length - 3} more
                   </p>
                 )}
@@ -318,8 +318,8 @@ function CalendarView({ tasks }: { tasks: Task[] }) {
 
       {/* No tasks with due dates message */}
       {tasks.filter((t) => t.dueDate).length === 0 && (
-        <div className="p-6 text-center border-t border-slate-100 dark:border-[#1a1a1a]">
-          <p className="text-[12px] text-slate-400 dark:text-[#444]">
+        <div className="p-6 text-center border-t border-[var(--tf-border-subtle)]">
+          <p className="text-[12px] text-[var(--tf-text-tertiary)]">
             No tasks with due dates yet. Add due dates when creating tasks to see them here.
           </p>
         </div>
@@ -333,7 +333,7 @@ const DAY_PX      = 36   // pixels per day column
 const ROW_H       = 44   // px height of each task row
 const LABEL_W     = 220  // px width of left label column
 const STATUS_BAR: Record<string, string> = {
-  TODO:        "bg-slate-400 dark:bg-[#555]",
+  TODO:        "bg-slate-400 dark:bg-[var(--tf-text-tertiary)]",
   IN_PROGRESS: "bg-indigo-500",
   IN_REVIEW:   "bg-amber-500",
   DONE:        "bg-emerald-500 opacity-70",
@@ -391,17 +391,17 @@ function TimelineView({ tasks }: { tasks: Task[] }) {
   }
 
   return (
-    <div className="bg-white dark:bg-[#111] border border-slate-100 dark:border-[#1a1a1a] rounded-[12px] overflow-hidden">
+    <div className="bg-[var(--tf-bg-card)] border border-[var(--tf-border-subtle)] rounded-[12px] overflow-hidden">
 
       {/* Header bar */}
-      <div className="px-5 py-3.5 border-b border-slate-100 dark:border-[#1a1a1a] flex items-center justify-between">
+      <div className="px-5 py-3.5 border-b border-[var(--tf-border-subtle)] flex items-center justify-between">
         <div>
-          <h3 className="text-[13px] font-semibold text-slate-800 dark:text-[#e0e0e0]">Gantt Timeline</h3>
-          <p className="text-[11px] text-slate-400 dark:text-[#555] mt-0.5">
+          <h3 className="text-[13px] font-semibold text-[var(--tf-text-primary)]">Gantt Timeline</h3>
+          <p className="text-[11px] text-[var(--tf-text-tertiary)] mt-0.5">
             {hasDates.length} of {tasks.length} task{tasks.length !== 1 ? "s" : ""} have due dates
           </p>
         </div>
-        <div className="flex items-center gap-3 text-[10.5px] text-slate-400 dark:text-[#555]">
+        <div className="flex items-center gap-3 text-[10.5px] text-[var(--tf-text-tertiary)]">
           {(["TODO", "IN_PROGRESS", "IN_REVIEW", "DONE"] as const).map((s) => (
             <div key={s} className="flex items-center gap-1.5">
               <div className={`w-2.5 h-2.5 rounded-[3px] ${STATUS_BAR[s]}`} />
@@ -416,26 +416,26 @@ function TimelineView({ tasks }: { tasks: Task[] }) {
         <div style={{ width: LABEL_W + totalW }} className="relative">
 
           {/* ── Month header row ── */}
-          <div className="flex border-b border-slate-100 dark:border-[#1a1a1a] bg-slate-50/80 dark:bg-[#0d0d0d] sticky top-0 z-20">
-            <div style={{ width: LABEL_W }} className="flex-shrink-0 px-4 py-2 border-r border-slate-100 dark:border-[#1f1f1f]">
-              <span className="text-[10px] font-medium text-slate-400 dark:text-[#444]">Task</span>
+          <div className="flex border-b border-[var(--tf-border-subtle)] bg-[var(--tf-bg-panel)] sticky top-0 z-20">
+            <div style={{ width: LABEL_W }} className="flex-shrink-0 px-4 py-2 border-r border-slate-100 dark:border-[var(--tf-border)]">
+              <span className="text-[10px] font-medium text-[var(--tf-text-tertiary)]">Task</span>
             </div>
             <div className="flex" style={{ width: totalW }}>
               {monthSegments.map((seg) => (
                 <div
                   key={seg.label}
                   style={{ width: seg.span * DAY_PX }}
-                  className="flex-shrink-0 px-2 py-2 border-r border-slate-100 dark:border-[#1f1f1f]"
+                  className="flex-shrink-0 px-2 py-2 border-r border-slate-100 dark:border-[var(--tf-border)]"
                 >
-                  <span className="text-[10px] font-semibold text-slate-500 dark:text-[#555]">{seg.label}</span>
+                  <span className="text-[10px] font-semibold text-[var(--tf-text-tertiary)]">{seg.label}</span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* ── Day header row ── */}
-          <div className="flex border-b border-slate-100 dark:border-[#1a1a1a] bg-slate-50/40 dark:bg-[#0a0a0a]">
-            <div style={{ width: LABEL_W }} className="flex-shrink-0 border-r border-slate-100 dark:border-[#1f1f1f]" />
+          <div className="flex border-b border-[var(--tf-border-subtle)] bg-[var(--tf-bg-panel)]">
+            <div style={{ width: LABEL_W }} className="flex-shrink-0 border-r border-slate-100 dark:border-[var(--tf-border)]" />
             <div className="flex" style={{ width: totalW }}>
               {days.map((d, i) => {
                 const isToday   = i === todayIdx
@@ -451,8 +451,8 @@ function TimelineView({ tasks }: { tasks: Task[] }) {
                       isToday
                         ? "bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800/40"
                         : isSunday || isMonthStart
-                          ? "text-slate-400 dark:text-[#3a3a3a] border-slate-200 dark:border-[#1f1f1f]"
-                          : "text-slate-300 dark:text-[#2a2a2a] border-slate-100 dark:border-[#191919]"
+                          ? "text-[var(--tf-text-tertiary)] border-slate-200 dark:border-[var(--tf-border)]"
+                          : "text-[var(--tf-text-tertiary)] border-slate-100 dark:border-[var(--tf-border)]"
                     )}
                   >
                     {isToday ? (
@@ -469,8 +469,8 @@ function TimelineView({ tasks }: { tasks: Task[] }) {
           {/* ── Task rows ── */}
           {tasks.length === 0 ? (
             <div className="py-16 text-center">
-              <GitBranch size={28} className="text-slate-300 dark:text-[#333] mx-auto mb-3" />
-              <p className="text-[13px] text-slate-400 dark:text-[#555]">No tasks yet</p>
+              <GitBranch size={28} className="text-[var(--tf-text-tertiary)] mx-auto mb-3" />
+              <p className="text-[13px] text-[var(--tf-text-tertiary)]">No tasks yet</p>
             </div>
           ) : (
             tasks.map((task) => {
@@ -482,17 +482,17 @@ function TimelineView({ tasks }: { tasks: Task[] }) {
                 <div
                   key={task.id}
                   style={{ height: ROW_H }}
-                  className="flex items-center border-b border-slate-100 dark:border-[#1a1a1a] hover:bg-slate-50/60 dark:hover:bg-white/[0.015] transition-colors group"
+                  className="flex items-center border-b border-[var(--tf-border-subtle)] hover:bg-slate-50/60 dark:hover:bg-[var(--tf-bg-hover)] transition-colors group"
                 >
                   {/* Label */}
                   <div
                     style={{ width: LABEL_W }}
-                    className="flex-shrink-0 px-4 flex items-center gap-2 border-r border-slate-100 dark:border-[#1f1f1f] h-full"
+                    className="flex-shrink-0 px-4 flex items-center gap-2 border-r border-slate-100 dark:border-[var(--tf-border)] h-full"
                   >
                     <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${status?.dot}`} />
-                    <p className="text-[12px] text-slate-700 dark:text-[#ccc] truncate flex-1">{task.title}</p>
+                    <p className="text-[12px] text-[var(--tf-text-primary)] truncate flex-1">{task.title}</p>
                     {task.dueDate && (
-                      <span className={`text-[10px] flex-shrink-0 hidden sm:block ${overdue ? "text-red-400" : "text-slate-400 dark:text-[#444]"}`}>
+                      <span className={`text-[10px] flex-shrink-0 hidden sm:block ${overdue ? "text-red-400" : "text-[var(--tf-text-tertiary)]"}`}>
                         {formatDate(task.dueDate)}
                       </span>
                     )}
@@ -549,7 +549,7 @@ function TimelineView({ tasks }: { tasks: Task[] }) {
                     ) : (
                       /* No due date — show a dashed placeholder */
                       <div
-                        className="absolute top-1/2 -translate-y-1/2 border border-dashed border-slate-300 dark:border-[#333] rounded-[6px] flex items-center px-2 text-[10px] text-slate-400 dark:text-[#444]"
+                        className="absolute top-1/2 -translate-y-1/2 border border-dashed border-slate-300 dark:border-[var(--tf-border)] rounded-[6px] flex items-center px-2 text-[10px] text-[var(--tf-text-tertiary)]"
                         style={{ left: todayIdx * DAY_PX, width: DAY_PX * 4, height: 24 }}
                         title="No due date"
                       >
@@ -598,16 +598,16 @@ export function ProjectClient({ project, tasks, allProjects, currentUser, member
     <div className="flex-1 overflow-auto">
 
       {/* Topbar */}
-      <div className="h-[50px] border-b border-slate-100 dark:border-[#1a1a1a] flex items-center justify-between pl-14 pr-4 md:px-5 bg-white dark:bg-[#0d0d0d] sticky top-0 z-10">
+      <div className="h-[50px] border-b border-[var(--tf-border-subtle)] flex items-center justify-between pl-14 pr-4 md:px-5 bg-[var(--tf-bg-card)] sticky top-0 z-10">
         <div className="flex items-center gap-2 min-w-0">
-          <span className="text-[13px] text-slate-400 dark:text-[#555] hidden sm:inline">Projects /</span>
+          <span className="text-[13px] text-[var(--tf-text-tertiary)] hidden sm:inline">Projects /</span>
           <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: project.color }} />
-          <span className="text-[13px] font-medium text-slate-800 dark:text-[#e0e0e0] truncate">{project.name}</span>
+          <span className="text-[13px] font-medium text-[var(--tf-text-primary)] truncate">{project.name}</span>
         </div>
 
         <div className="flex items-center gap-2 flex-shrink-0">
           {/* View switcher */}
-          <div className="flex items-center bg-slate-50 dark:bg-[#161616] border border-slate-200 dark:border-[#2a2a2a] rounded-[8px] p-0.5">
+          <div className="flex items-center bg-slate-50 dark:bg-[var(--tf-bg-dropdown)] border border-[var(--tf-border)] rounded-[8px] p-0.5">
             {views.map((v) => (
               <button
                 key={v.id}
@@ -616,8 +616,8 @@ export function ProjectClient({ project, tasks, allProjects, currentUser, member
                 className={cn(
                   "flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-[6px] text-[12px] font-medium transition-all",
                   view === v.id
-                    ? "bg-slate-200 dark:bg-[#2a2a2a] text-slate-800 dark:text-[#e0e0e0]"
-                    : "text-slate-400 dark:text-[#555] hover:text-slate-700 dark:hover:text-[#999]"
+                    ? "bg-slate-200 dark:bg-[var(--tf-bg-dropdown)] text-[var(--tf-text-primary)]"
+                    : "text-[var(--tf-text-tertiary)] hover:text-slate-700 dark:hover:text-[#999]"
                 )}
               >
                 <v.icon size={13} />
@@ -629,7 +629,7 @@ export function ProjectClient({ project, tasks, allProjects, currentUser, member
           <PresenceAvatars projectId={project.id} currentUser={currentUser} />
 
           <NewTaskDialog projectId={project.id}>
-            <div className="h-7 px-2 sm:px-3 text-xs bg-indigo-600 hover:bg-indigo-500 text-white rounded-md cursor-pointer flex items-center font-medium transition-colors">
+            <div className="h-7 px-2 sm:px-3 text-xs bg-[var(--tf-accent)] hover:brightness-110 text-white rounded-md cursor-pointer flex items-center font-medium transition-colors">
               <span className="hidden sm:inline">+ New task</span>
               <span className="sm:hidden">+</span>
             </div>
@@ -647,13 +647,13 @@ export function ProjectClient({ project, tasks, allProjects, currentUser, member
             style={{ background: project.color }}
           />
           <div>
-            <h1 className="text-[18px] font-semibold text-slate-900 dark:text-[#f0f0f0] tracking-tight">
+            <h1 className="text-[18px] font-semibold text-[var(--tf-text-primary)] tracking-tight">
               {project.name}
             </h1>
             {project.description && (
-              <p className="text-[13px] text-slate-500 dark:text-[#555] mt-1">{project.description}</p>
+              <p className="text-[13px] text-[var(--tf-text-tertiary)] mt-1">{project.description}</p>
             )}
-            <p className="text-[12px] text-slate-400 dark:text-[#444] mt-1">
+            <p className="text-[12px] text-[var(--tf-text-tertiary)] mt-1">
               {localTasks.length} task{localTasks.length !== 1 ? "s" : ""}
             </p>
           </div>
@@ -662,13 +662,13 @@ export function ProjectClient({ project, tasks, allProjects, currentUser, member
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
           {[
-            { label: "Total",       value: localTasks.length,         color: "text-slate-800 dark:text-[#e0e0e0]"   },
+            { label: "Total",       value: localTasks.length,         color: "text-[var(--tf-text-primary)]"   },
             { label: "In progress", value: inProgressTasks.length, color: "text-indigo-400"  },
             { label: "Completed",   value: doneTasks.length,     color: "text-emerald-400" },
             { label: "Todo",        value: todoTasks.length,     color: "text-amber-400"   },
           ].map((stat) => (
-            <div key={stat.label} className="bg-white dark:bg-[#111] border border-slate-100 dark:border-[#1f1f1f] rounded-[10px] p-4">
-              <p className="text-[11px] font-medium text-slate-400 dark:text-[#555] mb-2">{stat.label}</p>
+            <div key={stat.label} className="bg-[var(--tf-bg-card)] border border-slate-100 dark:border-[var(--tf-border)] rounded-[10px] p-4">
+              <p className="text-[11px] font-medium text-[var(--tf-text-tertiary)] mb-2">{stat.label}</p>
               <p className={`text-[26px] font-semibold tracking-tight leading-none ${stat.color}`}>
                 {stat.value}
               </p>

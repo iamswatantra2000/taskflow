@@ -245,24 +245,24 @@ export function PaymentModal({ open, onClose, planName, planPrice, userId }: Pay
             </div>
 
             <div>
-              <h3 className="text-[20px] font-semibold text-slate-900 dark:text-white mb-2">Payment Successful!</h3>
-              <p className="text-[13px] text-slate-500 dark:text-[#555] leading-relaxed">
-                Your <span className="text-slate-900 dark:text-white font-medium">{planName}</span> plan is now active.
+              <h3 className="text-[20px] font-semibold text-[var(--tf-text-primary)] mb-2">Payment Successful!</h3>
+              <p className="text-[13px] text-[var(--tf-text-tertiary)] leading-relaxed">
+                Your <span className="text-[var(--tf-text-primary)] font-medium">{planName}</span> plan is now active.
               </p>
             </div>
 
             {/* Receipt */}
             <div className="w-full bg-slate-50 dark:bg-white/[0.02] border border-slate-100 dark:border-white/[0.06] rounded-[12px] p-4 text-left space-y-2">
               <div className="flex justify-between text-[12px]">
-                <span className="text-slate-400 dark:text-[#444]">Order</span>
-                <span className="text-slate-500 dark:text-[#666] font-mono">{txnId}</span>
+                <span className="text-[var(--tf-text-tertiary)]">Order</span>
+                <span className="text-[var(--tf-text-secondary)] font-mono">{txnId}</span>
               </div>
               <div className="flex justify-between text-[12px]">
-                <span className="text-slate-400 dark:text-[#444]">{planName} Plan</span>
-                <span className="text-slate-900 dark:text-white">{price}</span>
+                <span className="text-[var(--tf-text-tertiary)]">{planName} Plan</span>
+                <span className="text-[var(--tf-text-primary)]">{price}</span>
               </div>
               <div className="border-t border-slate-100 dark:border-white/[0.06] pt-2 flex justify-between text-[12.5px] font-semibold">
-                <span className="text-slate-500 dark:text-[#555]">Total charged</span>
+                <span className="text-[var(--tf-text-tertiary)]">Total charged</span>
                 <span className="text-emerald-400">{price}</span>
               </div>
             </div>
@@ -290,10 +290,10 @@ export function PaymentModal({ open, onClose, planName, planPrice, userId }: Pay
             </div>
 
             <div>
-              <p className="text-[14px] font-medium text-slate-900 dark:text-white mb-1">
+              <p className="text-[14px] font-medium text-[var(--tf-text-primary)] mb-1">
                 {LOADING_MSGS[tab][loadingStep]}
               </p>
-              <p className="text-[12px] text-slate-400 dark:text-[#444]">Please don&apos;t close this window</p>
+              <p className="text-[12px] text-[var(--tf-text-tertiary)]">Please don&apos;t close this window</p>
             </div>
 
             {/* Step dots */}
@@ -325,19 +325,19 @@ export function PaymentModal({ open, onClose, planName, planPrice, userId }: Pay
               {/* Order summary */}
               <div className="flex items-center justify-between mt-4 p-3 rounded-[10px] bg-slate-50 dark:bg-white/[0.02] border border-slate-100 dark:border-white/[0.06]">
                 <div>
-                  <p className="text-[12.5px] font-semibold text-slate-900 dark:text-white">{planName} Plan</p>
-                  <p className="text-[11px] text-slate-500 dark:text-[#555] mt-0.5">{planPrice}</p>
+                  <p className="text-[12.5px] font-semibold text-[var(--tf-text-primary)]">{planName} Plan</p>
+                  <p className="text-[11px] text-[var(--tf-text-tertiary)] mt-0.5">{planPrice}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-[10px] text-slate-400 dark:text-[#444] mb-0.5">Due today</p>
-                  <p className="text-[22px] font-bold text-slate-900 dark:text-white">{price}</p>
+                  <p className="text-[10px] text-[var(--tf-text-tertiary)] mb-0.5">Due today</p>
+                  <p className="text-[22px] font-bold text-[var(--tf-text-primary)]">{price}</p>
                 </div>
               </div>
             </div>
 
             <div className="px-6 pt-4 pb-6 flex flex-col gap-5">
               {/* Tab switcher */}
-              <div className="grid grid-cols-3 gap-1 bg-slate-50 dark:bg-white/[0.03] border border-slate-100 dark:border-white/[0.06] rounded-[10px] p-1">
+              <div className="grid grid-cols-3 gap-1 bg-[var(--tf-bg-hover)] border border-slate-100 dark:border-white/[0.06] rounded-[10px] p-1">
                 {tabs.map(({ id, label, icon: Icon }) => (
                   <button
                     key={id}
@@ -346,7 +346,7 @@ export function PaymentModal({ open, onClose, planName, planPrice, userId }: Pay
                     className={`flex items-center justify-center gap-1.5 h-[30px] rounded-[7px] text-[12px] font-medium transition-all duration-200 ${
                       tab === id
                         ? "bg-indigo-600 text-white shadow-sm"
-                        : "text-slate-500 dark:text-[#555] hover:text-slate-700 dark:hover:text-[#888]"
+                        : "text-[var(--tf-text-tertiary)] hover:text-slate-700 dark:hover:text-[#888]"
                     }`}
                   >
                     <Icon size={11} />
@@ -367,7 +367,7 @@ export function PaymentModal({ open, onClose, planName, planPrice, userId }: Pay
                   />
 
                   <div>
-                    <label className="block text-[11.5px] text-slate-500 dark:text-[#555] mb-1.5">Card number</label>
+                    <label className="block text-[11.5px] text-[var(--tf-text-tertiary)] mb-1.5">Card number</label>
                     <div className="relative">
                       <Input
                         placeholder="1234 5678 9012 3456"
@@ -376,7 +376,7 @@ export function PaymentModal({ open, onClose, planName, planPrice, userId }: Pay
                         className="pr-16 font-mono tracking-widest"
                       />
                       {brand && (
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-500 dark:text-[#555] tracking-wide">
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-[var(--tf-text-tertiary)] tracking-wide">
                           {brand}
                         </span>
                       )}
@@ -385,7 +385,7 @@ export function PaymentModal({ open, onClose, planName, planPrice, userId }: Pay
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-[11.5px] text-slate-500 dark:text-[#555] mb-1.5">Expiry</label>
+                      <label className="block text-[11.5px] text-[var(--tf-text-tertiary)] mb-1.5">Expiry</label>
                       <Input
                         placeholder="MM / YY"
                         value={expiry}
@@ -395,7 +395,7 @@ export function PaymentModal({ open, onClose, planName, planPrice, userId }: Pay
                       />
                     </div>
                     <div>
-                      <label className="block text-[11.5px] text-slate-500 dark:text-[#555] mb-1.5">CVV</label>
+                      <label className="block text-[11.5px] text-[var(--tf-text-tertiary)] mb-1.5">CVV</label>
                       <div className="relative">
                         <Input
                           type={showCvv ? "text" : "password"}
@@ -409,7 +409,7 @@ export function PaymentModal({ open, onClose, planName, planPrice, userId }: Pay
                         <button
                           type="button"
                           onClick={() => setShowCvv(!showCvv)}
-                          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-[#444] hover:text-slate-600 dark:hover:text-[#777] transition-colors"
+                          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--tf-text-tertiary)] hover:text-slate-600 dark:hover:text-[#777] transition-colors"
                         >
                           {showCvv ? <EyeOff size={13} /> : <Eye size={13} />}
                         </button>
@@ -418,7 +418,7 @@ export function PaymentModal({ open, onClose, planName, planPrice, userId }: Pay
                   </div>
 
                   <div>
-                    <label className="block text-[11.5px] text-slate-500 dark:text-[#555] mb-1.5">Name on card</label>
+                    <label className="block text-[11.5px] text-[var(--tf-text-tertiary)] mb-1.5">Name on card</label>
                     <Input
                       placeholder="Full name as on card"
                       value={cardName}
@@ -442,7 +442,7 @@ export function PaymentModal({ open, onClose, planName, planPrice, userId }: Pay
                         }`}
                       />
                     </div>
-                    <span className="text-[12px] text-slate-500 dark:text-[#555]">Save card for future payments</span>
+                    <span className="text-[12px] text-[var(--tf-text-tertiary)]">Save card for future payments</span>
                   </label>
                 </div>
               )}
@@ -451,19 +451,19 @@ export function PaymentModal({ open, onClose, planName, planPrice, userId }: Pay
               {tab === "upi" && (
                 <div className="flex flex-col gap-4">
                   <div>
-                    <label className="block text-[11.5px] text-slate-500 dark:text-[#555] mb-1.5">UPI ID</label>
+                    <label className="block text-[11.5px] text-[var(--tf-text-tertiary)] mb-1.5">UPI ID</label>
                     <Input
                       placeholder="yourname@okaxis"
                       value={upiId}
                       onChange={(e) => setUpiId(e.target.value)}
                     />
-                    <p className="text-[11px] text-slate-400 dark:text-[#3a3a3a] mt-1.5">
+                    <p className="text-[11px] text-[var(--tf-text-tertiary)] mt-1.5">
                       Enter your UPI ID linked to any bank account
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-[11.5px] text-slate-500 dark:text-[#555] mb-2.5">Select payment app</p>
+                    <p className="text-[11.5px] text-[var(--tf-text-tertiary)] mb-2.5">Select payment app</p>
                     <div className="grid grid-cols-4 gap-2">
                       {UPI_APPS.map((app) => (
                         <button
@@ -473,7 +473,7 @@ export function PaymentModal({ open, onClose, planName, planPrice, userId }: Pay
                           className={`h-12 rounded-[9px] border text-[12px] font-medium transition-all duration-150 ${
                             selectedUpiApp === app
                               ? "border-indigo-500/40 bg-indigo-600/10 text-indigo-300"
-                              : "border-slate-200 dark:border-white/[0.07] bg-slate-50 dark:bg-white/[0.02] text-slate-500 dark:text-[#555] hover:border-slate-300 dark:hover:border-white/[0.14] hover:text-slate-700 dark:hover:text-[#888]"
+                              : "border-slate-200 dark:border-white/[0.07] bg-slate-50 dark:bg-white/[0.02] text-[var(--tf-text-tertiary)] hover:border-slate-300 dark:hover:border-white/[0.14] hover:text-slate-700 dark:hover:text-[#888]"
                           }`}
                         >
                           {app}
@@ -498,7 +498,7 @@ export function PaymentModal({ open, onClose, planName, planPrice, userId }: Pay
               {/* ── Net Banking tab ── */}
               {tab === "netbanking" && (
                 <div className="flex flex-col gap-3">
-                  <p className="text-[11.5px] text-slate-500 dark:text-[#555]">Select your bank</p>
+                  <p className="text-[11.5px] text-[var(--tf-text-tertiary)]">Select your bank</p>
                   <div className="grid grid-cols-3 gap-1.5">
                     {BANKS.map((bank) => (
                       <button
@@ -508,7 +508,7 @@ export function PaymentModal({ open, onClose, planName, planPrice, userId }: Pay
                         className={`h-[38px] px-2 rounded-[8px] border text-[11.5px] font-medium transition-all duration-150 truncate ${
                           selectedBank === bank
                             ? "border-indigo-500/40 bg-indigo-600/10 text-indigo-300"
-                            : "border-slate-200 dark:border-white/[0.07] bg-slate-50 dark:bg-white/[0.02] text-slate-500 dark:text-[#555] hover:border-slate-300 dark:hover:border-white/[0.14] hover:text-slate-700 dark:hover:text-[#888]"
+                            : "border-slate-200 dark:border-white/[0.07] bg-slate-50 dark:bg-white/[0.02] text-[var(--tf-text-tertiary)] hover:border-slate-300 dark:hover:border-white/[0.14] hover:text-slate-700 dark:hover:text-[#888]"
                         }`}
                       >
                         {bank}
@@ -540,7 +540,7 @@ export function PaymentModal({ open, onClose, planName, planPrice, userId }: Pay
               </button>
 
               {/* Security row */}
-              <div className="flex items-center justify-center gap-4 text-[10.5px] text-slate-400 dark:text-[#2d2d2d]">
+              <div className="flex items-center justify-center gap-4 text-[10.5px] text-slate-400 dark:text-[var(--tf-text-tertiary)]">
                 <span className="flex items-center gap-1"><Lock size={9} /> 256-bit SSL</span>
                 <span className="w-px h-3 bg-slate-200 dark:bg-white/[0.08]" />
                 <span className="flex items-center gap-1"><ShieldCheck size={9} /> PCI DSS</span>

@@ -46,17 +46,17 @@ export function AssigneeButton({ taskId, assigneeId, members, onAssign }: Props)
             {getInitials(assignee.name)}
           </div>
         ) : (
-          <div className="w-[22px] h-[22px] rounded-full border border-dashed border-slate-200 dark:border-[#2a2a2a] flex items-center justify-center text-slate-300 dark:text-[#3a3a3a] hover:border-indigo-400 hover:text-indigo-400 dark:hover:border-indigo-500 dark:hover:text-indigo-400 transition-colors cursor-pointer">
+          <div className="w-[22px] h-[22px] rounded-full border border-dashed border-[var(--tf-border)] flex items-center justify-center text-[var(--tf-text-tertiary)] hover:border-indigo-400 hover:text-indigo-400 dark:hover:border-indigo-500 dark:hover:text-indigo-400 transition-colors cursor-pointer">
             <UserPlus size={10} />
           </div>
         )}
       </button>
 
       {open && (
-        <div className="absolute bottom-7 right-0 z-[200] w-[178px] bg-white dark:bg-[#161616] border border-slate-200 dark:border-[#2a2a2a] rounded-[10px] shadow-xl overflow-hidden">
+        <div className="absolute bottom-7 right-0 z-[200] w-[178px] bg-[var(--tf-bg-dropdown)] border border-[var(--tf-border)] rounded-[10px] shadow-xl overflow-hidden">
           {/* Header */}
-          <div className="px-3 py-2 border-b border-slate-100 dark:border-[#1f1f1f]">
-            <p className="text-[10px] font-semibold text-slate-400 dark:text-[#555] uppercase tracking-wider">
+          <div className="px-3 py-2 border-b border-[var(--tf-border-subtle)]">
+            <p className="text-[10px] font-semibold text-[var(--tf-text-tertiary)] uppercase tracking-wider">
               Assign to
             </p>
           </div>
@@ -68,16 +68,16 @@ export function AssigneeButton({ taskId, assigneeId, members, onAssign }: Props)
             <button
               type="button"
               onClick={() => { onAssign(taskId, null); setOpen(false) }}
-              className="w-full flex items-center gap-2.5 px-3 py-1.5 hover:bg-slate-50 dark:hover:bg-[#1f1f1f] transition-colors"
+              className="w-full flex items-center gap-2.5 px-3 py-1.5 hover:bg-[var(--tf-bg-hover)] transition-colors"
             >
-              <div className="w-6 h-6 rounded-full border border-dashed border-slate-300 dark:border-[#333] flex items-center justify-center flex-shrink-0 text-slate-300 dark:text-[#444]">
+              <div className="w-6 h-6 rounded-full border border-dashed border-slate-300 dark:border-[var(--tf-border)] flex items-center justify-center flex-shrink-0 text-[var(--tf-text-tertiary)]">
                 <UserPlus size={10} />
               </div>
-              <span className="text-[12px] text-slate-500 dark:text-[#666] flex-1 text-left">
+              <span className="text-[12px] text-[var(--tf-text-secondary)] flex-1 text-left">
                 Unassigned
               </span>
               {!assigneeId && (
-                <Check size={11} className="text-indigo-400 flex-shrink-0" />
+                <Check size={11} className="text-[var(--tf-accent-text)] flex-shrink-0" />
               )}
             </button>
 
@@ -87,7 +87,7 @@ export function AssigneeButton({ taskId, assigneeId, members, onAssign }: Props)
                 key={m.id}
                 type="button"
                 onClick={() => { onAssign(taskId, m.id); setOpen(false) }}
-                className="w-full flex items-center gap-2.5 px-3 py-1.5 hover:bg-slate-50 dark:hover:bg-[#1f1f1f] transition-colors"
+                className="w-full flex items-center gap-2.5 px-3 py-1.5 hover:bg-[var(--tf-bg-hover)] transition-colors"
               >
                 <div
                   className="w-6 h-6 rounded-full text-[9px] font-bold text-white flex items-center justify-center flex-shrink-0"
@@ -95,11 +95,11 @@ export function AssigneeButton({ taskId, assigneeId, members, onAssign }: Props)
                 >
                   {getInitials(m.name)}
                 </div>
-                <span className="text-[12px] text-slate-700 dark:text-[#ccc] flex-1 text-left truncate">
+                <span className="text-[12px] text-[var(--tf-text-primary)] flex-1 text-left truncate">
                   {m.name}
                 </span>
                 {m.id === assigneeId && (
-                  <Check size={11} className="text-indigo-400 flex-shrink-0" />
+                  <Check size={11} className="text-[var(--tf-accent-text)] flex-shrink-0" />
                 )}
               </button>
             ))}

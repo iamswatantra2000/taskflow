@@ -76,24 +76,192 @@
    Applied to <html> via ThemeStyleContext
    ════════════════════════════════════════ */
 
+/* ── Base tokens: light / Cloud theme ── */
 :root {
-  /* Defaults (Midnight) — overridden by ThemeStyleContext at runtime */
+  /* Accent (overridden at runtime by ThemeStyleContext) */
   --tf-accent:         #6366f1;
-  --tf-accent-muted:   rgba(99, 102, 241, 0.12);
+  --tf-accent-muted:   rgba(99,102,241,0.12);
   --tf-accent-text:    #818cf8;
+  --tf-sidebar-bg:     #fafafa;
+  --tf-sidebar-border: #e2e8f0;
+
+  /* Semantic surface tokens */
+  --tf-bg-card:       #ffffff;
+  --tf-bg-panel:      #f8fafc;
+  --tf-bg-overlay:    #ffffff;
+  --tf-bg-dropdown:   #ffffff;
+  --tf-bg-input:      #ffffff;
+  --tf-bg-hover:      rgba(0,0,0,0.04);
+  --tf-bg-immersive:  #020204;
+  --tf-border:        #e2e8f0;
+  --tf-border-subtle: #f1f5f9;
+
+  /* Text color tokens */
+  --tf-text-primary:   #1e293b;
+  --tf-text-secondary: #64748b;
+  --tf-text-tertiary:  #94a3b8;
+}
+
+/* ── Dark defaults (Midnight) ── */
+.dark {
   --tf-sidebar-bg:     #0f0f0f;
-  --tf-sidebar-border: rgba(255, 255, 255, 0.06);
+  --tf-sidebar-border: rgba(255,255,255,0.06);
+
+  --tf-bg-card:       #111111;
+  --tf-bg-panel:      #0d0d0d;
+  --tf-bg-overlay:    #111111;
+  --tf-bg-dropdown:   #181818;
+  --tf-bg-input:      #0d0d0d;
+  --tf-bg-hover:      rgba(255,255,255,0.04);
+  --tf-bg-immersive:  #040406;
+  --tf-border:        rgba(255,255,255,0.08);
+  --tf-border-subtle: rgba(255,255,255,0.05);
+
+  /* Text color tokens */
+  --tf-text-primary:   #e0e0e0;
+  --tf-text-secondary: #888888;
+  --tf-text-tertiary:  #555555;
 }
 
-/* ── Sidebar background override (higher specificity than Tailwind dark: prefix) ── */
+/* ── Per-theme overrides ── */
 
-/* Dark themes: .dark class is on html too, so combine selectors */
-html.dark[data-theme] aside {
-  background-color: var(--tf-sidebar-bg) !important;
-  border-color:     var(--tf-sidebar-border) !important;
+[data-theme="obsidian"] {
+  --background:       240 50% 2%;
+  --foreground:       240 10% 91%;
+  --primary:          263 70% 58%;
+  --tf-accent:        #8b5cf6;
+  --tf-accent-muted:  rgba(139,92,246,0.13);
+  --tf-accent-text:   #a78bfa;
+  --tf-sidebar-bg:    #07070d;
+  --tf-sidebar-border: rgba(255,255,255,0.04);
+  --tf-bg-card:       #0c0c18;
+  --tf-bg-panel:      #07070d;
+  --tf-bg-overlay:    #0f0f1c;
+  --tf-bg-dropdown:   #0f0f1c;
+  --tf-bg-input:      #0c0c18;
+  --tf-bg-hover:      rgba(139,92,246,0.06);
+  --tf-bg-immersive:  #020208;
+  --tf-border:        rgba(139,92,246,0.2);
+  --tf-border-subtle: rgba(255,255,255,0.04);
+  --tf-text-primary:   #ddd8f8;
+  --tf-text-secondary: #7a7a9a;
+  --tf-text-tertiary:  #4a4a6a;
 }
 
-/* Light themes: no .dark class on html */
+[data-theme="nord"] {
+  --background:       220 17% 21%;
+  --foreground:       218 27% 92%;
+  --primary:          192 38% 68%;
+  --tf-accent:        #88c0d0;
+  --tf-accent-muted:  rgba(136,192,208,0.14);
+  --tf-accent-text:   #8fbcbb;
+  --tf-sidebar-bg:    #282c35;
+  --tf-sidebar-border: rgba(255,255,255,0.08);
+  --tf-bg-card:       #3b4252;
+  --tf-bg-panel:      #2e3440;
+  --tf-bg-overlay:    #434c5e;
+  --tf-bg-dropdown:   #434c5e;
+  --tf-bg-input:      #3b4252;
+  --tf-bg-hover:      rgba(255,255,255,0.07);
+  --tf-bg-immersive:  #1e2228;
+  --tf-border:        rgba(255,255,255,0.13);
+  --tf-border-subtle: rgba(255,255,255,0.07);
+  --tf-text-primary:   #eceff4;
+  --tf-text-secondary: #aab4c4;
+  --tf-text-tertiary:  #6b7a8d;
+}
+
+[data-theme="ember"] {
+  --background:       24 55% 6%;
+  --foreground:       30 30% 90%;
+  --primary:          38 92% 50%;
+  --tf-accent:        #f59e0b;
+  --tf-accent-muted:  rgba(245,158,11,0.12);
+  --tf-accent-text:   #fbbf24;
+  --tf-sidebar-bg:    #0e0704;
+  --tf-sidebar-border: rgba(255,255,255,0.05);
+  --tf-bg-card:       #1c1008;
+  --tf-bg-panel:      #130a04;
+  --tf-bg-overlay:    #221508;
+  --tf-bg-dropdown:   #221508;
+  --tf-bg-input:      #1c1008;
+  --tf-bg-hover:      rgba(245,158,11,0.07);
+  --tf-bg-immersive:  #0a0503;
+  --tf-border:        rgba(245,158,11,0.18);
+  --tf-border-subtle: rgba(255,255,255,0.05);
+  --tf-text-primary:   #e8d5b0;
+  --tf-text-secondary: #8a7050;
+  --tf-text-tertiary:  #5a4530;
+}
+
+[data-theme="parchment"] {
+  --background:       40 33% 97%;
+  --foreground:       30 20% 18%;
+  --primary:          38 90% 36%;
+  --tf-accent:        #b45309;
+  --tf-accent-muted:  rgba(180,83,9,0.09);
+  --tf-accent-text:   #92400e;
+  --tf-sidebar-bg:    #f5f0e8;
+  --tf-sidebar-border: #ddd5c4;
+  --tf-bg-card:       #fffcf5;
+  --tf-bg-panel:      #f5f0e8;
+  --tf-bg-overlay:    #fffef8;
+  --tf-bg-dropdown:   #fffef8;
+  --tf-bg-input:      #faf6ec;
+  --tf-bg-hover:      rgba(0,0,0,0.03);
+  --tf-border:        #ddd5c4;
+  --tf-border-subtle: #ede7d8;
+  --tf-text-primary:   #3d2b0d;
+  --tf-text-secondary: #8c6840;
+  --tf-text-tertiary:  #b89060;
+}
+
+[data-theme="arctic"] {
+  --background:       200 60% 96%;
+  --foreground:       210 25% 15%;
+  --primary:          174 72% 35%;
+  --tf-accent:        #0d9488;
+  --tf-accent-muted:  rgba(13,148,136,0.09);
+  --tf-accent-text:   #0f766e;
+  --tf-sidebar-bg:    #e2f0f8;
+  --tf-sidebar-border: #c1ddf0;
+  --tf-bg-card:       #f8fcff;
+  --tf-bg-panel:      #e2f0f8;
+  --tf-bg-overlay:    #f8fcff;
+  --tf-bg-dropdown:   #f0f8ff;
+  --tf-bg-input:      #f0f8ff;
+  --tf-bg-hover:      rgba(0,0,0,0.04);
+  --tf-border:        #c1ddf0;
+  --tf-border-subtle: #d8eef8;
+  --tf-text-primary:   #0f2d40;
+  --tf-text-secondary: #3a6b85;
+  --tf-text-tertiary:  #6a9ab5;
+}
+
+[data-theme="blossom"] {
+  --background:       340 80% 97%;
+  --foreground:       340 20% 15%;
+  --primary:          336 72% 52%;
+  --tf-accent:        #db2777;
+  --tf-accent-muted:  rgba(219,39,119,0.08);
+  --tf-accent-text:   #be185d;
+  --tf-sidebar-bg:    #f9e8f0;
+  --tf-sidebar-border: #f0d0e4;
+  --tf-bg-card:       #fff8fb;
+  --tf-bg-panel:      #f9e8f0;
+  --tf-bg-overlay:    #fff8fb;
+  --tf-bg-dropdown:   #fdf4f8;
+  --tf-bg-input:      #fdf0f6;
+  --tf-bg-hover:      rgba(0,0,0,0.04);
+  --tf-border:        #f0d0e4;
+  --tf-border-subtle: #f8e4f0;
+  --tf-text-primary:   #4a1030;
+  --tf-text-secondary: #9a5070;
+  --tf-text-tertiary:  #c080a0;
+}
+
+/* ── Sidebar override (beats Tailwind dark: specificity) ── */
+html.dark[data-theme] aside,
 html:not(.dark)[data-theme] aside {
   background-color: var(--tf-sidebar-bg) !important;
   border-color:     var(--tf-sidebar-border) !important;
@@ -109,15 +277,8 @@ html:not(.dark)[data-theme] aside {
   font-family: var(--font-lora), Georgia, "Times New Roman", serif;
 }
 
-/* ── Nord: softer, wider letter-spacing for a Scandinavian feel ── */
-[data-theme="nord"] body {
-  letter-spacing: 0;
-}
-
-/* ── Ember: warm body text tint ── */
-[data-theme="ember"] body {
-  color: hsl(30 25% 82%);
-}
+/* ── Ember warm text tint ── */
+[data-theme="ember"] body { color: hsl(30 25% 82%); }
 
 @keyframes fade-in-up {
   from { opacity: 0; transform: translateY(22px); }

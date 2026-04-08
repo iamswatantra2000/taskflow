@@ -114,24 +114,24 @@ export function LabelPicker({
   }
 
   if (loadingLabels) return (
-    <div className="space-y-2 pt-4 border-t border-slate-100 dark:border-[#1f1f1f]">
+    <div className="space-y-2 pt-4 border-t border-slate-100 dark:border-[var(--tf-border)]">
       <div className="flex items-center gap-1.5">
-        <div className="w-3 h-3 rounded bg-slate-100 dark:bg-[#1f1f1f] animate-pulse" />
-        <div className="h-3 w-10 rounded bg-slate-100 dark:bg-[#1f1f1f] animate-pulse" />
+        <div className="w-3 h-3 rounded bg-slate-100 dark:bg-[var(--tf-bg-dropdown)] animate-pulse" />
+        <div className="h-3 w-10 rounded bg-slate-100 dark:bg-[var(--tf-bg-dropdown)] animate-pulse" />
       </div>
       <div className="flex gap-1.5">
-        <div className="h-5 w-16 rounded-full bg-slate-100 dark:bg-[#1f1f1f] animate-pulse" />
-        <div className="h-5 w-20 rounded-full bg-slate-100 dark:bg-[#1f1f1f] animate-pulse" />
+        <div className="h-5 w-16 rounded-full bg-slate-100 dark:bg-[var(--tf-bg-dropdown)] animate-pulse" />
+        <div className="h-5 w-20 rounded-full bg-slate-100 dark:bg-[var(--tf-bg-dropdown)] animate-pulse" />
       </div>
     </div>
   )
 
   return (
-    <div className="space-y-2 pt-4 border-t border-slate-100 dark:border-[#1f1f1f]">
+    <div className="space-y-2 pt-4 border-t border-slate-100 dark:border-[var(--tf-border)]">
       {/* Header */}
       <div className="flex items-center gap-1.5">
         <Tag size={12} className="text-indigo-400" />
-        <span className="text-[12px] font-semibold text-slate-700 dark:text-[#ccc]">Labels</span>
+        <span className="text-[12px] font-semibold text-[var(--tf-text-primary)]">Labels</span>
       </div>
 
       {/* Applied label chips + add button */}
@@ -162,7 +162,7 @@ export function LabelPicker({
           <button
             type="button"
             onClick={() => { setOpen(!open); setCreating(false) }}
-            className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full border border-dashed border-slate-300 dark:border-[#333] text-slate-400 dark:text-[#555] hover:border-indigo-400 hover:text-indigo-500 dark:hover:border-indigo-500/50 dark:hover:text-indigo-400 transition-colors"
+            className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full border border-dashed border-slate-300 dark:border-[var(--tf-border)] text-[var(--tf-text-tertiary)] hover:border-indigo-400 hover:text-indigo-500 dark:hover:border-indigo-500/50 dark:hover:text-indigo-400 transition-colors"
           >
             <Plus size={10} />
             Add label
@@ -170,12 +170,12 @@ export function LabelPicker({
 
           {/* Dropdown */}
           {open && (
-            <div className="absolute left-0 bottom-8 z-[200] w-[220px] bg-white dark:bg-[#161616] border border-slate-200 dark:border-[#2a2a2a] rounded-[10px] shadow-xl overflow-hidden">
+            <div className="absolute left-0 bottom-8 z-[200] w-[220px] bg-[var(--tf-bg-dropdown)] border border-[var(--tf-border)] rounded-[10px] shadow-xl overflow-hidden">
 
               {/* Existing labels */}
               <div className="p-1.5 max-h-[200px] overflow-y-auto">
                 {workspaceLabels.length === 0 && !creating && (
-                  <p className="text-[11px] text-slate-400 dark:text-[#555] px-2 py-1.5 italic">
+                  <p className="text-[11px] text-[var(--tf-text-tertiary)] px-2 py-1.5 italic">
                     No labels yet
                   </p>
                 )}
@@ -184,21 +184,21 @@ export function LabelPicker({
                   return (
                     <div
                       key={label.id}
-                      className="group flex items-center gap-2 px-2 py-1.5 rounded-[6px] hover:bg-slate-50 dark:hover:bg-white/[0.04] cursor-pointer transition-colors"
+                      className="group flex items-center gap-2 px-2 py-1.5 rounded-[6px] hover:bg-[var(--tf-bg-hover)] cursor-pointer transition-colors"
                       onClick={() => handleToggle(label)}
                     >
                       <span
                         className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                         style={{ background: label.color }}
                       />
-                      <span className="flex-1 text-[12px] text-slate-700 dark:text-[#ccc] truncate">
+                      <span className="flex-1 text-[12px] text-[var(--tf-text-primary)] truncate">
                         {label.name}
                       </span>
                       {active && <Check size={11} className="text-indigo-500 flex-shrink-0" />}
                       <button
                         type="button"
                         onClick={(e) => handleDeleteLabel(e, label.id)}
-                        className="opacity-0 group-hover:opacity-100 text-slate-300 hover:text-red-400 dark:text-[#333] dark:hover:text-red-400 transition-all flex-shrink-0"
+                        className="opacity-0 group-hover:opacity-100 text-slate-300 hover:text-red-400 dark:text-[var(--tf-text-tertiary)] dark:hover:text-red-400 transition-all flex-shrink-0"
                       >
                         <Trash2 size={10} />
                       </button>
@@ -208,7 +208,7 @@ export function LabelPicker({
               </div>
 
               {/* Divider + create */}
-              <div className="border-t border-slate-100 dark:border-[#2a2a2a] p-1.5">
+              <div className="border-t border-slate-100 dark:border-[var(--tf-border)] p-1.5">
                 {!creating ? (
                   <button
                     type="button"
@@ -226,7 +226,7 @@ export function LabelPicker({
                       onChange={(e) => setNewName(e.target.value)}
                       onKeyDown={(e) => { if (e.key === "Enter") handleCreate(); if (e.key === "Escape") setCreating(false) }}
                       placeholder="Label name..."
-                      className="w-full text-[12px] bg-white dark:bg-[#0d0d0d] border border-slate-200 dark:border-[#2a2a2a] rounded-[6px] px-2 py-1 outline-none focus:border-indigo-400 text-slate-800 dark:text-[#e0e0e0] placeholder-slate-300 dark:placeholder-[#444]"
+                      className="w-full text-[12px] bg-[var(--tf-bg-card)] border border-[var(--tf-border)] rounded-[6px] px-2 py-1 outline-none focus:border-[var(--tf-accent)] text-[var(--tf-text-primary)] placeholder-slate-300 dark:placeholder-[#444]"
                     />
                     {/* Color swatches */}
                     <div className="flex flex-wrap gap-1">
@@ -249,14 +249,14 @@ export function LabelPicker({
                         type="button"
                         onClick={handleCreate}
                         disabled={!newName.trim() || saving}
-                        className="flex-1 h-6 text-[11px] font-semibold bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white rounded-[5px] transition-colors flex items-center justify-center gap-1"
+                        className="flex-1 h-6 text-[11px] font-semibold bg-[var(--tf-accent)] hover:brightness-110 disabled:opacity-40 text-white rounded-[5px] transition-colors flex items-center justify-center gap-1"
                       >
                         {saving ? <Loader2 size={10} className="animate-spin" /> : "Create"}
                       </button>
                       <button
                         type="button"
                         onClick={() => setCreating(false)}
-                        className="flex-1 h-6 text-[11px] text-slate-500 dark:text-[#666] bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/[0.08] rounded-[5px] hover:bg-slate-100 dark:hover:bg-white/[0.07] transition-colors"
+                        className="flex-1 h-6 text-[11px] text-[var(--tf-text-secondary)] bg-slate-50 dark:bg-white/[0.04] border border-[var(--tf-border)] rounded-[5px] hover:bg-slate-100 dark:hover:bg-white/[0.07] transition-colors"
                       >
                         Cancel
                       </button>

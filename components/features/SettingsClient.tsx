@@ -53,7 +53,7 @@ function getInitials(name: string) {
 // ── Shared card wrapper ──
 function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={`bg-white dark:bg-[#0d0d0d] border border-slate-100 dark:border-white/[0.07] rounded-[16px] p-6
+    <div className={`bg-[var(--tf-bg-panel)] border border-slate-100 dark:border-white/[0.07] rounded-[16px] p-6
       hover:border-slate-200 dark:hover:border-white/[0.11] hover:-translate-y-[1px] hover:shadow-[0_16px_48px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_16px_48px_rgba(0,0,0,0.6)]
       transition-all duration-200 ${className}`}>
       {children}
@@ -75,8 +75,8 @@ function SectionHead({
           <Icon size={14} className={iconColor} />
         </div>
         <div>
-          <h3 className="text-[14px] font-bold text-slate-900 dark:text-white tracking-tight leading-none">{title}</h3>
-          {subtitle && <p className="text-[11.5px] text-slate-400 dark:text-[#3a3a3a] mt-1">{subtitle}</p>}
+          <h3 className="text-[14px] font-bold text-[var(--tf-text-primary)] tracking-tight leading-none">{title}</h3>
+          {subtitle && <p className="text-[11.5px] text-[var(--tf-text-tertiary)] mt-1">{subtitle}</p>}
         </div>
       </div>
       {right}
@@ -93,19 +93,19 @@ function Field({
 }) {
   return (
     <div className="space-y-1.5">
-      <p className="text-[11px] font-semibold text-slate-400 dark:text-[#3a3a3a] uppercase tracking-[0.08em]">{label}</p>
+      <p className="text-[11px] font-semibold text-[var(--tf-text-tertiary)] uppercase tracking-[0.08em]">{label}</p>
       <input
         value={value}
         onChange={onChange ? (e) => onChange(e.target.value) : undefined}
         disabled={disabled}
         className={`w-full rounded-[10px] px-3.5 py-2.5 text-[13px] outline-none transition-all duration-150 border
           ${disabled
-            ? "bg-slate-50 border-slate-100 text-slate-400 dark:bg-white/[0.02] dark:border-white/[0.04] dark:text-[#333] cursor-not-allowed"
-            : "bg-white border-slate-200 text-slate-800 placeholder-slate-300 dark:bg-white/[0.03] dark:border-white/[0.08] dark:text-[#ccc] dark:placeholder-[#2a2a2a] " +
+            ? "bg-slate-50 border-slate-100 text-slate-400 dark:bg-white/[0.02] dark:border-white/[0.04] dark:text-[var(--tf-text-tertiary)] cursor-not-allowed"
+            : "bg-white border-slate-200 text-slate-800 placeholder-slate-300 dark:bg-white/[0.03] dark:border-white/[0.08] dark:text-[var(--tf-text-primary)] dark:placeholder-[#2a2a2a] " +
               "hover:border-slate-300 dark:hover:border-white/[0.13] focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/[0.1]"
           }`}
       />
-      {hint && <p className="text-[11px] text-slate-400 dark:text-[#2a2a2a]">{hint}</p>}
+      {hint && <p className="text-[11px] text-slate-400 dark:text-[var(--tf-text-tertiary)]">{hint}</p>}
     </div>
   )
 }
@@ -141,11 +141,11 @@ const PLAN_META: Record<string, {
 }> = {
   free: {
     label:    "Free",
-    badge:    "text-slate-400 dark:text-[#555]",
+    badge:    "text-[var(--tf-text-tertiary)]",
     badgeBg:  "bg-slate-100 border-slate-200 dark:bg-white/[0.04] dark:border-white/[0.08]",
     border:   "border-slate-200 dark:border-white/[0.07]",
     glow:     "rgba(255,255,255,0.015)",
-    cardBg:   "bg-white dark:bg-[#0d0d0d]",
+    cardBg:   "bg-[var(--tf-bg-panel)]",
     features: ["Up to 3 projects", "Unlimited tasks", "Kanban board", "Basic search & filters"],
     PlanIcon: Zap,
   },
@@ -189,9 +189,9 @@ function PlanCard({ plan }: { plan: string }) {
 
       <div className="relative flex items-start justify-between mb-5">
         <div>
-          <p className="text-[10.5px] font-semibold text-slate-400 dark:text-[#2e2e2e] uppercase tracking-[0.1em] mb-2">Current plan</p>
+          <p className="text-[10.5px] font-semibold text-[var(--tf-text-tertiary)] uppercase tracking-[0.1em] mb-2">Current plan</p>
           <div className="flex items-center gap-2.5">
-            <span className="text-[30px] font-bold text-slate-900 dark:text-white tracking-tight leading-none">{meta.label}</span>
+            <span className="text-[30px] font-bold text-[var(--tf-text-primary)] tracking-tight leading-none">{meta.label}</span>
             <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${meta.badgeBg} ${meta.badge}`}>
               {plan === "free" ? "Forever free" : "Active"}
             </span>
@@ -204,9 +204,9 @@ function PlanCard({ plan }: { plan: string }) {
 
       <ul className="space-y-2 mb-5 relative">
         {meta.features.map((f) => (
-          <li key={f} className="flex items-center gap-2.5 text-[12.5px] text-slate-500 dark:text-[#444]">
+          <li key={f} className="flex items-center gap-2.5 text-[12.5px] text-slate-500 dark:text-[var(--tf-text-tertiary)]">
             <div className="w-[18px] h-[18px] rounded-full bg-slate-100 border border-slate-200 dark:bg-white/[0.04] dark:border-white/[0.06] flex items-center justify-center flex-shrink-0">
-              <Check size={9} className="text-slate-400 dark:text-[#444]" />
+              <Check size={9} className="text-[var(--tf-text-tertiary)]" />
             </div>
             {f}
           </li>
@@ -226,7 +226,7 @@ function PlanCard({ plan }: { plan: string }) {
           </a>
         )}
         {plan === "pro" && (
-          <p className="text-[12px] text-slate-400 dark:text-[#444]">
+          <p className="text-[12px] text-[var(--tf-text-tertiary)]">
             Need more?{" "}
             <a href="/upgrade" className="text-indigo-400 hover:text-indigo-300 inline-flex items-center gap-0.5 transition-colors">
               Contact sales for Enterprise <ArrowUpRight size={11} />
@@ -319,8 +319,8 @@ function ProfileTab({ user }: { user: Props["user"] }) {
           <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
           <div>
             <p className="text-[15px] font-bold text-white tracking-tight">{user.name}</p>
-            <p className="text-[12.5px] text-slate-500 dark:text-[#444] mt-0.5">{user.email}</p>
-            <p className="text-[11px] text-slate-400 dark:text-[#2a2a2a] mt-2 flex items-center gap-1.5">
+            <p className="text-[12.5px] text-slate-500 dark:text-[var(--tf-text-tertiary)] mt-0.5">{user.email}</p>
+            <p className="text-[11px] text-slate-400 dark:text-[var(--tf-text-tertiary)] mt-2 flex items-center gap-1.5">
               <Camera size={10} />
               Click avatar to change photo
             </p>
@@ -353,7 +353,7 @@ function ProfileTab({ user }: { user: Props["user"] }) {
           iconBg="bg-emerald-500/[0.1]"
           iconColor="text-emerald-400"
         />
-        <p className="text-[12.5px] text-slate-400 dark:text-[#3a3a3a] leading-relaxed">
+        <p className="text-[12.5px] text-[var(--tf-text-tertiary)] leading-relaxed">
           Password and 2FA settings are handled by your auth provider (Google, GitHub, or email).
           Sign out and sign back in to update your credentials.
         </p>
@@ -373,7 +373,7 @@ function ProfileTab({ user }: { user: Props["user"] }) {
           iconBg="bg-red-500/[0.1]"
           iconColor="text-red-400"
         />
-        <p className="text-[12.5px] text-slate-400 dark:text-[#3a3a3a] mb-5 leading-relaxed">
+        <p className="text-[12.5px] text-[var(--tf-text-tertiary)] mb-5 leading-relaxed">
           Permanently delete your account and all associated data. This action cannot be undone.
         </p>
         <button
@@ -428,7 +428,7 @@ function WorkspaceTab({
   const roleStyles: Record<string, { bg: string; text: string; border: string }> = {
     OWNER:  { bg: "bg-violet-500/[0.1]", text: "text-violet-300", border: "border-violet-500/25" },
     ADMIN:  { bg: "bg-indigo-500/[0.1]", text: "text-indigo-300", border: "border-indigo-500/25" },
-    MEMBER: { bg: "bg-slate-100 dark:bg-white/[0.04]",     text: "text-slate-500 dark:text-[#555]",     border: "border-slate-200 dark:border-white/[0.08]"  },
+    MEMBER: { bg: "bg-[var(--tf-bg-hover)]",     text: "text-[var(--tf-text-tertiary)]",     border: "border-slate-200 dark:border-white/[0.08]"  },
   }
 
   return (
@@ -480,7 +480,7 @@ function WorkspaceTab({
                 transition-all duration-100 active:translate-y-[2px] active:shadow-none
                 ${canInvite
                   ? "bg-indigo-600 hover:bg-indigo-500 text-white border-indigo-700/80"
-                  : "text-slate-300 dark:text-[#444] border-slate-100 dark:border-white/[0.07] opacity-50 cursor-not-allowed"
+                  : "text-[var(--tf-text-tertiary)] border-slate-100 dark:border-white/[0.07] opacity-50 cursor-not-allowed"
                 }`}
             >
               <UserPlus size={12} />
@@ -504,8 +504,8 @@ function WorkspaceTab({
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-semibold text-slate-600 dark:text-[#bbb] truncate">{member.name}</p>
-                  <p className="text-[11px] text-slate-400 dark:text-[#3a3a3a] truncate">{member.email}</p>
+                  <p className="text-[13px] font-semibold text-slate-600 dark:text-[var(--tf-text-primary)] truncate">{member.name}</p>
+                  <p className="text-[11px] text-[var(--tf-text-tertiary)] truncate">{member.email}</p>
                 </div>
                 <span className={`text-[10px] font-bold uppercase tracking-[0.06em] px-2.5 py-0.5 rounded-full border ${rs.bg} ${rs.border} ${rs.text}`}>
                   {member.role}
@@ -548,8 +548,8 @@ function AppearanceTab() {
         <div className="flex items-center gap-3 p-3 rounded-[10px] bg-slate-50 dark:bg-white/[0.02] border border-slate-100 dark:border-white/[0.05]">
           <ThemeToggleInline />
           <div>
-            <p className="text-[12.5px] font-semibold text-slate-700 dark:text-[#ccc]">Sun / Moon toggle</p>
-            <p className="text-[11px] text-slate-400 dark:text-[#3a3a3a] mt-0.5">Available in every page header — switches between your paired dark & light themes</p>
+            <p className="text-[12.5px] font-semibold text-[var(--tf-text-primary)]">Sun / Moon toggle</p>
+            <p className="text-[11px] text-[var(--tf-text-tertiary)] mt-0.5">Available in every page header — switches between your paired dark & light themes</p>
           </div>
         </div>
       </Card>
@@ -621,7 +621,7 @@ function NotificationsTab({ initialPrefs }: { initialPrefs: NotifPrefs }) {
           iconColor="text-amber-400"
           right={
             saving
-              ? <Loader2 size={13} className="animate-spin text-slate-300 dark:text-[#333]" />
+              ? <Loader2 size={13} className="animate-spin text-[var(--tf-text-tertiary)]" />
               : null
           }
         />
@@ -639,8 +639,8 @@ function NotificationsTab({ initialPrefs }: { initialPrefs: NotifPrefs }) {
                   <item.icon size={13} className={item.iconColor} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className={`text-[13px] font-semibold ${on ? "text-slate-700 dark:text-[#ccc]" : "text-slate-400 dark:text-[#444]"}`}>{item.label}</p>
-                  <p className="text-[11px] text-slate-400 dark:text-[#3a3a3a]">{item.desc}</p>
+                  <p className={`text-[13px] font-semibold ${on ? "text-[var(--tf-text-primary)]" : "text-[var(--tf-text-tertiary)]"}`}>{item.label}</p>
+                  <p className="text-[11px] text-[var(--tf-text-tertiary)]">{item.desc}</p>
                 </div>
                 {/* Toggle */}
                 <button
@@ -668,7 +668,7 @@ function NotificationsTab({ initialPrefs }: { initialPrefs: NotifPrefs }) {
           })}
         </div>
 
-        <p className="text-[11px] text-slate-300 dark:text-[#252525] mt-5 pt-4 border-t border-slate-100 dark:border-white/[0.05] flex items-center gap-1.5">
+        <p className="text-[11px] text-[var(--tf-text-tertiary)] mt-5 pt-4 border-t border-slate-100 dark:border-white/[0.05] flex items-center gap-1.5">
           <Mail size={10} />
           Email notifications will be available when team invitations are enabled.
         </p>
@@ -710,7 +710,7 @@ export function SettingsClient({ user, workspace, members, userRole, pendingInvi
         {/* Page header */}
         <div className="mb-8">
           <h1 className="text-[30px] font-bold tracking-tight text-white">Settings</h1>
-          <p className="text-[13.5px] text-slate-400 dark:text-[#3a3a3a] mt-1.5">
+          <p className="text-[13.5px] text-[var(--tf-text-tertiary)] mt-1.5">
             Manage your account, workspace, and preferences
           </p>
         </div>
@@ -729,7 +729,7 @@ export function SettingsClient({ user, workspace, members, userRole, pendingInvi
                   border whitespace-nowrap flex-shrink-0 transition-all duration-150
                   ${isActive
                     ? tc.active
-                    : "border-transparent text-slate-400 dark:text-[#3a3a3a] hover:text-slate-600 dark:hover:text-[#777] hover:bg-slate-50 dark:hover:bg-white/[0.03]"
+                    : "border-transparent text-[var(--tf-text-tertiary)] hover:text-slate-600 dark:hover:text-[#777] hover:bg-slate-50 dark:hover:bg-white/[0.03]"
                   }`}
               >
                 <div className={`w-5 h-5 rounded-[5px] flex items-center justify-center transition-colors ${isActive ? tc.icon : ""}`}>

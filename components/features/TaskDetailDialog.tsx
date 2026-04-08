@@ -75,15 +75,15 @@ function FocusSessionHistory({ taskId }: { taskId: string }) {
   const totalSeconds = sessions.reduce((sum, s) => sum + s.duration, 0)
 
   return (
-    <div className="mt-4 pt-4 border-t border-slate-100 dark:border-[#1f1f1f] space-y-3">
+    <div className="mt-4 pt-4 border-t border-[var(--tf-border-subtle)] space-y-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5">
-          <Timer size={12} className="text-indigo-400" />
-          <span className="text-[12px] font-semibold text-slate-700 dark:text-[#ccc]">
+          <Timer size={12} className="text-[var(--tf-accent-text)]" />
+          <span className="text-[12px] font-semibold text-[var(--tf-text-primary)]">
             Focus Sessions
           </span>
         </div>
-        <span className="text-[11px] text-slate-400 dark:text-[#555]">
+        <span className="text-[11px] text-[var(--tf-text-tertiary)]">
           {formatDuration(totalSeconds)} total
         </span>
       </div>
@@ -92,11 +92,11 @@ function FocusSessionHistory({ taskId }: { taskId: string }) {
         {sessions.map((s) => (
           <div
             key={s.id}
-            className="flex gap-3 p-2.5 rounded-[8px] bg-slate-50 dark:bg-[#0f0f0f] border border-slate-100 dark:border-[#1a1a1a]"
+            className="flex gap-3 p-2.5 rounded-[8px] bg-[var(--tf-bg-panel)] border border-[var(--tf-border-subtle)]"
           >
             {/* Duration + completed */}
             <div className="flex flex-col items-center gap-1 flex-shrink-0 pt-0.5">
-              <span className="text-[12px] font-bold text-slate-700 dark:text-[#ccc] tabular-nums">
+              <span className="text-[12px] font-bold text-[var(--tf-text-primary)] tabular-nums">
                 {formatDuration(s.duration)}
               </span>
               {s.completed && (
@@ -107,13 +107,13 @@ function FocusSessionHistory({ taskId }: { taskId: string }) {
             {/* Notes + meta */}
             <div className="flex-1 min-w-0">
               {s.notes ? (
-                <p className="text-[11.5px] text-slate-600 dark:text-[#aaa] leading-relaxed whitespace-pre-wrap">
+                <p className="text-[11.5px] text-[var(--tf-text-secondary)] leading-relaxed whitespace-pre-wrap">
                   {s.notes}
                 </p>
               ) : (
-                <p className="text-[11px] text-slate-400 dark:text-[#444] italic">No notes</p>
+                <p className="text-[11px] text-[var(--tf-text-tertiary)] italic">No notes</p>
               )}
-              <p className="text-[10px] text-slate-400 dark:text-[#444] mt-1">
+              <p className="text-[10px] text-[var(--tf-text-tertiary)] mt-1">
                 {s.userName ?? "You"} ·{" "}
                 {new Date(s.createdAt).toLocaleDateString("en-US", {
                   month: "short", day: "numeric", hour: "numeric", minute: "2-digit",
@@ -177,10 +177,10 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId, 
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-white dark:bg-[#111] border-slate-200 dark:border-[#1f1f1f] text-slate-800 dark:text-[#e0e0e0] max-w-xl flex flex-col max-h-[90vh] p-0 gap-0">
+      <DialogContent className="bg-[var(--tf-bg-card)] border-[var(--tf-border)] text-[var(--tf-text-primary)] max-w-xl flex flex-col max-h-[90vh] p-0 gap-0">
         {/* ── Fixed header ── */}
-        <DialogHeader className="px-5 pt-5 pb-3 flex-shrink-0 border-b border-slate-100 dark:border-[#1a1a1a]">
-          <DialogTitle className="text-[15px] font-semibold text-slate-900 dark:text-[#f0f0f0]">
+        <DialogHeader className="px-5 pt-5 pb-3 flex-shrink-0 border-b border-[var(--tf-border-subtle)]">
+          <DialogTitle className="text-[15px] font-semibold text-[var(--tf-text-primary)]">
             Task detail
           </DialogTitle>
         </DialogHeader>
@@ -192,11 +192,11 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId, 
           {/* Title */}
           <div className="space-y-1.5">
             {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
-            <label className="text-[12px] font-medium text-slate-500 dark:text-[#888]">Title</label>
+            <label className="text-[12px] font-medium text-[var(--tf-text-secondary)]">Title</label>
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full bg-white dark:bg-[#0d0d0d] border border-slate-200 dark:border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-slate-800 dark:text-[#e0e0e0] outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
+              className="w-full bg-[var(--tf-bg-input)] border border-[var(--tf-border)] rounded-[8px] px-3 py-2 text-[13px] text-[var(--tf-text-primary)] outline-none focus:border-[var(--tf-accent)] focus:ring-1 focus:ring-[var(--tf-accent)] transition-colors"
             />
           </div>
 
@@ -204,11 +204,11 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId, 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
-              <label className="text-[12px] font-medium text-slate-500 dark:text-[#888]">Status</label>
+              <label className="text-[12px] font-medium text-[var(--tf-text-secondary)]">Status</label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
-                className="w-full bg-white dark:bg-[#0d0d0d] border border-slate-200 dark:border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-slate-800 dark:text-[#e0e0e0] outline-none focus:border-indigo-500 transition-colors"
+                className="w-full bg-[var(--tf-bg-input)] border border-[var(--tf-border)] rounded-[8px] px-3 py-2 text-[13px] text-[var(--tf-text-primary)] outline-none focus:border-[var(--tf-accent)] transition-colors"
               >
                 <option value="TODO">Todo</option>
                 <option value="IN_PROGRESS">In progress</option>
@@ -218,11 +218,11 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId, 
             </div>
             <div className="space-y-1.5">
               {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
-              <label className="text-[12px] font-medium text-slate-500 dark:text-[#888]">Priority</label>
+              <label className="text-[12px] font-medium text-[var(--tf-text-secondary)]">Priority</label>
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value)}
-                className="w-full bg-white dark:bg-[#0d0d0d] border border-slate-200 dark:border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-slate-800 dark:text-[#e0e0e0] outline-none focus:border-indigo-500 transition-colors"
+                className="w-full bg-[var(--tf-bg-input)] border border-[var(--tf-border)] rounded-[8px] px-3 py-2 text-[13px] text-[var(--tf-text-primary)] outline-none focus:border-[var(--tf-accent)] transition-colors"
               >
                 <option value="LOW">Low</option>
                 <option value="MEDIUM">Medium</option>
@@ -235,11 +235,11 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId, 
           {/* Assignee */}
           <div className="space-y-1.5">
             {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
-            <label className="text-[12px] font-medium text-slate-500 dark:text-[#888]">Assignee</label>
+            <label className="text-[12px] font-medium text-[var(--tf-text-secondary)]">Assignee</label>
             <select
               value={assigneeId}
               onChange={(e) => setAssigneeId(e.target.value)}
-              className="w-full bg-white dark:bg-[#0d0d0d] border border-slate-200 dark:border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-slate-800 dark:text-[#e0e0e0] outline-none focus:border-indigo-500 transition-colors"
+              className="w-full bg-[var(--tf-bg-input)] border border-[var(--tf-border)] rounded-[8px] px-3 py-2 text-[13px] text-[var(--tf-text-primary)] outline-none focus:border-[var(--tf-accent)] transition-colors"
             >
               <option value="">Unassigned</option>
               {members.map((m) => (
@@ -251,14 +251,14 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId, 
           {/* Due date — full width */}
           <div className="space-y-1.5">
             {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
-            <label className="text-[12px] font-medium text-slate-500 dark:text-[#888]">
-              Due date <span className="text-slate-400 dark:text-[#555]">(optional)</span>
+            <label className="text-[12px] font-medium text-[var(--tf-text-secondary)]">
+              Due date <span className="text-[var(--tf-text-tertiary)]">(optional)</span>
             </label>
             <input
               type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
-              className="w-full bg-white dark:bg-[#0d0d0d] border border-slate-200 dark:border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-slate-800 dark:text-[#e0e0e0] outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors [color-scheme:light] dark:[color-scheme:dark]"
+              className="w-full bg-[var(--tf-bg-input)] border border-[var(--tf-border)] rounded-[8px] px-3 py-2 text-[13px] text-[var(--tf-text-primary)] outline-none focus:border-[var(--tf-accent)] focus:ring-1 focus:ring-[var(--tf-accent)] transition-colors [color-scheme:light] dark:[color-scheme:dark]"
             />
             {/* Show overdue warning */}
             {dueDate && new Date(dueDate) < new Date() && status !== "DONE" && (
@@ -272,7 +272,7 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId, 
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
               {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
-              <label className="text-[12px] font-medium text-slate-500 dark:text-[#888]">Description</label>
+              <label className="text-[12px] font-medium text-[var(--tf-text-secondary)]">Description</label>
               <button
                 type="button"
                 onClick={handleImproveDescription}
@@ -290,7 +290,7 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId, 
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
               placeholder="Add a description..."
-              className="w-full bg-white dark:bg-[#0d0d0d] border border-slate-200 dark:border-[#2a2a2a] rounded-[8px] px-3 py-2 text-[13px] text-slate-800 dark:text-[#e0e0e0] placeholder-slate-300 dark:placeholder-[#444] outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors resize-none"
+              className="w-full bg-[var(--tf-bg-input)] border border-[var(--tf-border)] rounded-[8px] px-3 py-2 text-[13px] text-[var(--tf-text-primary)] placeholder-slate-300 dark:placeholder-[#444] outline-none focus:border-[var(--tf-accent)] focus:ring-1 focus:ring-[var(--tf-accent)] transition-colors resize-none"
             />
           </div>
 
@@ -313,7 +313,7 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId, 
         </div>{/* end scrollable body */}
 
         {/* ── Fixed footer ── */}
-        <div className="flex-shrink-0 flex items-center justify-between px-5 py-3 border-t border-slate-100 dark:border-[#1a1a1a] bg-white dark:bg-[#111]">
+        <div className="flex-shrink-0 flex items-center justify-between px-5 py-3 border-t border-[var(--tf-border-subtle)] bg-[var(--tf-bg-card)]">
           <p className={`text-[12px] transition-opacity ${saved ? "text-emerald-600 dark:text-emerald-400 opacity-100" : "opacity-0"}`}>
             Saved!
           </p>
@@ -321,7 +321,7 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId, 
             <button
               type="button"
               onClick={onClose}
-              className="h-8 px-3.5 text-[12px] font-medium text-slate-500 dark:text-[#555] hover:text-slate-700 dark:hover:text-[#888] bg-slate-50 dark:bg-[#111] hover:bg-slate-100 dark:hover:bg-[#161616] border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/15 rounded-[8px] shadow-[0_3px_0_0_rgba(0,0,0,0.08)] dark:shadow-[0_3px_0_0_rgba(0,0,0,0.5)] active:translate-y-[3px] active:shadow-none transition-all duration-100"
+              className="h-8 px-3.5 text-[12px] font-medium text-[var(--tf-text-tertiary)] hover:text-slate-700 dark:hover:text-[#888] bg-[var(--tf-bg-panel)] hover:bg-slate-100 dark:hover:bg-[var(--tf-bg-dropdown)] border border-[var(--tf-border)] hover:border-slate-300 dark:hover:border-white/15 rounded-[8px] shadow-[0_3px_0_0_rgba(0,0,0,0.08)] dark:shadow-[0_3px_0_0_rgba(0,0,0,0.5)] active:translate-y-[3px] active:shadow-none transition-all duration-100"
             >
               Close
             </button>
@@ -329,7 +329,7 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId, 
               type="button"
               onClick={handleSave}
               disabled={loading}
-              className="h-8 px-3.5 text-[12px] font-semibold bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white border border-indigo-700/80 rounded-[8px] shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none transition-all duration-100"
+              className="h-8 px-3.5 text-[12px] font-semibold bg-[var(--tf-accent)] hover:brightness-110 disabled:opacity-40 text-white border border-indigo-700/80 rounded-[8px] shadow-[0_3px_0_0_#3730a3] active:translate-y-[3px] active:shadow-none transition-all duration-100"
             >
               {loading ? "Saving..." : "Save changes"}
             </button>

@@ -198,7 +198,7 @@ export function FocusMode({ task, onClose }: Props) {
   const remainingRounds = ROUNDS_PER_SET - completedInSet
 
   return (
-    <div className="fixed inset-0 z-[100] bg-[#040406] flex flex-col md:flex-row overflow-hidden">
+    <div className="fixed inset-0 z-[100] bg-[var(--tf-bg-immersive)] flex flex-col md:flex-row overflow-hidden">
 
       {/* Close */}
       <button
@@ -362,7 +362,7 @@ export function FocusMode({ task, onClose }: Props) {
       </div>
 
       {/* ═══════════ RIGHT — Task + Notes ═══════════ */}
-      <div className="w-full md:w-[360px] flex flex-col border-t md:border-t-0 md:border-l border-[#0f0f0f] bg-[#060608]">
+      <div className="w-full md:w-[360px] flex flex-col border-t md:border-t-0 md:border-l border-[#0f0f0f] bg-[var(--tf-bg-card)]">
 
         {/* Task header */}
         <div className="p-6 border-b border-[#0f0f0f]">
@@ -418,7 +418,7 @@ export function FocusMode({ task, onClose }: Props) {
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Jot thoughts, blockers, or next steps..."
-            className="flex-1 w-full min-h-[120px] bg-[#0a0a0c] border border-[#111] focus:border-[#1f1f1f] rounded-[10px] px-4 py-3 text-[13px] text-[#bbb] placeholder-[#222] outline-none resize-none transition-colors leading-relaxed"
+            className="flex-1 w-full min-h-[120px] bg-[var(--tf-bg-immersive)] border border-[#111] focus:border-[#1f1f1f] rounded-[10px] px-4 py-3 text-[13px] text-[#bbb] placeholder-[#222] outline-none resize-none transition-colors leading-relaxed"
           />
           {elapsedDisplay >= 10 && (
             <p className="text-[10px] text-[#222]">Auto-saves on exit</p>

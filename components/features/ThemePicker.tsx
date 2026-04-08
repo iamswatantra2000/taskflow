@@ -110,12 +110,12 @@ function ThemeCard({ def, isSelected, onSelect }: {
 
       <div className="flex items-center justify-between">
         <div>
-          <p className={`text-[12.5px] font-semibold leading-none mb-0.5 ${isSelected ? "" : "text-slate-600 dark:text-[#aaa]"}`}
+          <p className={`text-[12.5px] font-semibold leading-none mb-0.5 ${isSelected ? "" : "text-[var(--tf-text-secondary)]"}`}
             style={isSelected ? { color: def.accent } : undefined}
           >
             {def.name}
           </p>
-          <p className="text-[10.5px] text-slate-400 dark:text-[#3a3a3a]">{def.desc}</p>
+          <p className="text-[10.5px] text-[var(--tf-text-tertiary)]">{def.desc}</p>
         </div>
 
         {/* Check indicator */}
@@ -157,7 +157,7 @@ export function ThemePicker() {
     <div className="space-y-5">
       {/* Dark themes */}
       <div>
-        <p className="text-[10.5px] font-bold uppercase tracking-[0.1em] text-slate-400 dark:text-[#3a3a3a] mb-3">
+        <p className="text-[10.5px] font-bold uppercase tracking-[0.1em] text-[var(--tf-text-tertiary)] mb-3">
           Dark
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
@@ -174,7 +174,7 @@ export function ThemePicker() {
 
       {/* Light themes */}
       <div>
-        <p className="text-[10.5px] font-bold uppercase tracking-[0.1em] text-slate-400 dark:text-[#3a3a3a] mb-3">
+        <p className="text-[10.5px] font-bold uppercase tracking-[0.1em] text-[var(--tf-text-tertiary)] mb-3">
           Light
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
