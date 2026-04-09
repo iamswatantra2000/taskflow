@@ -24,9 +24,11 @@ export function MeetingButton({ projectId, currentUser }: Props) {
 
   const fetchMeeting = useCallback(async () => {
     try {
-      const res  = await fetch(`/api/meetings/${projectId}`)
-      const data = await res.json()
-      setMeeting(data.meeting)
+      const res = await fetch(`/api/meetings/${projectId}`)
+      if (res.ok) {
+        const data = await res.json()
+        setMeeting(data.meeting)
+      }
     } catch {
       // silently ignore network errors
     } finally {
@@ -85,9 +87,6 @@ export function MeetingButton({ projectId, currentUser }: Props) {
   }
 
   const hasMeeting = !!meeting
-
-  // Don't render until we've checked (avoids flash)
-  if (!checked) return null
 
   return (
     <button
