@@ -26,11 +26,11 @@ const TYPE_META: Record<string, {
   iconColor: string
   accent:  string
 }> = {
-  MENTION:       { icon: AtSign,          iconBg: "bg-indigo-50 dark:bg-indigo-500/[0.12]",   iconColor: "text-indigo-600 dark:text-indigo-400",  accent: "border-l-indigo-500/50"  },
-  REPLY:         { icon: CornerDownRight,  iconBg: "bg-violet-50 dark:bg-violet-500/[0.12]",   iconColor: "text-violet-600 dark:text-violet-400",  accent: "border-l-violet-500/50"  },
-  TASK_ASSIGNED: { icon: UserPlus,         iconBg: "bg-emerald-50 dark:bg-emerald-500/[0.12]", iconColor: "text-emerald-600 dark:text-emerald-400", accent: "border-l-emerald-500/50" },
-  STATUS_CHANGE: { icon: ArrowRightLeft,   iconBg: "bg-amber-50 dark:bg-amber-500/[0.12]",     iconColor: "text-amber-600 dark:text-amber-400",    accent: "border-l-amber-500/50"   },
-  DUE_DATE:      { icon: Clock,            iconBg: "bg-red-50 dark:bg-red-500/[0.12]",         iconColor: "text-red-600 dark:text-red-400",        accent: "border-l-red-500/50"     },
+  MENTION:       { icon: AtSign,          iconBg: "bg-indigo-500/[0.12]",   iconColor: "text-indigo-400",  accent: "border-l-indigo-500/50"  },
+  REPLY:         { icon: CornerDownRight,  iconBg: "bg-violet-500/[0.12]",   iconColor: "text-violet-400",  accent: "border-l-violet-500/50"  },
+  TASK_ASSIGNED: { icon: UserPlus,         iconBg: "bg-emerald-500/[0.12]",  iconColor: "text-emerald-400", accent: "border-l-emerald-500/50" },
+  STATUS_CHANGE: { icon: ArrowRightLeft,   iconBg: "bg-amber-500/[0.12]",    iconColor: "text-amber-400",   accent: "border-l-amber-500/50"   },
+  DUE_DATE:      { icon: Clock,            iconBg: "bg-red-500/[0.12]",       iconColor: "text-red-400",    accent: "border-l-red-500/50"     },
 }
 
 const FALLBACK_META = TYPE_META.MENTION
@@ -130,15 +130,15 @@ export function NotificationBell() {
         onClick={handleToggle}
         className={`relative w-7 h-7 flex items-center justify-center rounded-[8px] border transition-all duration-150
           ${open
-            ? "text-slate-600 bg-slate-100 dark:bg-white/[0.06] border-slate-200 dark:border-white/[0.1]"
-            : "text-[var(--tf-text-tertiary)] hover:text-slate-600 dark:hover:text-[#888] hover:bg-slate-100 dark:hover:bg-white/[0.05] border-transparent hover:border-slate-200 dark:hover:border-white/[0.08]"
+            ? "text-[var(--tf-text-secondary)] bg-[var(--tf-bg-hover)] border-[var(--tf-border)]"
+            : "text-[var(--tf-text-tertiary)] hover:text-[var(--tf-text-secondary)] hover:bg-[var(--tf-bg-hover)] border-transparent hover:border-[var(--tf-border)]"
           }`}
       >
         <Bell size={14} className={unread > 0 ? "animate-[wiggle_0.4s_ease-in-out]" : ""} />
         {unread > 0 && (
           <span className="absolute -top-1 -right-1 min-w-[16px] h-4 flex items-center justify-center
             bg-[var(--tf-accent)] text-white text-[9px] font-bold rounded-full px-1 leading-none
-            ring-2 ring-white dark:ring-[#080808]">
+            ring-2 ring-[var(--tf-bg-panel)]">
             {unread > 9 ? "9+" : unread}
           </span>
         )}
@@ -161,12 +161,12 @@ export function NotificationBell() {
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--tf-border-subtle)]">
             <div className="flex items-center gap-2.5">
-              <div className="w-6 h-6 rounded-[7px] bg-indigo-50 dark:bg-indigo-500/[0.12] border border-indigo-200 dark:border-indigo-500/20 flex items-center justify-center">
-                <Bell size={11} className="text-indigo-600 dark:text-indigo-400" />
+              <div className="w-6 h-6 rounded-[7px] bg-indigo-500/[0.12] border border-indigo-500/20 flex items-center justify-center">
+                <Bell size={11} className="text-indigo-400" />
               </div>
               <span className="text-[13px] font-bold text-[var(--tf-text-primary)] tracking-tight">Notifications</span>
               {unread > 0 && (
-                <span className="text-[10px] font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-100 dark:bg-indigo-500/[0.12] border border-indigo-200 dark:border-indigo-500/25 rounded-full px-1.5 py-0.5 leading-none">
+                <span className="text-[10px] font-bold text-indigo-400 bg-indigo-500/[0.12] border border-indigo-500/25 rounded-full px-1.5 py-0.5 leading-none">
                   {unread} new
                 </span>
               )}
@@ -178,7 +178,7 @@ export function NotificationBell() {
                   type="button"
                   onClick={handleMarkAll}
                   title="Mark all read"
-                  className="w-6 h-6 flex items-center justify-center rounded-[6px] text-[var(--tf-text-tertiary)] hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/[0.08] transition-all"
+                  className="w-6 h-6 flex items-center justify-center rounded-[6px] text-[var(--tf-text-tertiary)] hover:text-emerald-400 hover:bg-emerald-500/[0.08] transition-all"
                 >
                   <CheckCheck size={12} />
                 </button>
@@ -188,7 +188,7 @@ export function NotificationBell() {
                   type="button"
                   onClick={handleClearAll}
                   title="Clear all"
-                  className="w-6 h-6 flex items-center justify-center rounded-[6px] text-[var(--tf-text-tertiary)] hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/[0.08] transition-all"
+                  className="w-6 h-6 flex items-center justify-center rounded-[6px] text-[var(--tf-text-tertiary)] hover:text-red-400 hover:bg-red-500/[0.08] transition-all"
                 >
                   <Trash2 size={11} />
                 </button>
@@ -200,18 +200,18 @@ export function NotificationBell() {
           <div className="max-h-[380px] overflow-y-auto">
             {items.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-                <div className="w-12 h-12 rounded-[12px] bg-slate-50 border border-slate-100 dark:bg-white/[0.03] dark:border-[var(--tf-border-subtle)] flex items-center justify-center mb-3">
-                  <Bell size={18} className="text-slate-300 dark:text-[var(--tf-text-tertiary)]" />
+                <div className="w-12 h-12 rounded-[12px] bg-[var(--tf-bg-hover)] border border-[var(--tf-border-subtle)] flex items-center justify-center mb-3">
+                  <Bell size={18} className="text-[var(--tf-text-tertiary)]" />
                 </div>
                 <p className="text-[12.5px] font-semibold text-[var(--tf-text-tertiary)]">All caught up</p>
-                <p className="text-[11px] text-slate-400 dark:text-[var(--tf-text-tertiary)] mt-1">Assignments, mentions & due dates appear here</p>
+                <p className="text-[11px] text-[var(--tf-text-tertiary)] mt-1">Assignments, mentions & due dates appear here</p>
               </div>
             ) : (
               groups.map(({ label, items: groupItems }) => (
                 <div key={label}>
                   {/* Date group label */}
-                  <div className="px-4 py-1.5 sticky top-0 bg-white/95 dark:bg-[var(--tf-bg-dropdown)]/95 backdrop-blur-sm z-10">
-                    <span className="text-[10px] font-semibold text-slate-400 dark:text-[var(--tf-text-tertiary)] uppercase tracking-[0.08em]">{label}</span>
+                  <div className="px-4 py-1.5 sticky top-0 bg-[var(--tf-bg-dropdown)]/95 backdrop-blur-sm z-10">
+                    <span className="text-[10px] font-semibold text-[var(--tf-text-tertiary)] uppercase tracking-[0.08em]">{label}</span>
                   </div>
 
                   {groupItems.map((n) => {
@@ -226,11 +226,11 @@ export function NotificationBell() {
                           border-l-2 transition-colors duration-100
                           ${n.isRead
                             ? `border-l-transparent hover:bg-[var(--tf-bg-hover)]`
-                            : `${meta.accent} bg-slate-50 dark:bg-white/[0.025] hover:bg-slate-100 dark:hover:bg-[var(--tf-bg-hover)]`
+                            : `${meta.accent} bg-[var(--tf-bg-hover)] hover:bg-[var(--tf-bg-card)]`
                           }`}
                       >
                         {/* Icon chip */}
-                        <div className={`w-7 h-7 rounded-[8px] ${meta.iconBg} border border-slate-100 dark:border-[var(--tf-border-subtle)] flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                        <div className={`w-7 h-7 rounded-[8px] ${meta.iconBg} border border-[var(--tf-border-subtle)] flex items-center justify-center flex-shrink-0 mt-0.5`}>
                           <Icon size={13} className={meta.iconColor} />
                         </div>
 

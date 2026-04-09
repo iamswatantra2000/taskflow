@@ -67,10 +67,10 @@ type Label       = { id: string; name: string; color: string }
 type SubtaskItem = { id: string; title: string; completed: boolean; position: number }
 
 const priorityConfig = {
-  URGENT: { label: "Urgent", dot: "bg-red-500",    pill: "bg-red-50 text-red-600 border-red-200 dark:bg-red-500/[0.08] dark:text-red-400 dark:border-red-500/20"             },
-  HIGH:   { label: "High",   dot: "bg-orange-500", pill: "bg-orange-50 text-orange-600 border-orange-200 dark:bg-orange-500/[0.08] dark:text-orange-400 dark:border-orange-500/20" },
-  MEDIUM: { label: "Medium", dot: "bg-amber-500",  pill: "bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-500/[0.08] dark:text-amber-400 dark:border-amber-500/20"   },
-  LOW:    { label: "Low",    dot: "bg-sky-500",    pill: "bg-sky-50 text-sky-600 border-sky-200 dark:bg-sky-500/[0.08] dark:text-sky-400 dark:border-sky-500/20"             },
+  URGENT: { label: "Urgent", dot: "bg-red-500",    pill: "bg-red-500/[0.08] text-red-400 border-red-500/20"             },
+  HIGH:   { label: "High",   dot: "bg-orange-500", pill: "bg-orange-500/[0.08] text-orange-400 border-orange-500/20" },
+  MEDIUM: { label: "Medium", dot: "bg-amber-500",  pill: "bg-amber-500/[0.08] text-amber-400 border-amber-500/20"   },
+  LOW:    { label: "Low",    dot: "bg-sky-500",    pill: "bg-sky-500/[0.08] text-sky-400 border-sky-500/20"             },
 }
 
 function getDateMeta(dueDate: Date, status: string) {
@@ -90,10 +90,10 @@ const columnStyles: Record<string, {
   labelColor:  string
   countStyle:  string
 }> = {
-  TODO:        { bg: "bg-[var(--tf-bg-panel)]",                   borderColor: "border-[var(--tf-border)]",    labelColor: "text-[var(--tf-text-secondary)]",    countStyle: "text-slate-400 border-slate-200 bg-white dark:text-[var(--tf-text-tertiary)] dark:border-[var(--tf-border)] dark:bg-white/[0.03]"           },
-  IN_PROGRESS: { bg: "bg-indigo-50/40 dark:bg-indigo-950/[0.15]",       borderColor: "border-indigo-200 dark:border-indigo-500/20",   labelColor: "text-indigo-600 dark:text-indigo-400", countStyle: "text-indigo-600/70 border-indigo-200 bg-indigo-50 dark:text-indigo-400/60 dark:border-indigo-500/20 dark:bg-indigo-500/[0.07]" },
-  IN_REVIEW:   { bg: "bg-amber-50/40 dark:bg-amber-950/[0.12]",         borderColor: "border-amber-200 dark:border-amber-500/20",    labelColor: "text-amber-600 dark:text-amber-400",  countStyle: "text-amber-600/70 border-amber-200 bg-amber-50 dark:text-amber-400/60 dark:border-amber-500/20 dark:bg-amber-500/[0.07]"   },
-  DONE:        { bg: "bg-emerald-50/30 dark:bg-emerald-950/[0.10]",     borderColor: "border-emerald-200 dark:border-emerald-500/15",  labelColor: "text-emerald-600 dark:text-emerald-400", countStyle: "text-emerald-600/70 border-emerald-200 bg-emerald-50 dark:text-emerald-400/60 dark:border-emerald-500/20 dark:bg-emerald-500/[0.07]" },
+  TODO:        { bg: "bg-[var(--tf-bg-panel)]",          borderColor: "border-[var(--tf-border)]",          labelColor: "text-[var(--tf-text-secondary)]",  countStyle: "text-[var(--tf-text-tertiary)] border-[var(--tf-border)] bg-[var(--tf-bg-hover)]"           },
+  IN_PROGRESS: { bg: "bg-indigo-500/[0.06]",             borderColor: "border-indigo-500/20",                labelColor: "text-indigo-400",                  countStyle: "text-indigo-400/60 border-indigo-500/20 bg-indigo-500/[0.07]" },
+  IN_REVIEW:   { bg: "bg-amber-500/[0.05]",              borderColor: "border-amber-500/20",                 labelColor: "text-amber-400",                   countStyle: "text-amber-400/60 border-amber-500/20 bg-amber-500/[0.07]"   },
+  DONE:        { bg: "bg-emerald-500/[0.04]",            borderColor: "border-emerald-500/15",               labelColor: "text-emerald-400",                 countStyle: "text-emerald-400/60 border-emerald-500/20 bg-emerald-500/[0.07]" },
 }
 
 // ——— Inline task creation form inside a column ———
@@ -146,7 +146,7 @@ function InlineTaskForm({
               className={`flex items-center gap-1 text-[10px] px-1.5 py-[2px] rounded-full border transition-colors ${
                 projectId === p.id
                   ? "border-transparent text-white"
-                  : "border-[var(--tf-border)] text-[var(--tf-text-secondary)] hover:border-slate-300"
+                  : "border-[var(--tf-border)] text-[var(--tf-text-secondary)] hover:border-[var(--tf-border)]"
               }`}
               style={projectId === p.id ? { background: p.color } : {}}
             >
@@ -173,7 +173,7 @@ function InlineTaskForm({
         <button
           type="button"
           onClick={onCancel}
-          className="h-6 px-2 text-[11px] text-[var(--tf-text-tertiary)] hover:text-slate-600 dark:hover:text-[#888] transition-colors"
+          className="h-6 px-2 text-[11px] text-[var(--tf-text-tertiary)] hover:text-[var(--tf-text-secondary)] transition-colors"
         >
           Cancel
         </button>
@@ -243,16 +243,16 @@ function TaskCard({
       ref={setNodeRef}
       style={style}
       className={`group relative bg-[var(--tf-bg-card)] rounded-[10px] p-3.5
-        hover:bg-slate-50 dark:hover:bg-[var(--tf-bg-card)]
+        hover:bg-[var(--tf-bg-card)]
         hover:-translate-y-[1px] hover:shadow-[0_6px_20px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_6px_20px_rgba(0,0,0,0.45)]
         transition-all duration-150 border
         ${menuOpen ? "z-[20]" : ""}
-        ${isDragging ? "border-dashed border-indigo-400/40 dark:border-indigo-500/25" :
+        ${isDragging ? "border-dashed border-indigo-500/25" :
           isSelected
-          ? "border-indigo-400/70 dark:border-indigo-500/50 ring-2 ring-indigo-500/20 dark:ring-indigo-500/15 bg-indigo-50/40 dark:bg-indigo-950/[0.15]"
+          ? "border-indigo-500/50 ring-2 ring-indigo-500/15 bg-indigo-500/[0.06]"
           : decayLevel > 0
             ? decayBorderClass[decayLevel]
-            : "border-slate-100 dark:border-[var(--tf-border)] hover:border-slate-200 dark:hover:border-white/[0.13]"
+            : "border-[var(--tf-border-subtle)] hover:border-[var(--tf-border)]"
         }
         ${decayLevel === 3 && !isSelected ? "animate-pulse-slow" : ""}
         ${leftAccent}
@@ -290,8 +290,8 @@ function TaskCard({
               ${isSelected
                 ? "opacity-100 bg-indigo-600 border-indigo-600"
                 : selectionMode
-                  ? "opacity-100 bg-[var(--tf-bg-card)] border-slate-300 dark:border-[var(--tf-border)] hover:border-indigo-400"
-                  : "opacity-0 group-hover:opacity-100 bg-[var(--tf-bg-card)] border-slate-300 dark:border-[var(--tf-border)] hover:border-indigo-400"
+                  ? "opacity-100 bg-[var(--tf-bg-card)] border-[var(--tf-border)] hover:border-indigo-400"
+                  : "opacity-0 group-hover:opacity-100 bg-[var(--tf-bg-card)] border-[var(--tf-border)] hover:border-indigo-400"
               }
             `}
             aria-label={isSelected ? "Deselect task" : "Select task"}
@@ -313,7 +313,7 @@ function TaskCard({
             ${selectionMode ? "cursor-pointer" : "cursor-grab active:cursor-grabbing"}
             ${isDone
               ? "text-[var(--tf-text-tertiary)] line-through decoration-slate-300 dark:decoration-[#444]"
-              : "text-slate-800 hover:text-slate-950 dark:text-[var(--tf-text-primary)] dark:hover:text-white"
+              : "text-[var(--tf-text-primary)] hover:text-[var(--tf-text-primary)]"
             }`}
         >
           {task.title}
@@ -325,7 +325,7 @@ function TaskCard({
             type="button"
             onClick={(e) => { e.stopPropagation(); onFocus(task) }}
             title="Focus on this task"
-            className="w-6 h-6 rounded-[5px] flex items-center justify-center text-slate-400 hover:text-indigo-500 dark:text-[var(--tf-text-tertiary)] dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors"
+            className="w-6 h-6 rounded-[5px] flex items-center justify-center text-[var(--tf-text-tertiary)] hover:text-indigo-400 hover:bg-indigo-500/10 transition-colors"
           >
             <Focus size={11} />
           </button>
@@ -365,7 +365,7 @@ function TaskCard({
         const pct   = Math.round((done / total) * 100)
         return (
           <div className="flex items-center gap-2 pl-[17px] mb-2">
-            <div className="flex-1 h-[3px] bg-slate-100 dark:bg-[var(--tf-bg-hover)] rounded-full overflow-hidden">
+            <div className="flex-1 h-[3px] bg-[var(--tf-bg-hover)] rounded-full overflow-hidden">
               <div
                 className={`h-full rounded-full transition-all duration-300 ${pct === 100 ? "bg-emerald-500" : "bg-indigo-400"}`}
                 style={{ width: `${pct}%` }}
@@ -434,7 +434,7 @@ function TaskCard({
 function DragOverlayCard({ task }: { task: Task }) {
   const priority = priorityConfig[task.priority as keyof typeof priorityConfig]
   return (
-    <div className="animate-scale-in bg-[var(--tf-bg-card)] border border-indigo-300 dark:border-indigo-500/60 rounded-[10px] p-3.5 w-[230px] rotate-[1.5deg] shadow-[0_24px_70px_rgba(0,0,0,0.18)] dark:shadow-[0_24px_70px_rgba(0,0,0,0.75)] ring-2 ring-indigo-300/40 dark:ring-indigo-500/25" style={{ willChange: "transform" }}>
+    <div className="animate-scale-in bg-[var(--tf-bg-card)] border border-indigo-500/60 rounded-[10px] p-3.5 w-[230px] rotate-[1.5deg] shadow-[0_24px_70px_rgba(0,0,0,0.75)] ring-2 ring-indigo-500/25" style={{ willChange: "transform" }}>
       <p className="text-[13px] font-semibold text-[var(--tf-text-primary)] leading-snug mb-3 pl-[17px]">{task.title}</p>
       <div className="pl-[17px]">
         <div className={`inline-flex items-center gap-1.5 text-[10.5px] font-semibold px-2 py-[3px] rounded-full border ${priority.pill}`}>
@@ -765,7 +765,7 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects, m
                           {staleCount > 0 && (
                             <div
                               title={`${staleCount} stale task${staleCount !== 1 ? "s" : ""} — no activity in 3+ days`}
-                              className="inline-flex items-center gap-[3px] text-[9.5px] font-semibold px-1.5 py-[2px] rounded-full border text-amber-600/80 bg-amber-50 border-amber-200/80 dark:text-amber-400/70 dark:bg-amber-500/[0.07] dark:border-amber-500/20"
+                              className="inline-flex items-center gap-[3px] text-[9.5px] font-semibold px-1.5 py-[2px] rounded-full border text-amber-400/70 bg-amber-500/[0.07] border-amber-500/20"
                             >
                               <Clock size={8} />
                               {staleCount}
@@ -777,7 +777,7 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects, m
                             type="button"
                             onClick={() => setInlineColumn(inlineColumn === col.id ? null : col.id)}
                             title={`Add task to ${col.label}`}
-                            className="w-5 h-5 flex items-center justify-center rounded-[5px] text-slate-400 hover:text-indigo-500 dark:text-[var(--tf-text-tertiary)] dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors"
+                            className="w-5 h-5 flex items-center justify-center rounded-[5px] text-[var(--tf-text-tertiary)] hover:text-indigo-400 hover:bg-indigo-500/10 transition-colors"
                           >
                             <Plus size={11} />
                           </button>
@@ -822,9 +822,9 @@ export function TaskBoard({ columns, userName, filters, workspaceId, projects, m
                   {col.tasks.length === 0 && inlineColumn !== col.id && (
                     <div className="flex-1 flex flex-col items-center justify-center py-10 gap-3 border border-dashed border-[var(--tf-border-subtle)] rounded-[10px]">
                       <div className="w-9 h-9 rounded-full border-2 border-dashed border-[var(--tf-border)] flex items-center justify-center">
-                        <ArrowDownToLine size={13} className="text-slate-400 dark:text-[var(--tf-text-tertiary)]" />
+                        <ArrowDownToLine size={13} className="text-[var(--tf-text-tertiary)]" />
                       </div>
-                      <p className="text-[11.5px] font-medium text-slate-500 dark:text-[var(--tf-text-tertiary)]">
+                      <p className="text-[11.5px] font-medium text-[var(--tf-text-tertiary)]">
                         {filters.priority.length > 0 || filters.search
                           ? "No matching tasks"
                           : "Drop tasks here"

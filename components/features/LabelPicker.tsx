@@ -114,20 +114,20 @@ export function LabelPicker({
   }
 
   if (loadingLabels) return (
-    <div className="space-y-2 pt-4 border-t border-slate-100 dark:border-[var(--tf-border)]">
+    <div className="space-y-2 pt-4 border-t border-[var(--tf-border-subtle)]">
       <div className="flex items-center gap-1.5">
-        <div className="w-3 h-3 rounded bg-slate-100 dark:bg-[var(--tf-bg-dropdown)] animate-pulse" />
+        <div className="w-3 h-3 rounded bg-[var(--tf-bg-dropdown)] animate-pulse" />
         <div className="h-3 w-10 rounded bg-slate-100 dark:bg-[var(--tf-bg-dropdown)] animate-pulse" />
       </div>
       <div className="flex gap-1.5">
-        <div className="h-5 w-16 rounded-full bg-slate-100 dark:bg-[var(--tf-bg-dropdown)] animate-pulse" />
-        <div className="h-5 w-20 rounded-full bg-slate-100 dark:bg-[var(--tf-bg-dropdown)] animate-pulse" />
+        <div className="h-5 w-16 rounded-full bg-[var(--tf-bg-dropdown)] animate-pulse" />
+        <div className="h-5 w-20 rounded-full bg-[var(--tf-bg-dropdown)] animate-pulse" />
       </div>
     </div>
   )
 
   return (
-    <div className="space-y-2 pt-4 border-t border-slate-100 dark:border-[var(--tf-border)]">
+    <div className="space-y-2 pt-4 border-t border-[var(--tf-border-subtle)]">
       {/* Header */}
       <div className="flex items-center gap-1.5">
         <Tag size={12} className="text-indigo-400" />
@@ -162,7 +162,7 @@ export function LabelPicker({
           <button
             type="button"
             onClick={() => { setOpen(!open); setCreating(false) }}
-            className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full border border-dashed border-slate-300 dark:border-[var(--tf-border)] text-[var(--tf-text-tertiary)] hover:border-indigo-400 hover:text-indigo-500 dark:hover:border-indigo-500/50 dark:hover:text-indigo-400 transition-colors"
+            className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full border border-dashed border-[var(--tf-border)] text-[var(--tf-text-tertiary)] hover:border-indigo-500/50 hover:text-indigo-400 transition-colors"
           >
             <Plus size={10} />
             Add label
@@ -198,7 +198,7 @@ export function LabelPicker({
                       <button
                         type="button"
                         onClick={(e) => handleDeleteLabel(e, label.id)}
-                        className="opacity-0 group-hover:opacity-100 text-slate-300 hover:text-red-400 dark:text-[var(--tf-text-tertiary)] dark:hover:text-red-400 transition-all flex-shrink-0"
+                        className="opacity-0 group-hover:opacity-100 text-[var(--tf-text-tertiary)] hover:text-red-400 transition-all flex-shrink-0"
                       >
                         <Trash2 size={10} />
                       </button>
@@ -208,7 +208,7 @@ export function LabelPicker({
               </div>
 
               {/* Divider + create */}
-              <div className="border-t border-slate-100 dark:border-[var(--tf-border)] p-1.5">
+              <div className="border-t border-[var(--tf-border)] p-1.5">
                 {!creating ? (
                   <button
                     type="button"
@@ -226,7 +226,7 @@ export function LabelPicker({
                       onChange={(e) => setNewName(e.target.value)}
                       onKeyDown={(e) => { if (e.key === "Enter") handleCreate(); if (e.key === "Escape") setCreating(false) }}
                       placeholder="Label name..."
-                      className="w-full text-[12px] bg-[var(--tf-bg-card)] border border-[var(--tf-border)] rounded-[6px] px-2 py-1 outline-none focus:border-[var(--tf-accent)] text-[var(--tf-text-primary)] placeholder-slate-300 dark:placeholder-[#444]"
+                      className="w-full text-[12px] bg-[var(--tf-bg-card)] border border-[var(--tf-border)] rounded-[6px] px-2 py-1 outline-none focus:border-[var(--tf-accent)] text-[var(--tf-text-primary)] placeholder-[var(--tf-text-tertiary)]"
                     />
                     {/* Color swatches */}
                     <div className="flex flex-wrap gap-1">
@@ -256,7 +256,7 @@ export function LabelPicker({
                       <button
                         type="button"
                         onClick={() => setCreating(false)}
-                        className="flex-1 h-6 text-[11px] text-[var(--tf-text-secondary)] bg-slate-50 dark:bg-white/[0.04] border border-[var(--tf-border)] rounded-[5px] hover:bg-slate-100 dark:hover:bg-white/[0.07] transition-colors"
+                        className="flex-1 h-6 text-[11px] text-[var(--tf-text-secondary)] bg-[var(--tf-bg-hover)] border border-[var(--tf-border)] rounded-[5px] hover:bg-[var(--tf-bg-dropdown)] transition-colors"
                       >
                         Cancel
                       </button>

@@ -6,18 +6,18 @@ import { DeleteTaskButton } from "@/components/features/DeleteTaskButton"
 import { ThemeToggle } from "@/components/ui/ThemeToggle"
 
 const statusConfig = {
-  TODO:        { label: "Todo",        class: "bg-slate-100 text-slate-500 border-slate-200 dark:bg-[var(--tf-bg-hover)] dark:text-[var(--tf-text-secondary)] dark:border-[var(--tf-border)]"            },
-  IN_PROGRESS: { label: "In progress", class: "bg-indigo-100 text-indigo-700 border-indigo-200 dark:bg-indigo-950 dark:text-indigo-400 dark:border-indigo-900"      },
-  IN_REVIEW:   { label: "In review",   class: "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-400 dark:border-amber-900"         },
-  DONE:        { label: "Done",        class: "bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-400 dark:border-emerald-900"   },
-  CANCELLED:   { label: "Cancelled",   class: "bg-red-100 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-400 dark:border-red-900"               },
+  TODO:        { label: "Todo",        class: "bg-[var(--tf-bg-hover)] text-[var(--tf-text-secondary)] border-[var(--tf-border)]"            },
+  IN_PROGRESS: { label: "In progress", class: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20"      },
+  IN_REVIEW:   { label: "In review",   class: "bg-amber-500/10 text-amber-400 border-amber-500/20"         },
+  DONE:        { label: "Done",        class: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"   },
+  CANCELLED:   { label: "Cancelled",   class: "bg-red-500/10 text-red-400 border-red-500/20"               },
 }
 
 const priorityConfig = {
-  LOW:    { label: "Low",    class: "text-emerald-600 dark:text-emerald-400" },
-  MEDIUM: { label: "Medium", class: "text-amber-600 dark:text-amber-400"   },
-  HIGH:   { label: "High",   class: "text-red-600 dark:text-red-400"       },
-  URGENT: { label: "Urgent", class: "text-red-600 dark:text-red-400"       },
+  LOW:    { label: "Low",    class: "text-emerald-400" },
+  MEDIUM: { label: "Medium", class: "text-amber-400"   },
+  HIGH:   { label: "High",   class: "text-red-400"     },
+  URGENT: { label: "Urgent", class: "text-red-400"     },
 }
 
 export default async function MyTasksPage() {
@@ -49,7 +49,7 @@ const myTasks = await db
     <div className="flex-1 overflow-auto">
 
       {/* Topbar */}
-      <div className="h-[50px] border-b border-slate-100 dark:border-[var(--tf-border)] flex items-center justify-between pl-14 pr-5 md:px-5 bg-[var(--tf-bg-panel)]">
+      <div className="h-[50px] border-b border-[var(--tf-border-subtle)] flex items-center justify-between pl-14 pr-5 md:px-5 bg-[var(--tf-bg-panel)]">
         <div className="flex items-center gap-2">
           <span className="text-[13px] text-[var(--tf-text-tertiary)] hidden sm:inline">Workspace /</span>
           <span className="text-[13px] font-medium text-[var(--tf-text-primary)]">My tasks</span>
@@ -89,7 +89,7 @@ const myTasks = await db
                   return (
                     <div
                       key={task.id}
-                      className="group flex items-center gap-2 sm:gap-4 bg-[var(--tf-bg-card)] border border-slate-100 dark:border-[var(--tf-border)] rounded-[8px] px-3 sm:px-4 py-3 hover:border-slate-200 dark:hover:border-[#2a2a2a] transition-colors"
+                      className="group flex items-center gap-2 sm:gap-4 bg-[var(--tf-bg-card)] border border-[var(--tf-border-subtle)] rounded-[8px] px-3 sm:px-4 py-3 hover:border-[var(--tf-border)] transition-colors"
                     >
                       {/* Color dot from project */}
                       <div
@@ -130,7 +130,7 @@ const myTasks = await db
         {/* Empty state */}
         {myTasks.length === 0 && (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-[var(--tf-bg-hover)] flex items-center justify-center mb-4">
+            <div className="w-12 h-12 rounded-full bg-[var(--tf-bg-hover)] flex items-center justify-center mb-4">
               <span className="text-[20px]">✓</span>
             </div>
             <p className="text-[14px] font-medium text-[var(--tf-text-tertiary)]">No tasks assigned to you</p>

@@ -22,12 +22,12 @@ function timeAgo(date: Date) {
 }
 
 const activityConfig = {
-  TASK_CREATED:    { icon: CheckSquare, color: "text-indigo-600 dark:text-indigo-400",  bg: "bg-indigo-100 dark:bg-indigo-950/50"  },
-  TASK_UPDATED:    { icon: Pencil,      color: "text-amber-600 dark:text-amber-400",   bg: "bg-amber-100 dark:bg-amber-950/50"   },
-  TASK_DELETED:    { icon: Trash2,      color: "text-red-600 dark:text-red-400",       bg: "bg-red-100 dark:bg-red-950/50"     },
-  TASK_MOVED:      { icon: MoveRight,   color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-100 dark:bg-emerald-950/50" },
-  PROJECT_CREATED: { icon: FolderPlus,  color: "text-violet-600 dark:text-violet-400", bg: "bg-violet-100 dark:bg-violet-950/50"  },
-  MEMBER_JOINED:   { icon: UserPlus,    color: "text-blue-600 dark:text-blue-400",     bg: "bg-blue-100 dark:bg-blue-950/50"    },
+  TASK_CREATED:    { icon: CheckSquare, color: "text-indigo-400",  bg: "bg-indigo-500/10"  },
+  TASK_UPDATED:    { icon: Pencil,      color: "text-amber-400",   bg: "bg-amber-500/10"   },
+  TASK_DELETED:    { icon: Trash2,      color: "text-red-400",     bg: "bg-red-500/10"     },
+  TASK_MOVED:      { icon: MoveRight,   color: "text-emerald-400", bg: "bg-emerald-500/10" },
+  PROJECT_CREATED: { icon: FolderPlus,  color: "text-violet-400",  bg: "bg-violet-500/10"  },
+  MEMBER_JOINED:   { icon: UserPlus,    color: "text-blue-400",    bg: "bg-blue-500/10"    },
 }
 
 export default async function ActivityPage() {
@@ -43,7 +43,7 @@ export default async function ActivityPage() {
   if (!membership) {
     return (
       <div className="flex-1 flex items-center justify-center">
-        <p className="text-sm text-muted-foreground">No workspace found</p>
+        <p className="text-sm text-[var(--tf-text-tertiary)]">No workspace found</p>
       </div>
     )
   }
@@ -77,10 +77,10 @@ export default async function ActivityPage() {
     <div className="flex-1 overflow-auto">
 
       {/* Topbar */}
-      <div className="h-[50px] border-b border-border flex items-center justify-between pl-14 pr-5 md:px-5 bg-background sticky top-0 z-10">
+      <div className="h-[50px] border-b border-[var(--tf-border)] flex items-center justify-between pl-14 pr-5 md:px-5 bg-[var(--tf-bg-card)] sticky top-0 z-10">
         <div className="flex items-center gap-2">
-          <span className="text-[13px] text-muted-foreground hidden sm:inline">Workspace /</span>
-          <span className="text-[13px] font-medium">Activity</span>
+          <span className="text-[13px] text-[var(--tf-text-tertiary)] hidden sm:inline">Workspace /</span>
+          <span className="text-[13px] font-medium text-[var(--tf-text-primary)]">Activity</span>
         </div>
         <ThemeToggle />
       </div>
@@ -89,23 +89,23 @@ export default async function ActivityPage() {
 
         {/* Header */}
         <div>
-          <h1 className="text-[18px] font-semibold tracking-tight">
+          <h1 className="text-[18px] font-semibold tracking-tight text-[var(--tf-text-primary)]">
             Activity feed
           </h1>
-          <p className="text-[13px] text-muted-foreground mt-1">
+          <p className="text-[13px] text-[var(--tf-text-tertiary)] mt-1">
             Everything happening in your workspace
           </p>
         </div>
 
         {feed.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-4">
-              <CheckSquare size={20} className="text-muted-foreground" />
+            <div className="w-12 h-12 rounded-full bg-[var(--tf-bg-hover)] flex items-center justify-center mb-4">
+              <CheckSquare size={20} className="text-[var(--tf-text-tertiary)]" />
             </div>
-            <p className="text-[14px] font-medium text-muted-foreground">
+            <p className="text-[14px] font-medium text-[var(--tf-text-tertiary)]">
               No activity yet
             </p>
-            <p className="text-[12px] text-muted-foreground/60 mt-1">
+            <p className="text-[12px] text-[var(--tf-text-tertiary)]/60 mt-1">
               Start creating tasks and projects to see activity here
             </p>
           </div>
@@ -115,15 +115,15 @@ export default async function ActivityPage() {
 
               {/* Date header */}
               <div className="flex items-center gap-3 mb-4">
-                <div className="h-px flex-1 bg-border" />
-                <span className="text-[11px] font-medium text-muted-foreground px-2">
+                <div className="h-px flex-1 bg-[var(--tf-border)]" />
+                <span className="text-[11px] font-medium text-[var(--tf-text-tertiary)] px-2">
                   {new Date(date).toLocaleDateString("en-US", {
                     weekday: "long",
                     month:   "long",
                     day:     "numeric",
                   })}
                 </span>
-                <div className="h-px flex-1 bg-border" />
+                <div className="h-px flex-1 bg-[var(--tf-border)]" />
               </div>
 
               {/* Activity items */}
@@ -135,11 +135,11 @@ export default async function ActivityPage() {
                   return (
                     <div
                       key={item.id}
-                      className="flex items-start gap-3 p-3 rounded-[10px] hover:bg-muted/50 transition-colors group"
+                      className="flex items-start gap-3 p-3 rounded-[10px] hover:bg-[var(--tf-bg-hover)] transition-colors group"
                     >
                       {/* Activity icon */}
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${config?.bg ?? "bg-muted"}`}>
-                        <Icon size={14} className={config?.color ?? "text-muted-foreground"} />
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${config?.bg ?? "bg-[var(--tf-bg-hover)]"}`}>
+                        <Icon size={14} className={config?.color ?? "text-[var(--tf-text-tertiary)]"} />
                       </div>
 
                       {/* Content */}
@@ -151,17 +151,17 @@ export default async function ActivityPage() {
                               {getInitials(item.userName ?? "User")}
                             </AvatarFallback>
                           </Avatar>
-                          <span className="text-[13px] font-medium">
+                          <span className="text-[13px] font-medium text-[var(--tf-text-primary)]">
                             {item.userName ?? "Someone"}
                           </span>
-                          <span className="text-[13px] text-muted-foreground">
+                          <span className="text-[13px] text-[var(--tf-text-tertiary)]">
                             {item.description}
                           </span>
                         </div>
                       </div>
 
                       {/* Time */}
-                      <span className="text-[11px] text-muted-foreground/60 flex-shrink-0 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="text-[11px] text-[var(--tf-text-tertiary)]/60 flex-shrink-0 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         {timeAgo(new Date(item.createdAt))}
                       </span>
                     </div>

@@ -60,7 +60,7 @@ export function PresenceAvatars({ projectId, currentUser }: Props) {
                 "w-[26px] h-[26px] rounded-full border-2 flex items-center justify-center",
                 "text-[9px] font-semibold text-white cursor-default select-none",
                 "transition-transform hover:scale-110 hover:z-50",
-                isYou ? "ring-2 ring-offset-1 ring-indigo-400 dark:ring-indigo-500" : "",
+                isYou ? "ring-2 ring-offset-1 ring-indigo-500" : "",
               ].join(" ")}
             >
               {initials}
@@ -73,7 +73,7 @@ export function PresenceAvatars({ projectId, currentUser }: Props) {
           <div
             title={`${hidden} more people`}
             style={{ marginLeft: "-7px", zIndex: 0 }}
-            className="w-[26px] h-[26px] rounded-full border-2 border-white dark:border-[var(--tf-bg-panel)] bg-slate-200 dark:bg-[var(--tf-bg-hover)] flex items-center justify-center text-[9px] font-semibold text-[var(--tf-text-secondary)]"
+            className="w-[26px] h-[26px] rounded-full border-2 border-[var(--tf-bg-panel)] bg-[var(--tf-bg-hover)] flex items-center justify-center text-[9px] font-semibold text-[var(--tf-text-secondary)]"
           >
             +{hidden}
           </div>

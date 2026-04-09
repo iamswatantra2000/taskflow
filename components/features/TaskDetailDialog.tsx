@@ -290,7 +290,7 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId, 
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
               placeholder="Add a description..."
-              className="w-full bg-[var(--tf-bg-input)] border border-[var(--tf-border)] rounded-[8px] px-3 py-2 text-[13px] text-[var(--tf-text-primary)] placeholder-slate-300 dark:placeholder-[#444] outline-none focus:border-[var(--tf-accent)] focus:ring-1 focus:ring-[var(--tf-accent)] transition-colors resize-none"
+              className="w-full bg-[var(--tf-bg-input)] border border-[var(--tf-border)] rounded-[8px] px-3 py-2 text-[13px] text-[var(--tf-text-primary)] placeholder-[var(--tf-text-tertiary)] outline-none focus:border-[var(--tf-accent)] focus:ring-1 focus:ring-[var(--tf-accent)] transition-colors resize-none"
             />
           </div>
 
@@ -321,7 +321,7 @@ export function TaskDetailDialog({ task, open, onClose, members, currentUserId, 
             <button
               type="button"
               onClick={onClose}
-              className="h-8 px-3.5 text-[12px] font-medium text-[var(--tf-text-tertiary)] hover:text-slate-700 dark:hover:text-[#888] bg-[var(--tf-bg-panel)] hover:bg-slate-100 dark:hover:bg-[var(--tf-bg-dropdown)] border border-[var(--tf-border)] hover:border-slate-300 dark:hover:border-white/15 rounded-[8px] shadow-[0_3px_0_0_rgba(0,0,0,0.08)] dark:shadow-[0_3px_0_0_rgba(0,0,0,0.5)] active:translate-y-[3px] active:shadow-none transition-all duration-100"
+              className="h-8 px-3.5 text-[12px] font-medium text-[var(--tf-text-tertiary)] hover:text-[var(--tf-text-primary)] bg-[var(--tf-bg-panel)] hover:bg-[var(--tf-bg-hover)] border border-[var(--tf-border)] hover:border-[var(--tf-border)] rounded-[8px] shadow-[0_3px_0_0_rgba(0,0,0,0.08)] active:translate-y-[3px] active:shadow-none transition-all duration-100"
             >
               Close
             </button>

@@ -157,7 +157,7 @@ export function OnboardingTour() {
               type="button"
               onClick={() => goTo(i, i > step ? "forward" : "back")}
               aria-label={`Go to step ${i + 1}`}
-              className="flex-1 h-[3px] rounded-full overflow-hidden bg-slate-200 dark:bg-white/[0.06] relative transition-colors hover:bg-slate-300 dark:hover:bg-white/[0.1]"
+              className="flex-1 h-[3px] rounded-full overflow-hidden bg-[var(--tf-bg-hover)] relative transition-colors hover:bg-[var(--tf-border)]"
             >
               <div
                 className={`absolute inset-0 bg-gradient-to-r ${cur.bar} rounded-full transition-all duration-500`}
@@ -171,7 +171,7 @@ export function OnboardingTour() {
         <button
           type="button"
           onClick={dismiss}
-          className="absolute top-5 right-5 w-7 h-7 flex items-center justify-center rounded-[8px] text-[var(--tf-text-tertiary)] hover:text-slate-600 dark:hover:text-[#888] hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-all z-10"
+          className="absolute top-5 right-5 w-7 h-7 flex items-center justify-center rounded-[8px] text-[var(--tf-text-tertiary)] hover:text-[var(--tf-text-secondary)] hover:bg-[var(--tf-bg-hover)] transition-all z-10"
         >
           <X size={14} />
         </button>
@@ -218,7 +218,7 @@ export function OnboardingTour() {
               {cur.highlights.map((h) => (
                 <span
                   key={h}
-                  className="inline-flex items-center gap-1.5 text-[11.5px] font-medium text-[var(--tf-text-secondary)] bg-[var(--tf-bg-hover)] border border-[var(--tf-border)] rounded-full px-3 py-1 hover:border-slate-300 dark:hover:border-white/[0.12] hover:text-slate-700 dark:hover:text-[#999] transition-colors"
+                  className="inline-flex items-center gap-1.5 text-[11.5px] font-medium text-[var(--tf-text-secondary)] bg-[var(--tf-bg-hover)] border border-[var(--tf-border)] rounded-full px-3 py-1 hover:border-[var(--tf-border)] hover:text-[var(--tf-text-primary)] transition-colors"
                 >
                   <Check size={9} className="text-[var(--tf-text-tertiary)]" />
                   {h}
@@ -237,7 +237,7 @@ export function OnboardingTour() {
             <button
               type="button"
               onClick={dismiss}
-              className="text-[12px] font-medium text-[var(--tf-text-tertiary)] hover:text-slate-600 dark:hover:text-[#666] transition-colors"
+              className="text-[12px] font-medium text-[var(--tf-text-tertiary)] hover:text-[var(--tf-text-secondary)] transition-colors"
             >
               Skip tour
             </button>
@@ -247,7 +247,7 @@ export function OnboardingTour() {
                 <button
                   type="button"
                   onClick={prev}
-                  className="flex items-center gap-1 h-9 px-4 text-[12.5px] font-medium text-[var(--tf-text-tertiary)] hover:text-slate-700 dark:hover:text-[#bbb] bg-[var(--tf-bg-hover)] hover:bg-slate-100 dark:hover:bg-white/[0.06] border border-[var(--tf-border)] hover:border-slate-300 dark:hover:border-white/[0.14] rounded-[10px] transition-all duration-150"
+                  className="flex items-center gap-1 h-9 px-4 text-[12.5px] font-medium text-[var(--tf-text-tertiary)] hover:text-[var(--tf-text-primary)] bg-[var(--tf-bg-hover)] hover:bg-[var(--tf-bg-panel)] border border-[var(--tf-border)] hover:border-[var(--tf-border)] rounded-[10px] transition-all duration-150"
                 >
                   <ChevronLeft size={13} />
                   Back

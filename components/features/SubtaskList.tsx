@@ -108,16 +108,16 @@ export function SubtaskList({ taskId, initialItems }: { taskId: string; initialI
   }
 
   if (loading) return (
-    <div className="space-y-3 pt-4 border-t border-slate-100 dark:border-[var(--tf-border)]">
+    <div className="space-y-3 pt-4 border-t border-[var(--tf-border-subtle)]">
       <div className="flex items-center gap-1.5">
-        <div className="w-3 h-3 rounded bg-slate-100 dark:bg-[var(--tf-bg-dropdown)] animate-pulse" />
+        <div className="w-3 h-3 rounded bg-[var(--tf-bg-dropdown)] animate-pulse" />
         <div className="h-3 w-16 rounded bg-slate-100 dark:bg-[var(--tf-bg-dropdown)] animate-pulse" />
       </div>
       <div className="space-y-2">
         {[1, 2].map((i) => (
           <div key={i} className="flex items-center gap-2.5 px-1">
-            <div className="w-4 h-4 rounded-[4px] bg-slate-100 dark:bg-[var(--tf-bg-dropdown)] animate-pulse flex-shrink-0" />
-            <div className="h-3 rounded bg-slate-100 dark:bg-[var(--tf-bg-dropdown)] animate-pulse flex-1" style={{ width: `${55 + i * 15}%` }} />
+            <div className="w-4 h-4 rounded-[4px] bg-[var(--tf-bg-dropdown)] animate-pulse flex-shrink-0" />
+            <div className="h-3 rounded bg-[var(--tf-bg-dropdown)] animate-pulse flex-1" style={{ width: `${55 + i * 15}%` }} />
           </div>
         ))}
       </div>
@@ -125,7 +125,7 @@ export function SubtaskList({ taskId, initialItems }: { taskId: string; initialI
   )
 
   return (
-    <div className="space-y-3 pt-4 border-t border-slate-100 dark:border-[var(--tf-border)]">
+    <div className="space-y-3 pt-4 border-t border-[var(--tf-border-subtle)]">
 
       {/* Header + progress */}
       <div className="flex items-center justify-between">
@@ -149,7 +149,7 @@ export function SubtaskList({ taskId, initialItems }: { taskId: string; initialI
 
       {/* Progress bar */}
       {total > 0 && (
-        <div className="h-1 bg-slate-100 dark:bg-[var(--tf-bg-dropdown)] rounded-full overflow-hidden">
+        <div className="h-1 bg-[var(--tf-bg-dropdown)] rounded-full overflow-hidden">
           <div
             className="h-full bg-emerald-500 rounded-full transition-all duration-300"
             style={{ width: `${progress}%` }}
@@ -163,7 +163,7 @@ export function SubtaskList({ taskId, initialItems }: { taskId: string; initialI
           {items.map((item) => (
             <div
               key={item.id}
-              className="group flex items-center gap-2.5 px-1 py-1 rounded-[6px] hover:bg-slate-50 dark:hover:bg-white/[0.03] transition-colors"
+              className="group flex items-center gap-2.5 px-1 py-1 rounded-[6px] hover:bg-[var(--tf-bg-hover)] transition-colors"
             >
               {/* Checkbox */}
               <button
@@ -216,7 +216,7 @@ export function SubtaskList({ taskId, initialItems }: { taskId: string; initialI
               <button
                 type="button"
                 onClick={() => handleDelete(item.id)}
-                className="opacity-0 group-hover:opacity-100 flex-shrink-0 p-0.5 rounded-[4px] text-slate-300 hover:text-red-400 dark:text-[var(--tf-text-tertiary)] dark:hover:text-red-400 transition-all"
+                className="opacity-0 group-hover:opacity-100 flex-shrink-0 p-0.5 rounded-[4px] text-[var(--tf-text-tertiary)] hover:text-red-400 transition-all"
                 aria-label="Delete subtask"
               >
                 <Trash2 size={11} />
@@ -228,14 +228,14 @@ export function SubtaskList({ taskId, initialItems }: { taskId: string; initialI
 
       {/* Add new subtask */}
       <div className="flex items-center gap-2">
-        <div className="flex-shrink-0 w-4 h-4 rounded-[4px] border-2 border-dashed border-slate-300 dark:border-[var(--tf-border)]" />
+        <div className="flex-shrink-0 w-4 h-4 rounded-[4px] border-2 border-dashed border-[var(--tf-border)]" />
         <input
           ref={inputRef}
           value={newTitle}
           onChange={(e) => setNewTitle(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Add a subtask..."
-          className="flex-1 text-[13px] bg-transparent placeholder-slate-300 dark:placeholder-[#444] text-[var(--tf-text-primary)] outline-none"
+          className="flex-1 text-[13px] bg-transparent placeholder-[var(--tf-text-tertiary)] text-[var(--tf-text-primary)] outline-none"
         />
         {newTitle.trim() && (
           <button

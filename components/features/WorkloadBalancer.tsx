@@ -42,10 +42,10 @@ function loadLevel(activeCount: number): LoadLevel {
 }
 
 const loadBadge: Record<LoadLevel, string> = {
-  free:       "text-emerald-600 bg-emerald-50 border-emerald-200 dark:text-emerald-400 dark:bg-emerald-500/10 dark:border-emerald-500/20",
+  free:       "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
   normal:     "",
-  busy:       "text-amber-600 bg-amber-50 border-amber-200 dark:text-amber-400 dark:bg-amber-500/10 dark:border-amber-500/20",
-  overloaded: "text-red-600 bg-red-50 border-red-200 dark:text-red-400 dark:bg-red-500/10 dark:border-red-500/20",
+  busy:       "text-amber-400 bg-amber-500/10 border-amber-500/20",
+  overloaded: "text-red-400 bg-red-500/10 border-red-500/20",
 }
 
 const loadLabel: Record<LoadLevel, string> = {
@@ -56,7 +56,7 @@ const loadLabel: Record<LoadLevel, string> = {
 }
 
 const statusBar: Record<string, { bg: string; label: string }> = {
-  TODO:        { bg: "bg-slate-300 dark:bg-[var(--tf-bg-dropdown)]",    label: "Todo"        },
+  TODO:        { bg: "bg-[var(--tf-bg-dropdown)]",    label: "Todo"        },
   IN_PROGRESS: { bg: "bg-indigo-500",                  label: "In Progress" },
   IN_REVIEW:   { bg: "bg-amber-400",                   label: "In Review"   },
   DONE:        { bg: "bg-emerald-400/50",              label: "Done"        },
@@ -118,7 +118,7 @@ function ReassignDropdown({
               onClick={() => { onReassign(task.id, null); setOpen(false) }}
               className="w-full flex items-center gap-2 px-3 py-1.5 text-[12px] text-[var(--tf-text-secondary)] hover:bg-[var(--tf-bg-hover)] transition-colors"
             >
-              <div className="w-5 h-5 rounded-full border border-dashed border-slate-300 dark:border-[var(--tf-border)] flex-shrink-0" />
+              <div className="w-5 h-5 rounded-full border border-dashed border-[var(--tf-border)] flex-shrink-0" />
               Unassigned
               {!currentAssigneeId && <Check size={10} className="ml-auto text-[var(--tf-accent-text)]" />}
             </button>
@@ -199,7 +199,7 @@ function MemberRow({
       >
         {/* Avatar */}
         <div
-          className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold text-white flex-shrink-0 ring-2 ring-white dark:ring-[#111]"
+          className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold text-white flex-shrink-0 ring-2 ring-[var(--tf-bg-panel)]"
           style={{ background: avatarColor }}
         >
           {memberId ? getInitials(name) : "–"}
@@ -213,7 +213,7 @@ function MemberRow({
             {name}
           </span>
           {isCurrentUser && (
-            <span className="text-[10px] font-medium text-indigo-500 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 px-1.5 py-[2px] rounded-full border border-indigo-200 dark:border-indigo-500/20 flex-shrink-0">
+            <span className="text-[10px] font-medium text-indigo-400 bg-indigo-500/10 px-1.5 py-[2px] rounded-full border border-indigo-500/20 flex-shrink-0">
               you
             </span>
           )}
@@ -246,7 +246,7 @@ function MemberRow({
         {total > 0 ? (
           <div className="flex items-center gap-2 pt-2.5">
             {/* Normalized bar */}
-            <div className="flex-1 h-[6px] bg-slate-100 dark:bg-[var(--tf-bg-dropdown)] rounded-full overflow-hidden">
+            <div className="flex-1 h-[6px] bg-[var(--tf-bg-dropdown)] rounded-full overflow-hidden">
               <div
                 className="h-full flex rounded-full overflow-hidden transition-all duration-500"
                 style={{ width: `${barWidth}%` }}
@@ -312,10 +312,10 @@ function MemberRow({
                   {/* Status chip */}
                   <div className={cn(
                     "h-[18px] px-1.5 rounded-[4px] text-[9px] font-semibold flex items-center flex-shrink-0",
-                    task.status === "IN_PROGRESS" ? "bg-indigo-50 text-indigo-500 dark:bg-indigo-500/10 dark:text-indigo-400" :
-                    task.status === "IN_REVIEW"   ? "bg-amber-50 text-amber-500 dark:bg-amber-500/10 dark:text-amber-400" :
-                    task.status === "DONE"        ? "bg-emerald-50 text-emerald-500 dark:bg-emerald-500/10 dark:text-emerald-400" :
-                                                    "bg-slate-100 text-slate-500 dark:bg-white/[0.04] dark:text-[var(--tf-text-tertiary)]"
+                    task.status === "IN_PROGRESS" ? "bg-indigo-500/10 text-indigo-400" :
+                    task.status === "IN_REVIEW"   ? "bg-amber-500/10 text-amber-400" :
+                    task.status === "DONE"        ? "bg-emerald-500/10 text-emerald-400" :
+                                                    "bg-[var(--tf-bg-hover)] text-[var(--tf-text-tertiary)]"
                   )}>
                     {statusBar[task.status]?.label ?? task.status}
                   </div>
@@ -417,7 +417,7 @@ export function WorkloadBalancer({ tasks, members, projects, currentUserId }: Pr
         </div>
         <div className="flex items-center gap-2">
           {unassigned > 0 && (
-            <span className="text-[11px] font-medium text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-full px-2.5 py-0.5">
+            <span className="text-[11px] font-medium text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-full px-2.5 py-0.5">
               {unassigned} unassigned
             </span>
           )}

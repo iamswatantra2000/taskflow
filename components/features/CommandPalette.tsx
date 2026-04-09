@@ -43,7 +43,7 @@ const STATUS_DOT: Record<string, string> = {
 // Shared group heading classes
 const GROUP_CLS =
   "[&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:font-semibold " +
-  "[&_[cmdk-group-heading]]:text-slate-400 dark:[&_[cmdk-group-heading]]:text-[#333] [&_[cmdk-group-heading]]:uppercase " +
+  "[&_[cmdk-group-heading]]:text-[var(--tf-text-tertiary)] [&_[cmdk-group-heading]]:uppercase " +
   "[&_[cmdk-group-heading]]:tracking-[0.1em] [&_[cmdk-group-heading]]:px-2 " +
   "[&_[cmdk-group-heading]]:pb-1 [&_[cmdk-group-heading]]:pt-3"
 
@@ -169,9 +169,9 @@ export function CommandPalette({ projects, plan }: Props) {
               onValueChange={setQuery}
               placeholder="Search commands, projects, navigate..."
               autoFocus
-              className="flex-1 bg-transparent text-[13.5px] text-[var(--tf-text-primary)] placeholder-slate-300 dark:placeholder-[#333] outline-none font-medium"
+              className="flex-1 bg-transparent text-[13.5px] text-[var(--tf-text-primary)] placeholder-[var(--tf-text-tertiary)] outline-none font-medium"
             />
-            <kbd className="text-[10px] font-medium text-[var(--tf-text-tertiary)] bg-[var(--tf-bg-hover)] border border-slate-200 dark:border-white/[0.07] rounded-[6px] px-2 py-1 shadow-[0_2px_0_0_rgba(0,0,0,0.1)] dark:shadow-[0_2px_0_0_rgba(0,0,0,0.4)] flex-shrink-0">
+            <kbd className="text-[10px] font-medium text-[var(--tf-text-tertiary)] bg-[var(--tf-bg-hover)] border border-[var(--tf-border)] rounded-[6px] px-2 py-1 shadow-[0_2px_0_0_rgba(0,0,0,0.1)] flex-shrink-0">
               ESC
             </kbd>
           </div>
@@ -184,7 +184,7 @@ export function CommandPalette({ projects, plan }: Props) {
                 <Loader2 size={20} className="animate-spin text-[var(--tf-text-tertiary)] mx-auto mb-2" />
               ) : (
                 <>
-                  <div className="w-10 h-10 rounded-full bg-slate-50 border border-slate-200 dark:bg-white/[0.03] dark:border-white/[0.06] flex items-center justify-center mx-auto mb-3">
+                  <div className="w-10 h-10 rounded-full bg-[var(--tf-bg-panel)] border border-[var(--tf-border)] flex items-center justify-center mx-auto mb-3">
                     <Search size={16} className="text-[var(--tf-text-tertiary)]" />
                   </div>
                   <p className="text-[12.5px] text-[var(--tf-text-tertiary)]">No results found</p>
@@ -212,13 +212,13 @@ export function CommandPalette({ projects, plan }: Props) {
                     className={ITEM_BASE}
                   >
                     <div
-                      className="w-7 h-7 rounded-[8px] flex items-center justify-center flex-shrink-0 border border-slate-100 dark:border-white/[0.06]"
+                      className="w-7 h-7 rounded-[8px] flex items-center justify-center flex-shrink-0 border border-[var(--tf-border-subtle)]"
                       style={{ background: `${task.projectColor}18` }}
                     >
                       <div className={`w-2 h-2 rounded-full ${STATUS_DOT[task.status] ?? "bg-slate-400"}`} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-medium text-[var(--tf-text-secondary)] group-data-[selected=true]:text-slate-900 dark:group-data-[selected=true]:text-white truncate transition-colors">
+                      <p className="text-[13px] font-medium text-[var(--tf-text-secondary)] group-data-[selected=true]:text-[var(--tf-text-primary)] truncate transition-colors">
                         {task.title}
                       </p>
                       <p className="text-[11px] text-[var(--tf-text-tertiary)] truncate">{task.projectName}</p>
@@ -239,12 +239,12 @@ export function CommandPalette({ projects, plan }: Props) {
                     className={ITEM_BASE}
                   >
                     <div
-                      className="w-7 h-7 rounded-[8px] flex items-center justify-center flex-shrink-0 border border-slate-200 dark:border-white/[0.06]"
+                      className="w-7 h-7 rounded-[8px] flex items-center justify-center flex-shrink-0 border border-[var(--tf-border)]"
                       style={{ background: `${project.color}18` }}
                     >
                       <div className="w-2 h-2 rounded-full" style={{ background: project.color }} />
                     </div>
-                    <span className="flex-1 font-medium text-[var(--tf-text-secondary)] group-data-[selected=true]:text-slate-900 dark:group-data-[selected=true]:text-white transition-colors truncate">
+                    <span className="flex-1 font-medium text-[var(--tf-text-secondary)] group-data-[selected=true]:text-[var(--tf-text-primary)] transition-colors truncate">
                       {project.name}
                     </span>
                     <ArrowRight size={12} className="text-[var(--tf-text-tertiary)] group-data-[selected=true]:text-indigo-500 transition-colors" />
@@ -271,13 +271,13 @@ export function CommandPalette({ projects, plan }: Props) {
                     <div
                       className={`w-7 h-7 rounded-[8px] flex items-center justify-center flex-shrink-0 transition-colors
                         ${locked
-                          ? "bg-slate-50 border border-slate-100 dark:bg-white/[0.03] dark:border-white/[0.05]"
-                          : "bg-slate-100 border border-slate-200 dark:bg-white/[0.05] dark:border-white/[0.08] group-data-[selected=true]:bg-indigo-50 dark:group-data-[selected=true]:bg-indigo-500/[0.15] group-data-[selected=true]:border-indigo-200 dark:group-data-[selected=true]:border-indigo-500/25"
+                          ? "bg-[var(--tf-bg-panel)] border border-[var(--tf-border-subtle)]"
+                          : "bg-[var(--tf-bg-hover)] border border-[var(--tf-border)] group-data-[selected=true]:bg-indigo-500/[0.1] group-data-[selected=true]:border-indigo-500/25"
                         }`}
                     >
                       <item.icon
                         size={13}
-                        className={locked ? "text-[var(--tf-text-tertiary)]" : "text-[var(--tf-text-secondary)] group-data-[selected=true]:text-indigo-600 dark:group-data-[selected=true]:text-indigo-400"}
+                        className={locked ? "text-[var(--tf-text-tertiary)]" : "text-[var(--tf-text-secondary)] group-data-[selected=true]:text-indigo-500"}
                       />
                     </div>
 
@@ -286,7 +286,7 @@ export function CommandPalette({ projects, plan }: Props) {
                       className={`flex-1 font-medium transition-colors
                         ${locked
                           ? "text-[var(--tf-text-tertiary)]"
-                          : "text-[var(--tf-text-secondary)] group-data-[selected=true]:text-slate-900 dark:group-data-[selected=true]:text-white"
+                          : "text-[var(--tf-text-secondary)] group-data-[selected=true]:text-[var(--tf-text-primary)]"
                         }`}
                     >
                       {item.label}
@@ -326,7 +326,7 @@ export function CommandPalette({ projects, plan }: Props) {
                         style={{ background: project.color }}
                       />
                     </div>
-                    <span className="flex-1 font-medium text-[var(--tf-text-secondary)] group-data-[selected=true]:text-slate-900 dark:group-data-[selected=true]:text-white transition-colors">
+                    <span className="flex-1 font-medium text-[var(--tf-text-secondary)] group-data-[selected=true]:text-[var(--tf-text-primary)] transition-colors">
                       {project.name}
                     </span>
                     <ArrowRight size={12} className="text-[var(--tf-text-tertiary)] group-data-[selected=true]:text-indigo-500 transition-colors" />
@@ -345,7 +345,7 @@ export function CommandPalette({ projects, plan }: Props) {
                 <div className="w-7 h-7 rounded-[8px] bg-violet-500/[0.08] border border-violet-500/[0.15] flex items-center justify-center flex-shrink-0">
                   <FolderPlus size={13} className="text-violet-400/70" />
                 </div>
-                <span className="flex-1 font-medium text-[var(--tf-text-secondary)] group-data-[selected=true]:text-slate-900 dark:group-data-[selected=true]:text-white transition-colors">
+                <span className="flex-1 font-medium text-[var(--tf-text-secondary)] group-data-[selected=true]:text-[var(--tf-text-primary)] transition-colors">
                   Create new project
                 </span>
                 <ArrowRight size={12} className="text-[var(--tf-text-tertiary)] group-data-[selected=true]:text-indigo-500 transition-colors" />
@@ -359,7 +359,7 @@ export function CommandPalette({ projects, plan }: Props) {
                 <div className="w-7 h-7 rounded-[8px] bg-emerald-500/[0.08] border border-emerald-500/[0.15] flex items-center justify-center flex-shrink-0">
                   <Plus size={13} className="text-emerald-400/70" />
                 </div>
-                <span className="flex-1 font-medium text-[var(--tf-text-secondary)] group-data-[selected=true]:text-slate-900 dark:group-data-[selected=true]:text-white transition-colors">
+                <span className="flex-1 font-medium text-[var(--tf-text-secondary)] group-data-[selected=true]:text-[var(--tf-text-primary)] transition-colors">
                   Create new task
                 </span>
                 <ArrowRight size={12} className="text-[var(--tf-text-tertiary)] group-data-[selected=true]:text-indigo-500 transition-colors" />
@@ -374,7 +374,7 @@ export function CommandPalette({ projects, plan }: Props) {
                   <div className="w-7 h-7 rounded-[8px] bg-amber-500/[0.08] border border-amber-500/[0.15] flex items-center justify-center flex-shrink-0">
                     <Sparkles size={13} className="text-amber-400/80" />
                   </div>
-                  <span className="flex-1 font-medium text-[var(--tf-text-secondary)] group-data-[selected=true]:text-slate-900 dark:group-data-[selected=true]:text-white transition-colors">
+                  <span className="flex-1 font-medium text-[var(--tf-text-secondary)] group-data-[selected=true]:text-[var(--tf-text-primary)] transition-colors">
                     Upgrade to Pro
                   </span>
                   <span className="text-[10px] font-semibold text-amber-400/70 bg-amber-500/[0.08] border border-amber-500/[0.15] rounded-full px-2 py-0.5">

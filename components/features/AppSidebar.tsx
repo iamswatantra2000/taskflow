@@ -91,18 +91,18 @@ function LockedNavItem({ label, icon: Icon, proLabel, collapsed }: {
           onMouseEnter={clearHide}
           onMouseLeave={scheduleHide}
         >
-          <div className="bg-white dark:bg-[var(--tf-bg-dropdown)] border border-[var(--tf-border)] rounded-[9px] px-3 py-2 flex items-center gap-2.5 whitespace-nowrap shadow-2xl shadow-black/20 dark:shadow-black/50">
+          <div className="bg-[var(--tf-bg-dropdown)] border border-[var(--tf-border)] rounded-[9px] px-3 py-2 flex items-center gap-2.5 whitespace-nowrap shadow-2xl shadow-black/20">
             <div className="w-5 h-5 rounded-full bg-amber-500/10 flex items-center justify-center flex-shrink-0">
               <Lock size={9} className="text-amber-400" />
             </div>
-            <span className="text-[11.5px] text-slate-600 dark:text-[var(--tf-text-primary)] font-medium">{proLabel}</span>
+            <span className="text-[11.5px] text-[var(--tf-text-primary)] font-medium">{proLabel}</span>
             <span className="text-[11px] text-[var(--tf-text-tertiary)]">·</span>
             <a href="/upgrade" className="text-[11.5px] font-semibold text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-1">
               <Zap size={9} />
               Upgrade
             </a>
           </div>
-          <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-[5px] w-2 h-2 bg-white dark:bg-[var(--tf-bg-dropdown)] border-l border-b border-[var(--tf-border)] rotate-45" />
+          <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-[5px] w-2 h-2 bg-[var(--tf-bg-dropdown)] border-l border-b border-[var(--tf-border)] rotate-45" />
         </div>,
         document.body
       )}
@@ -163,14 +163,14 @@ export function AppSidebar({ user, projects, plan }: AppSidebarProps) {
         <button
           type="button"
           onClick={() => setCollapsed(!collapsed)}
-          className="hidden md:flex w-6 h-6 rounded-[6px] border border-[var(--tf-border)] items-center justify-center text-[var(--tf-text-tertiary)] hover:text-slate-700 dark:hover:text-[#999] hover:border-slate-300 dark:hover:border-white/[0.15] hover:bg-[var(--tf-bg-hover)] transition-all flex-shrink-0"
+          className="hidden md:flex w-6 h-6 rounded-[6px] border border-[var(--tf-border)] items-center justify-center text-[var(--tf-text-tertiary)] hover:text-[var(--tf-text-secondary)] hover:border-[var(--tf-border)] hover:bg-[var(--tf-bg-hover)] transition-all flex-shrink-0"
         >
           {collapsed ? <ChevronRight size={11} /> : <ChevronLeft size={11} />}
         </button>
         <button
           type="button"
           onClick={() => setMobileOpen(false)}
-          className="md:hidden w-6 h-6 rounded-[6px] border border-[var(--tf-border)] flex items-center justify-center text-[var(--tf-text-tertiary)] hover:text-slate-700 dark:hover:text-[#999] hover:bg-[var(--tf-bg-hover)] transition-all"
+          className="md:hidden w-6 h-6 rounded-[6px] border border-[var(--tf-border)] flex items-center justify-center text-[var(--tf-text-tertiary)] hover:text-[var(--tf-text-secondary)] hover:bg-[var(--tf-bg-hover)] transition-all"
         >
           <X size={11} />
         </button>
@@ -211,7 +211,7 @@ export function AppSidebar({ user, projects, plan }: AppSidebarProps) {
                   collapsed ? "px-0 justify-center" : "px-3",
                   isActive
                     ? ""
-                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-[var(--tf-text-secondary)] dark:hover:text-[#ccc] dark:hover:bg-[var(--tf-bg-hover)]"
+                    : "text-[var(--tf-text-secondary)] hover:text-[var(--tf-text-primary)] hover:bg-[var(--tf-bg-hover)]"
                 )}
                 style={isActive ? {
                   backgroundColor: "var(--tf-accent-muted)",
@@ -245,9 +245,9 @@ export function AppSidebar({ user, projects, plan }: AppSidebarProps) {
             <button
               type="button"
               onClick={openCommandPalette}
-              className="w-full flex items-center gap-3 h-9 px-3 rounded-[8px] text-[13px] font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-[var(--tf-text-tertiary)] dark:hover:text-[#ccc] dark:hover:bg-[var(--tf-bg-hover)] transition-all group"
+              className="w-full flex items-center gap-3 h-9 px-3 rounded-[8px] text-[13px] font-medium text-[var(--tf-text-tertiary)] hover:text-[var(--tf-text-primary)] hover:bg-[var(--tf-bg-hover)] transition-all group"
             >
-              <Search size={16} className="flex-shrink-0 text-slate-400 group-hover:text-slate-600 dark:text-[var(--tf-text-tertiary)] dark:group-hover:text-[#777] transition-colors" />
+              <Search size={16} className="flex-shrink-0 text-[var(--tf-text-tertiary)] group-hover:text-[var(--tf-text-secondary)] transition-colors" />
               <span className="flex-1 text-left">Search</span>
               <div className="flex items-center gap-0.5">
                 <kbd className="text-[9px] font-medium border border-[var(--tf-border)] bg-[var(--tf-bg-hover)] rounded-[4px] px-1.5 py-0.5 text-[var(--tf-text-tertiary)]">⌘</kbd>
@@ -276,7 +276,7 @@ export function AppSidebar({ user, projects, plan }: AppSidebarProps) {
               <NewProjectDialog />
             </div>
           )}
-          {collapsed && <div className="h-px bg-slate-200 dark:bg-white/[0.05] mb-2 mx-1" />}
+          {collapsed && <div className="h-px bg-[var(--tf-border)] mb-2 mx-1" />}
 
           <div className="space-y-0.5">
             {projects.map((project) => {
@@ -291,8 +291,8 @@ export function AppSidebar({ user, projects, plan }: AppSidebarProps) {
                     "flex items-center gap-3 h-9 rounded-[8px] text-[13px] font-medium transition-all duration-150 overflow-hidden",
                     collapsed ? "px-0 justify-center" : "px-3",
                     isActive
-                      ? "bg-slate-100 text-slate-900 dark:bg-white/[0.06] dark:text-[var(--tf-text-primary)]"
-                      : "text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-[var(--tf-text-tertiary)] dark:hover:text-[#ccc] dark:hover:bg-[var(--tf-bg-hover)]"
+                      ? "bg-[var(--tf-bg-hover)] text-[var(--tf-text-primary)]"
+                      : "text-[var(--tf-text-secondary)] hover:text-[var(--tf-text-primary)] hover:bg-[var(--tf-bg-hover)]"
                   )}
                 >
                   <div
@@ -355,9 +355,9 @@ export function AppSidebar({ user, projects, plan }: AppSidebarProps) {
           onClick={() => setMobileOpen(false)}
           title={collapsed ? "Settings" : undefined}
           className={cn(
-            "flex items-center gap-3 h-9 rounded-[8px] text-[13px] font-medium transition-all text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-[var(--tf-text-tertiary)] dark:hover:text-[#ccc] dark:hover:bg-[var(--tf-bg-hover)]",
+            "flex items-center gap-3 h-9 rounded-[8px] text-[13px] font-medium transition-all text-[var(--tf-text-secondary)] hover:text-[var(--tf-text-primary)] hover:bg-[var(--tf-bg-hover)]",
             collapsed ? "px-0 justify-center" : "px-3",
-            pathname === "/settings" && "bg-slate-100 text-slate-700 dark:bg-white/[0.04] dark:text-[var(--tf-text-primary)]"
+            pathname === "/settings" && "bg-[var(--tf-bg-hover)] text-[var(--tf-text-primary)]"
           )}
         >
           <Settings2 size={16} className="flex-shrink-0 text-[var(--tf-text-tertiary)]" />
@@ -366,7 +366,7 @@ export function AppSidebar({ user, projects, plan }: AppSidebarProps) {
 
         {/* User card */}
         <div className={cn(
-          "flex items-center gap-3 rounded-[9px] bg-slate-50 border border-slate-100 hover:bg-slate-100 hover:border-slate-200 dark:bg-white/[0.02] dark:border-[var(--tf-border-subtle)] dark:hover:bg-[var(--tf-bg-hover)] dark:hover:border-white/[0.08] transition-all cursor-default",
+          "flex items-center gap-3 rounded-[9px] bg-[var(--tf-bg-panel)] border border-[var(--tf-border-subtle)] hover:bg-[var(--tf-bg-hover)] hover:border-[var(--tf-border)] transition-all cursor-default",
           collapsed ? "p-1.5 justify-center" : "px-2.5 py-2"
         )}>
           <div className="relative flex-shrink-0">
@@ -377,7 +377,7 @@ export function AppSidebar({ user, projects, plan }: AppSidebarProps) {
               </AvatarFallback>
             </Avatar>
             {/* Online dot */}
-            <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-500 border-2 border-white dark:border-[var(--tf-bg-panel)]" />
+            <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-500 border-2 border-[var(--tf-bg-panel)]" />
           </div>
 
           {!collapsed && (
@@ -391,7 +391,7 @@ export function AppSidebar({ user, projects, plan }: AppSidebarProps) {
                     Pro
                   </span>
                 ) : (
-                  <span className="text-[9px] font-medium text-slate-500 bg-slate-100 border border-slate-200 dark:text-[var(--tf-text-tertiary)] dark:bg-white/[0.04] dark:border-[var(--tf-border)] px-1.5 py-px rounded-full flex-shrink-0">
+                  <span className="text-[9px] font-medium text-[var(--tf-text-tertiary)] bg-[var(--tf-bg-hover)] border border-[var(--tf-border)] px-1.5 py-px rounded-full flex-shrink-0">
                     Free
                   </span>
                 )}
@@ -407,7 +407,7 @@ export function AppSidebar({ user, projects, plan }: AppSidebarProps) {
         <button
           type="button"
           onClick={() => signOut({ redirectUrl: "/login" })}
-          className="md:hidden w-full flex items-center gap-3 h-9 px-3 rounded-[8px] text-[13px] font-medium text-[var(--tf-text-tertiary)] hover:bg-red-50 dark:hover:bg-red-950/40 hover:text-red-500 dark:hover:text-red-400 transition-all"
+          className="md:hidden w-full flex items-center gap-3 h-9 px-3 rounded-[8px] text-[13px] font-medium text-[var(--tf-text-tertiary)] hover:bg-red-500/[0.08] hover:text-red-500 transition-all"
         >
           <LogOut size={16} className="flex-shrink-0" />
           <span className="whitespace-nowrap">Sign out</span>
@@ -422,7 +422,7 @@ export function AppSidebar({ user, projects, plan }: AppSidebarProps) {
       <button
         type="button"
         onClick={() => setMobileOpen(true)}
-        className="md:hidden fixed top-3 left-4 z-50 w-8 h-8 rounded-[8px] border border-slate-200 dark:border-white/[0.1] bg-[var(--tf-bg-card)] flex items-center justify-center text-[var(--tf-text-secondary)] hover:text-slate-900 dark:hover:text-[#ccc] transition-colors"
+        className="md:hidden fixed top-3 left-4 z-50 w-8 h-8 rounded-[8px] border border-[var(--tf-border)] bg-[var(--tf-bg-card)] flex items-center justify-center text-[var(--tf-text-secondary)] hover:text-[var(--tf-text-primary)] transition-colors"
       >
         <Menu size={15} />
       </button>

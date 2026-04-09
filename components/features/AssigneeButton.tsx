@@ -40,13 +40,13 @@ export function AssigneeButton({ taskId, assigneeId, members, onAssign }: Props)
       >
         {assignee ? (
           <div
-            className="w-[22px] h-[22px] rounded-full text-[9px] font-bold text-white flex items-center justify-center ring-2 ring-white dark:ring-[#111] hover:ring-indigo-400 dark:hover:ring-indigo-500 transition-all cursor-pointer"
+            className="w-[22px] h-[22px] rounded-full text-[9px] font-bold text-white flex items-center justify-center ring-2 ring-[var(--tf-bg-panel)] hover:ring-indigo-500 transition-all cursor-pointer"
             style={{ background: presenceColor(assignee.id) }}
           >
             {getInitials(assignee.name)}
           </div>
         ) : (
-          <div className="w-[22px] h-[22px] rounded-full border border-dashed border-[var(--tf-border)] flex items-center justify-center text-[var(--tf-text-tertiary)] hover:border-indigo-400 hover:text-indigo-400 dark:hover:border-indigo-500 dark:hover:text-indigo-400 transition-colors cursor-pointer">
+          <div className="w-[22px] h-[22px] rounded-full border border-dashed border-[var(--tf-border)] flex items-center justify-center text-[var(--tf-text-tertiary)] hover:border-indigo-500 hover:text-indigo-400 transition-colors cursor-pointer">
             <UserPlus size={10} />
           </div>
         )}
@@ -70,7 +70,7 @@ export function AssigneeButton({ taskId, assigneeId, members, onAssign }: Props)
               onClick={() => { onAssign(taskId, null); setOpen(false) }}
               className="w-full flex items-center gap-2.5 px-3 py-1.5 hover:bg-[var(--tf-bg-hover)] transition-colors"
             >
-              <div className="w-6 h-6 rounded-full border border-dashed border-slate-300 dark:border-[var(--tf-border)] flex items-center justify-center flex-shrink-0 text-[var(--tf-text-tertiary)]">
+              <div className="w-6 h-6 rounded-full border border-dashed border-[var(--tf-border)] flex items-center justify-center flex-shrink-0 text-[var(--tf-text-tertiary)]">
                 <UserPlus size={10} />
               </div>
               <span className="text-[12px] text-[var(--tf-text-secondary)] flex-1 text-left">

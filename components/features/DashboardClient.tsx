@@ -67,24 +67,24 @@ const STAT_META: Record<string, {
 	iconBg:    string;
 	iconColor: string;
 }> = {
-	"Total tasks": { icon: ListTodo,     accentBg: "bg-slate-200 dark:bg-white/[0.12]",      iconBg: "bg-slate-100 dark:bg-white/[0.06]",       iconColor: "text-[var(--tf-text-secondary)]"         },
+	"Total tasks": { icon: ListTodo,     accentBg: "bg-[var(--tf-bg-hover)]",      iconBg: "bg-[var(--tf-bg-hover)]",       iconColor: "text-[var(--tf-text-secondary)]"         },
 	"In progress": { icon: Zap,          accentBg: "bg-indigo-500/50",     iconBg: "bg-indigo-500/[0.12]",  iconColor: "text-indigo-400"     },
 	"Completed":   { icon: CheckCircle2, accentBg: "bg-emerald-500/50",    iconBg: "bg-emerald-500/[0.12]", iconColor: "text-emerald-400"    },
 	"Todo":        { icon: Circle,       accentBg: "bg-amber-500/50",      iconBg: "bg-amber-500/[0.12]",   iconColor: "text-amber-400"      },
 };
 
 const MY_TASK_STATUS: Record<string, { label: string; dot: string; badge: string }> = {
-	TODO:        { label: "Todo",        dot: "bg-slate-400 dark:bg-[var(--tf-text-tertiary)]",  badge: "bg-slate-100 text-slate-600 border-slate-200 dark:bg-[var(--tf-bg-dropdown)] dark:text-[var(--tf-text-secondary)] dark:border-[var(--tf-border)]"             },
-	IN_PROGRESS: { label: "In progress", dot: "bg-indigo-500",                badge: "bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950 dark:text-indigo-400 dark:border-indigo-900"   },
-	IN_REVIEW:   { label: "In review",   dot: "bg-amber-500",                 badge: "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-400 dark:border-amber-900"         },
-	DONE:        { label: "Done",        dot: "bg-emerald-500",               badge: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-400 dark:border-emerald-900" },
+	TODO:        { label: "Todo",        dot: "bg-[var(--tf-text-tertiary)]",  badge: "bg-[var(--tf-bg-dropdown)] text-[var(--tf-text-secondary)] border-[var(--tf-border)]"             },
+	IN_PROGRESS: { label: "In progress", dot: "bg-indigo-500",                badge: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20"   },
+	IN_REVIEW:   { label: "In review",   dot: "bg-amber-500",                 badge: "bg-amber-500/10 text-amber-400 border-amber-500/20"         },
+	DONE:        { label: "Done",        dot: "bg-emerald-500",               badge: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" },
 }
 
 const MY_TASK_PRIORITY: Record<string, { label: string; color: string }> = {
-	LOW:    { label: "Low",    color: "text-emerald-600 dark:text-emerald-400" },
-	MEDIUM: { label: "Medium", color: "text-amber-600 dark:text-amber-400"   },
-	HIGH:   { label: "High",   color: "text-red-500 dark:text-red-400"       },
-	URGENT: { label: "Urgent", color: "text-rose-600 dark:text-rose-400"     },
+	LOW:    { label: "Low",    color: "text-emerald-400" },
+	MEDIUM: { label: "Medium", color: "text-amber-400"   },
+	HIGH:   { label: "High",   color: "text-red-400"     },
+	URGENT: { label: "Urgent", color: "text-rose-400"    },
 }
 
 // ProGate — locks Pro-only UI for free users
@@ -208,10 +208,10 @@ export function DashboardClient({
 		<div className="flex-1 flex flex-col min-h-0">
 
 			{/* ── Topbar ── */}
-			<div className="h-[50px] border-b border-border flex items-center justify-between pl-14 pr-4 md:px-5 flex-shrink-0 bg-background z-10">
+			<div className="h-[50px] border-b border-[var(--tf-border)] flex items-center justify-between pl-14 pr-4 md:px-5 flex-shrink-0 bg-[var(--tf-bg-card)] z-10">
 				<div className="flex items-center gap-2 min-w-0">
-					<span className="text-[13px] text-muted-foreground hidden sm:inline">Workspace /</span>
-					<span className="text-[13px] font-semibold text-foreground truncate">
+					<span className="text-[13px] text-[var(--tf-text-tertiary)] hidden sm:inline">Workspace /</span>
+					<span className="text-[13px] font-semibold text-[var(--tf-text-primary)] truncate">
 					{activeTab === "my-tasks" ? "My tasks" : "Dashboard"}
 				</span>
 				</div>
@@ -224,11 +224,11 @@ export function DashboardClient({
 						onClick={() => {
 							document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true, bubbles: true }));
 						}}
-						className="flex items-center gap-2 h-7 px-3 text-[12px] text-muted-foreground border border-border rounded-[7px] hover:border-border/80 hover:text-foreground transition-colors"
+						className="flex items-center gap-2 h-7 px-3 text-[12px] text-[var(--tf-text-tertiary)] border border-[var(--tf-border)] rounded-[7px] hover:border-[var(--tf-border)] hover:text-[var(--tf-text-primary)] transition-colors"
 					>
 						<Search size={12} />
 						<span>Search</span>
-						<kbd className="text-[10px] border border-border rounded px-1 ml-1">⌘K</kbd>
+						<kbd className="text-[10px] border border-[var(--tf-border)] rounded px-1 ml-1">⌘K</kbd>
 					</button>
 
 					<BoardFilters onFilterChange={setFilters} />
@@ -269,7 +269,7 @@ export function DashboardClient({
 			</div>
 
 			{/* Mobile action bar */}
-			<div className="flex md:hidden items-center justify-between gap-2 px-3 py-2 border-b border-border bg-card flex-shrink-0 z-10 shadow-sm">
+			<div className="flex md:hidden items-center justify-between gap-2 px-3 py-2 border-b border-[var(--tf-border)] bg-[var(--tf-bg-card)] flex-shrink-0 z-10 shadow-sm">
 				<BoardFilters onFilterChange={setFilters} compact />
 				{projectId && (
 					<NewTaskDialog projectId={projectId}>
@@ -289,8 +289,8 @@ export function DashboardClient({
 					return (
 						<div className="p-5 sm:p-7 space-y-6">
 							<div>
-								<h1 className="text-[22px] font-bold tracking-tight text-foreground">My tasks</h1>
-								<p className="text-[13px] text-muted-foreground mt-1">
+								<h1 className="text-[22px] font-bold tracking-tight text-[var(--tf-text-primary)]">My tasks</h1>
+								<p className="text-[13px] text-[var(--tf-text-tertiary)] mt-1">
 									{myTasks.length} task{myTasks.length !== 1 ? "s" : ""} assigned to you
 								</p>
 							</div>
@@ -306,7 +306,7 @@ export function DashboardClient({
 											<span className={`text-[11px] font-semibold px-2 py-0.5 rounded-[5px] border ${sc.badge}`}>
 												{sc.label}
 											</span>
-											<span className="text-[11px] text-muted-foreground">{group.length}</span>
+											<span className="text-[11px] text-[var(--tf-text-tertiary)]">{group.length}</span>
 										</div>
 										<div className="space-y-1.5">
 											{group.map((task) => {
@@ -323,11 +323,11 @@ export function DashboardClient({
 														/>
 														<p className="flex-1 text-[13px] text-[var(--tf-text-primary)] truncate">{task.title}</p>
 														{proj && (
-															<span className="text-[11px] text-muted-foreground hidden sm:block shrink-0">{proj.name}</span>
+															<span className="text-[11px] text-[var(--tf-text-tertiary)] hidden sm:block shrink-0">{proj.name}</span>
 														)}
 														<span className={`text-[11px] font-medium shrink-0 ${pc.color}`}>{pc.label}</span>
 														{task.dueDate && (
-															<span className="text-[11px] text-muted-foreground shrink-0 hidden sm:block">
+															<span className="text-[11px] text-[var(--tf-text-tertiary)] shrink-0 hidden sm:block">
 																{new Date(task.dueDate).toLocaleDateString()}
 															</span>
 														)}
@@ -361,7 +361,7 @@ export function DashboardClient({
 								</p>
 								<h1 className="text-[26px] sm:text-[30px] font-bold tracking-tight leading-tight">
 									Good day,{" "}
-									<span className="text-indigo-600 dark:text-indigo-400">{firstName}</span>
+									<span className="text-indigo-400">{firstName}</span>
 								</h1>
 								<p className="text-[13px] text-[var(--tf-text-tertiary)] mt-1.5">
 									Here&apos;s what&apos;s happening across your projects.
@@ -427,7 +427,7 @@ export function DashboardClient({
 										className={`flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-[12px] font-medium transition-all ${
 											boardView === "board"
 												? "bg-[var(--tf-bg-card)] text-[var(--tf-text-primary)] shadow-sm"
-												: "text-[var(--tf-text-tertiary)] hover:text-slate-700 dark:hover:text-[#999]"
+												: "text-[var(--tf-text-tertiary)] hover:text-[var(--tf-text-secondary)]"
 										}`}
 									>
 										<KanbanSquare size={12} />
@@ -439,7 +439,7 @@ export function DashboardClient({
 										className={`flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-[12px] font-medium transition-all ${
 											boardView === "people"
 												? "bg-[var(--tf-bg-card)] text-[var(--tf-text-primary)] shadow-sm"
-												: "text-[var(--tf-text-tertiary)] hover:text-slate-700 dark:hover:text-[#999]"
+												: "text-[var(--tf-text-tertiary)] hover:text-[var(--tf-text-secondary)]"
 										}`}
 									>
 										<Users size={12} />
@@ -449,7 +449,7 @@ export function DashboardClient({
 
 								<div className="flex items-center gap-2">
 									{totalTasks > 0 && (
-										<span className="text-[10.5px] font-semibold text-slate-500 bg-slate-100 border border-slate-200 dark:text-[var(--tf-text-tertiary)] dark:bg-white/[0.04] dark:border-[var(--tf-border)] rounded-full px-2.5 py-0.5">
+										<span className="text-[10.5px] font-semibold text-[var(--tf-text-tertiary)] bg-[var(--tf-bg-hover)] border border-[var(--tf-border)] rounded-full px-2.5 py-0.5">
 											{totalTasks} task{totalTasks !== 1 ? "s" : ""}
 										</span>
 									)}

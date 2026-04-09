@@ -44,14 +44,14 @@ type Props = {
 type ViewType = "board" | "calendar" | "timeline"
 
 const priorityConfig = {
-  HIGH:   { label: "High",   class: "bg-red-50 text-red-600 border-red-200 dark:bg-red-950 dark:text-red-400 dark:border-red-900"             },
-  URGENT: { label: "Urgent", class: "bg-red-50 text-red-600 border-red-200 dark:bg-red-950 dark:text-red-400 dark:border-red-900"             },
-  MEDIUM: { label: "Medium", class: "bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-950 dark:text-amber-400 dark:border-amber-900"       },
-  LOW:    { label: "Low",    class: "bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-400 dark:border-emerald-900" },
+  HIGH:   { label: "High",   class: "bg-red-500/10 text-red-400 border-red-500/20"             },
+  URGENT: { label: "Urgent", class: "bg-red-500/10 text-red-400 border-red-500/20"             },
+  MEDIUM: { label: "Medium", class: "bg-amber-500/10 text-amber-400 border-amber-500/20"       },
+  LOW:    { label: "Low",    class: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" },
 }
 
 const statusConfig: Record<string, { label: string; dot: string; border: string }> = {
-  TODO:        { label: "Todo",        dot: "bg-slate-400 dark:bg-[var(--tf-text-tertiary)]",      border: "border-slate-400 dark:border-[var(--tf-border)]"      },
+  TODO:        { label: "Todo",        dot: "bg-[var(--tf-text-tertiary)]",      border: "border-[var(--tf-border)]"      },
   IN_PROGRESS: { label: "In Progress", dot: "bg-indigo-500",  border: "border-indigo-500"  },
   IN_REVIEW:   { label: "In Review",   dot: "bg-amber-500",   border: "border-amber-500"   },
   DONE:        { label: "Done",        dot: "bg-emerald-500", border: "border-emerald-500" },
@@ -87,7 +87,7 @@ function BoardView({
   onAssign: (taskId: string, newId: string | null) => void
 }) {
   const columns = [
-    { id: "TODO",        label: "Todo",        dot: "bg-slate-400 dark:bg-[var(--tf-text-tertiary)]"      },
+    { id: "TODO",        label: "Todo",        dot: "bg-[var(--tf-text-tertiary)]"      },
     { id: "IN_PROGRESS", label: "In progress", dot: "bg-indigo-500"  },
     { id: "IN_REVIEW",   label: "In review",   dot: "bg-amber-500"   },
     { id: "DONE",        label: "Done",        dot: "bg-emerald-500" },
@@ -107,7 +107,7 @@ function BoardView({
                 <div className={`w-[7px] h-[7px] rounded-full ${col.dot}`} />
                 <span className="text-[11px] font-medium text-[var(--tf-text-secondary)]">{col.label}</span>
               </div>
-              <span className="text-[10px] text-[var(--tf-text-tertiary)] bg-slate-100 dark:bg-[var(--tf-bg-dropdown)] rounded-full px-2 py-0.5">
+              <span className="text-[10px] text-[var(--tf-text-tertiary)] bg-[var(--tf-bg-dropdown)] rounded-full px-2 py-0.5">
                 {colTasks.length}
               </span>
             </div>
@@ -123,7 +123,7 @@ function BoardView({
                   className={`group bg-[var(--tf-bg-dropdown)] rounded-[8px] p-3 transition-all border
                     ${decayLevel > 0
                       ? decayBorderClass[decayLevel]
-                      : "border-slate-100 dark:border-[var(--tf-border)] hover:border-slate-200 dark:hover:border-[#333]"
+                      : "border-[var(--tf-border-subtle)] hover:border-[var(--tf-border)]"
                     }
                     ${task.status === "IN_PROGRESS" ? "border-l-2 border-l-indigo-500" : ""}
                     ${task.status === "DONE" ? "opacity-50" : ""}
@@ -226,7 +226,7 @@ function CalendarView({ tasks }: { tasks: Task[] }) {
         <button
           type="button"
           onClick={prevMonth}
-          className="w-7 h-7 rounded-[6px] border border-[var(--tf-border)] flex items-center justify-center text-[var(--tf-text-tertiary)] hover:text-slate-700 dark:hover:text-[#ccc] hover:border-slate-300 dark:hover:border-[#3a3a3a] transition-colors"
+          className="w-7 h-7 rounded-[6px] border border-[var(--tf-border)] flex items-center justify-center text-[var(--tf-text-tertiary)] hover:text-[var(--tf-text-secondary)] hover:border-[var(--tf-border)] transition-colors"
         >
           ‹
         </button>
@@ -234,7 +234,7 @@ function CalendarView({ tasks }: { tasks: Task[] }) {
         <button
           type="button"
           onClick={nextMonth}
-          className="w-7 h-7 rounded-[6px] border border-[var(--tf-border)] flex items-center justify-center text-[var(--tf-text-tertiary)] hover:text-slate-700 dark:hover:text-[#ccc] hover:border-slate-300 dark:hover:border-[#3a3a3a] transition-colors"
+          className="w-7 h-7 rounded-[6px] border border-[var(--tf-border)] flex items-center justify-center text-[var(--tf-text-tertiary)] hover:text-[var(--tf-text-secondary)] hover:border-[var(--tf-border)] transition-colors"
         >
           ›
         </button>
@@ -268,8 +268,8 @@ function CalendarView({ tasks }: { tasks: Task[] }) {
           return (
             <div
               key={day}
-              className={`min-h-[90px] border-r border-b border-[var(--tf-border-subtle)] p-1.5 transition-colors hover:bg-slate-50 dark:hover:bg-[var(--tf-bg-card)] ${
-                isToday ? "bg-indigo-50 dark:bg-indigo-950/20" : ""
+              className={`min-h-[90px] border-r border-b border-[var(--tf-border-subtle)] p-1.5 transition-colors hover:bg-[var(--tf-bg-card)] ${
+                isToday ? "bg-indigo-500/[0.06]" : ""
               }`}
             >
               {/* Day number */}
@@ -294,10 +294,10 @@ function CalendarView({ tasks }: { tasks: Task[] }) {
                       key={task.id}
                       className={`text-[10px] px-1.5 py-0.5 rounded-[4px] truncate border-l-2 ${
                         task.status === "DONE"
-                          ? "bg-emerald-50 text-emerald-700/60 border-emerald-300 line-through dark:bg-emerald-950/30 dark:text-emerald-400/60 dark:border-emerald-800"
+                          ? "bg-emerald-500/10 text-emerald-400/60 border-emerald-500/20 line-through"
                           : overdue
-                          ? "bg-red-50 text-red-600 border-red-300 dark:bg-red-950/30 dark:text-red-400 dark:border-red-800"
-                          : "bg-indigo-50 text-indigo-600 border-indigo-300 dark:bg-indigo-950/30 dark:text-indigo-300 dark:border-indigo-700"
+                          ? "bg-red-500/10 text-red-400 border-red-500/20"
+                          : "bg-indigo-500/10 text-indigo-400 border-indigo-500/20"
                       }`}
                       title={task.title}
                     >
@@ -333,7 +333,7 @@ const DAY_PX      = 36   // pixels per day column
 const ROW_H       = 44   // px height of each task row
 const LABEL_W     = 220  // px width of left label column
 const STATUS_BAR: Record<string, string> = {
-  TODO:        "bg-slate-400 dark:bg-[var(--tf-text-tertiary)]",
+  TODO:        "bg-[var(--tf-text-tertiary)]",
   IN_PROGRESS: "bg-indigo-500",
   IN_REVIEW:   "bg-amber-500",
   DONE:        "bg-emerald-500 opacity-70",
@@ -417,7 +417,7 @@ function TimelineView({ tasks }: { tasks: Task[] }) {
 
           {/* ── Month header row ── */}
           <div className="flex border-b border-[var(--tf-border-subtle)] bg-[var(--tf-bg-panel)] sticky top-0 z-20">
-            <div style={{ width: LABEL_W }} className="flex-shrink-0 px-4 py-2 border-r border-slate-100 dark:border-[var(--tf-border)]">
+            <div style={{ width: LABEL_W }} className="flex-shrink-0 px-4 py-2 border-r border-[var(--tf-border)]">
               <span className="text-[10px] font-medium text-[var(--tf-text-tertiary)]">Task</span>
             </div>
             <div className="flex" style={{ width: totalW }}>
@@ -425,7 +425,7 @@ function TimelineView({ tasks }: { tasks: Task[] }) {
                 <div
                   key={seg.label}
                   style={{ width: seg.span * DAY_PX }}
-                  className="flex-shrink-0 px-2 py-2 border-r border-slate-100 dark:border-[var(--tf-border)]"
+                  className="flex-shrink-0 px-2 py-2 border-r border-[var(--tf-border)]"
                 >
                   <span className="text-[10px] font-semibold text-[var(--tf-text-tertiary)]">{seg.label}</span>
                 </div>
@@ -435,7 +435,7 @@ function TimelineView({ tasks }: { tasks: Task[] }) {
 
           {/* ── Day header row ── */}
           <div className="flex border-b border-[var(--tf-border-subtle)] bg-[var(--tf-bg-panel)]">
-            <div style={{ width: LABEL_W }} className="flex-shrink-0 border-r border-slate-100 dark:border-[var(--tf-border)]" />
+            <div style={{ width: LABEL_W }} className="flex-shrink-0 border-r border-[var(--tf-border)]" />
             <div className="flex" style={{ width: totalW }}>
               {days.map((d, i) => {
                 const isToday   = i === todayIdx
@@ -449,10 +449,10 @@ function TimelineView({ tasks }: { tasks: Task[] }) {
                     className={cn(
                       "flex-shrink-0 flex items-center justify-center py-1 border-r text-[9px] font-medium",
                       isToday
-                        ? "bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800/40"
+                        ? "bg-indigo-500/[0.08] text-indigo-400 border-indigo-500/30"
                         : isSunday || isMonthStart
-                          ? "text-[var(--tf-text-tertiary)] border-slate-200 dark:border-[var(--tf-border)]"
-                          : "text-[var(--tf-text-tertiary)] border-slate-100 dark:border-[var(--tf-border)]"
+                          ? "text-[var(--tf-text-tertiary)] border-[var(--tf-border)]"
+                          : "text-[var(--tf-text-tertiary)] border-[var(--tf-border-subtle)]"
                     )}
                   >
                     {isToday ? (
@@ -482,12 +482,12 @@ function TimelineView({ tasks }: { tasks: Task[] }) {
                 <div
                   key={task.id}
                   style={{ height: ROW_H }}
-                  className="flex items-center border-b border-[var(--tf-border-subtle)] hover:bg-slate-50/60 dark:hover:bg-[var(--tf-bg-hover)] transition-colors group"
+                  className="flex items-center border-b border-[var(--tf-border-subtle)] hover:bg-[var(--tf-bg-hover)] transition-colors group"
                 >
                   {/* Label */}
                   <div
                     style={{ width: LABEL_W }}
-                    className="flex-shrink-0 px-4 flex items-center gap-2 border-r border-slate-100 dark:border-[var(--tf-border)] h-full"
+                    className="flex-shrink-0 px-4 flex items-center gap-2 border-r border-[var(--tf-border)] h-full"
                   >
                     <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${status?.dot}`} />
                     <p className="text-[12px] text-[var(--tf-text-primary)] truncate flex-1">{task.title}</p>
@@ -505,7 +505,7 @@ function TimelineView({ tasks }: { tasks: Task[] }) {
                       <div
                         // biome-ignore lint/suspicious/noArrayIndexKey: positional
                         key={i}
-                        className="absolute top-0 bottom-0 bg-slate-50/60 dark:bg-white/[0.012]"
+                        className="absolute top-0 bottom-0 bg-[var(--tf-bg-hover)]/30"
                         style={{ left: i * DAY_PX, width: DAY_PX }}
                       />
                     ))}
@@ -513,7 +513,7 @@ function TimelineView({ tasks }: { tasks: Task[] }) {
                     {/* Today highlight column */}
                     {todayIdx >= 0 && todayIdx < totalDays && (
                       <div
-                        className="absolute top-0 bottom-0 bg-indigo-500/[0.06] dark:bg-indigo-500/[0.04]"
+                        className="absolute top-0 bottom-0 bg-indigo-500/[0.05]"
                         style={{ left: todayIdx * DAY_PX, width: DAY_PX }}
                       />
                     )}
@@ -549,7 +549,7 @@ function TimelineView({ tasks }: { tasks: Task[] }) {
                     ) : (
                       /* No due date — show a dashed placeholder */
                       <div
-                        className="absolute top-1/2 -translate-y-1/2 border border-dashed border-slate-300 dark:border-[var(--tf-border)] rounded-[6px] flex items-center px-2 text-[10px] text-[var(--tf-text-tertiary)]"
+                        className="absolute top-1/2 -translate-y-1/2 border border-dashed border-[var(--tf-border)] rounded-[6px] flex items-center px-2 text-[10px] text-[var(--tf-text-tertiary)]"
                         style={{ left: todayIdx * DAY_PX, width: DAY_PX * 4, height: 24 }}
                         title="No due date"
                       >
@@ -616,7 +616,7 @@ export function ProjectClient({ project, tasks, allProjects, currentUser, member
 
         <div className="flex items-center gap-2 flex-shrink-0">
           {/* View switcher */}
-          <div className="flex items-center bg-slate-50 dark:bg-[var(--tf-bg-dropdown)] border border-[var(--tf-border)] rounded-[8px] p-0.5">
+          <div className="flex items-center bg-[var(--tf-bg-dropdown)] border border-[var(--tf-border)] rounded-[8px] p-0.5">
             {views.map((v) => (
               <button
                 key={v.id}
@@ -625,8 +625,8 @@ export function ProjectClient({ project, tasks, allProjects, currentUser, member
                 className={cn(
                   "flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-[6px] text-[12px] font-medium transition-all",
                   view === v.id
-                    ? "bg-slate-200 dark:bg-[var(--tf-bg-dropdown)] text-[var(--tf-text-primary)]"
-                    : "text-[var(--tf-text-tertiary)] hover:text-slate-700 dark:hover:text-[#999]"
+                    ? "bg-[var(--tf-bg-hover)] text-[var(--tf-text-primary)]"
+                    : "text-[var(--tf-text-tertiary)] hover:text-[var(--tf-text-secondary)]"
                 )}
               >
                 <v.icon size={13} />
@@ -676,7 +676,7 @@ export function ProjectClient({ project, tasks, allProjects, currentUser, member
             { label: "Completed",   value: doneTasks.length,     color: "text-emerald-400" },
             { label: "Todo",        value: todoTasks.length,     color: "text-amber-400"   },
           ].map((stat) => (
-            <div key={stat.label} className="bg-[var(--tf-bg-card)] border border-slate-100 dark:border-[var(--tf-border)] rounded-[10px] p-4">
+            <div key={stat.label} className="bg-[var(--tf-bg-card)] border border-[var(--tf-border)] rounded-[10px] p-4">
               <p className="text-[11px] font-medium text-[var(--tf-text-tertiary)] mb-2">{stat.label}</p>
               <p className={`text-[26px] font-semibold tracking-tight leading-none ${stat.color}`}>
                 {stat.value}

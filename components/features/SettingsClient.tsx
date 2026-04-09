@@ -53,8 +53,8 @@ function getInitials(name: string) {
 // ── Shared card wrapper ──
 function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={`bg-[var(--tf-bg-panel)] border border-slate-100 dark:border-white/[0.07] rounded-[16px] p-6
-      hover:border-slate-200 dark:hover:border-white/[0.11] hover:-translate-y-[1px] hover:shadow-[0_16px_48px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_16px_48px_rgba(0,0,0,0.6)]
+    <div className={`bg-[var(--tf-bg-panel)] border border-[var(--tf-border-subtle)] rounded-[16px] p-6
+      hover:border-[var(--tf-border)] hover:-translate-y-[1px] hover:shadow-[0_16px_48px_rgba(0,0,0,0.08)]
       transition-all duration-200 ${className}`}>
       {children}
     </div>
@@ -71,7 +71,7 @@ function SectionHead({
   return (
     <div className="flex items-start justify-between mb-5">
       <div className="flex items-center gap-3">
-        <div className={`w-8 h-8 rounded-[9px] ${iconBg} border border-slate-200 dark:border-white/[0.07] flex items-center justify-center flex-shrink-0`}>
+        <div className={`w-8 h-8 rounded-[9px] ${iconBg} border border-[var(--tf-border)] flex items-center justify-center flex-shrink-0`}>
           <Icon size={14} className={iconColor} />
         </div>
         <div>
@@ -100,12 +100,12 @@ function Field({
         disabled={disabled}
         className={`w-full rounded-[10px] px-3.5 py-2.5 text-[13px] outline-none transition-all duration-150 border
           ${disabled
-            ? "bg-slate-50 border-slate-100 text-slate-400 dark:bg-white/[0.02] dark:border-white/[0.04] dark:text-[var(--tf-text-tertiary)] cursor-not-allowed"
-            : "bg-white border-slate-200 text-slate-800 placeholder-slate-300 dark:bg-white/[0.03] dark:border-white/[0.08] dark:text-[var(--tf-text-primary)] dark:placeholder-[#2a2a2a] " +
-              "hover:border-slate-300 dark:hover:border-white/[0.13] focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/[0.1]"
+            ? "bg-[var(--tf-bg-panel)] border-[var(--tf-border-subtle)] text-[var(--tf-text-tertiary)] cursor-not-allowed"
+            : "bg-[var(--tf-bg-input)] border-[var(--tf-border)] text-[var(--tf-text-primary)] placeholder-[var(--tf-text-tertiary)] " +
+              "hover:border-[var(--tf-border)] focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/[0.1]"
           }`}
       />
-      {hint && <p className="text-[11px] text-slate-400 dark:text-[var(--tf-text-tertiary)]">{hint}</p>}
+      {hint && <p className="text-[11px] text-[var(--tf-text-tertiary)]">{hint}</p>}
     </div>
   )
 }
@@ -142,8 +142,8 @@ const PLAN_META: Record<string, {
   free: {
     label:    "Free",
     badge:    "text-[var(--tf-text-tertiary)]",
-    badgeBg:  "bg-slate-100 border-slate-200 dark:bg-white/[0.04] dark:border-white/[0.08]",
-    border:   "border-slate-200 dark:border-white/[0.07]",
+    badgeBg:  "bg-[var(--tf-bg-hover)] border-[var(--tf-border)]",
+    border:   "border-[var(--tf-border)]",
     glow:     "rgba(255,255,255,0.015)",
     cardBg:   "bg-[var(--tf-bg-panel)]",
     features: ["Up to 3 projects", "Unlimited tasks", "Kanban board", "Basic search & filters"],
@@ -155,7 +155,7 @@ const PLAN_META: Record<string, {
     badgeBg:  "bg-indigo-500/[0.12] border-indigo-500/25",
     border:   "border-indigo-500/20",
     glow:     "rgba(99,102,241,0.08)",
-    cardBg:   "bg-indigo-50/80 dark:bg-indigo-950/[0.07]",
+    cardBg:   "bg-indigo-500/[0.04]",
     features: ["Unlimited projects", "Advanced filters", "Analytics", "Activity feed", "Priority support"],
     PlanIcon: Sparkles,
   },
@@ -165,7 +165,7 @@ const PLAN_META: Record<string, {
     badgeBg:  "bg-violet-500/[0.12] border-violet-500/25",
     border:   "border-violet-500/20",
     glow:     "rgba(139,92,246,0.08)",
-    cardBg:   "bg-violet-50/80 dark:bg-violet-950/[0.07]",
+    cardBg:   "bg-violet-500/[0.04]",
     features: ["Everything in Pro", "SSO / SAML", "Audit logs", "SLA guarantee", "Dedicated support"],
     PlanIcon: Shield,
   },
@@ -204,8 +204,8 @@ function PlanCard({ plan }: { plan: string }) {
 
       <ul className="space-y-2 mb-5 relative">
         {meta.features.map((f) => (
-          <li key={f} className="flex items-center gap-2.5 text-[12.5px] text-slate-500 dark:text-[var(--tf-text-tertiary)]">
-            <div className="w-[18px] h-[18px] rounded-full bg-slate-100 border border-slate-200 dark:bg-white/[0.04] dark:border-white/[0.06] flex items-center justify-center flex-shrink-0">
+          <li key={f} className="flex items-center gap-2.5 text-[12.5px] text-[var(--tf-text-tertiary)]">
+            <div className="w-[18px] h-[18px] rounded-full bg-[var(--tf-bg-hover)] border border-[var(--tf-border)] flex items-center justify-center flex-shrink-0">
               <Check size={9} className="text-[var(--tf-text-tertiary)]" />
             </div>
             {f}
@@ -294,7 +294,7 @@ function ProfileTab({ user }: { user: Props["user"] }) {
         />
 
         {/* Avatar row */}
-        <div className="flex items-center gap-5 mb-6 p-4 rounded-[12px] bg-slate-50 dark:bg-white/[0.02] border border-slate-100 dark:border-white/[0.05]">
+        <div className="flex items-center gap-5 mb-6 p-4 rounded-[12px] bg-[var(--tf-bg-panel)] border border-[var(--tf-border-subtle)]">
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
@@ -303,7 +303,7 @@ function ProfileTab({ user }: { user: Props["user"] }) {
           >
             {/* Hover glow ring */}
             <div className="absolute -inset-[3px] rounded-full bg-gradient-to-br from-indigo-500/40 to-violet-600/40 opacity-0 group-hover:opacity-100 blur-sm transition-all duration-300" />
-            <Avatar className="relative h-[72px] w-[72px] ring-2 ring-slate-200 dark:ring-white/[0.08] ring-offset-2 ring-offset-white dark:ring-offset-[#0d0d0d]">
+            <Avatar className="relative h-[72px] w-[72px] ring-2 ring-[var(--tf-border)] ring-offset-2 ring-offset-[var(--tf-bg-panel)]">
               <AvatarImage src={clerkUser?.imageUrl} className="object-cover" />
               <AvatarFallback className="text-xl font-bold bg-gradient-to-br from-indigo-500 to-violet-600 text-white">
                 {getInitials(name || "User")}
@@ -318,9 +318,9 @@ function ProfileTab({ user }: { user: Props["user"] }) {
           </button>
           <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
           <div>
-            <p className="text-[15px] font-bold text-white tracking-tight">{user.name}</p>
-            <p className="text-[12.5px] text-slate-500 dark:text-[var(--tf-text-tertiary)] mt-0.5">{user.email}</p>
-            <p className="text-[11px] text-slate-400 dark:text-[var(--tf-text-tertiary)] mt-2 flex items-center gap-1.5">
+            <p className="text-[15px] font-bold text-[var(--tf-text-primary)] tracking-tight">{user.name}</p>
+            <p className="text-[12.5px] text-[var(--tf-text-tertiary)] mt-0.5">{user.email}</p>
+            <p className="text-[11px] text-[var(--tf-text-tertiary)] mt-2 flex items-center gap-1.5">
               <Camera size={10} />
               Click avatar to change photo
             </p>
@@ -428,7 +428,7 @@ function WorkspaceTab({
   const roleStyles: Record<string, { bg: string; text: string; border: string }> = {
     OWNER:  { bg: "bg-violet-500/[0.1]", text: "text-violet-300", border: "border-violet-500/25" },
     ADMIN:  { bg: "bg-indigo-500/[0.1]", text: "text-indigo-300", border: "border-indigo-500/25" },
-    MEMBER: { bg: "bg-[var(--tf-bg-hover)]",     text: "text-[var(--tf-text-tertiary)]",     border: "border-slate-200 dark:border-white/[0.08]"  },
+    MEMBER: { bg: "bg-[var(--tf-bg-hover)]",     text: "text-[var(--tf-text-tertiary)]",     border: "border-[var(--tf-border)]"  },
   }
 
   return (
@@ -480,7 +480,7 @@ function WorkspaceTab({
                 transition-all duration-100 active:translate-y-[2px] active:shadow-none
                 ${canInvite
                   ? "bg-indigo-600 hover:bg-indigo-500 text-white border-indigo-700/80"
-                  : "text-[var(--tf-text-tertiary)] border-slate-100 dark:border-white/[0.07] opacity-50 cursor-not-allowed"
+                  : "text-[var(--tf-text-tertiary)] border-[var(--tf-border-subtle)] opacity-50 cursor-not-allowed"
                 }`}
             >
               <UserPlus size={12} />
@@ -496,7 +496,7 @@ function WorkspaceTab({
               <div
                 key={member.id}
                 className="flex items-center gap-3 p-3 rounded-[10px] border border-transparent
-                  hover:bg-slate-50 dark:hover:bg-white/[0.02] hover:border-slate-200 dark:hover:border-white/[0.05] transition-all duration-150"
+                  hover:bg-[var(--tf-bg-hover)] hover:border-[var(--tf-border-subtle)] transition-all duration-150"
               >
                 <Avatar className="h-9 w-9 flex-shrink-0">
                   <AvatarFallback className="text-[11px] font-bold bg-gradient-to-br from-indigo-500 to-violet-600 text-white">
@@ -504,7 +504,7 @@ function WorkspaceTab({
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-semibold text-slate-600 dark:text-[var(--tf-text-primary)] truncate">{member.name}</p>
+                  <p className="text-[13px] font-semibold text-[var(--tf-text-primary)] truncate">{member.name}</p>
                   <p className="text-[11px] text-[var(--tf-text-tertiary)] truncate">{member.email}</p>
                 </div>
                 <span className={`text-[10px] font-bold uppercase tracking-[0.06em] px-2.5 py-0.5 rounded-full border ${rs.bg} ${rs.border} ${rs.text}`}>
@@ -545,7 +545,7 @@ function AppearanceTab() {
           iconBg="bg-amber-500/[0.1]"
           iconColor="text-amber-400"
         />
-        <div className="flex items-center gap-3 p-3 rounded-[10px] bg-slate-50 dark:bg-white/[0.02] border border-slate-100 dark:border-white/[0.05]">
+        <div className="flex items-center gap-3 p-3 rounded-[10px] bg-[var(--tf-bg-panel)] border border-[var(--tf-border-subtle)]">
           <ThemeToggleInline />
           <div>
             <p className="text-[12.5px] font-semibold text-[var(--tf-text-primary)]">Sun / Moon toggle</p>
@@ -632,10 +632,10 @@ function NotificationsTab({ initialPrefs }: { initialPrefs: NotifPrefs }) {
             return (
               <div
                 key={item.key}
-                className="flex items-center gap-3.5 p-3.5 rounded-[12px] bg-slate-50/50 dark:bg-white/[0.01] border border-slate-100 dark:border-white/[0.04]
-                  hover:border-slate-200 dark:hover:border-white/[0.07] hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-all duration-150"
+                className="flex items-center gap-3.5 p-3.5 rounded-[12px] bg-[var(--tf-bg-panel)] border border-[var(--tf-border-subtle)]
+                  hover:border-[var(--tf-border)] hover:bg-[var(--tf-bg-hover)] transition-all duration-150"
               >
-                <div className={`w-8 h-8 rounded-[9px] ${item.iconBg} border border-slate-200 dark:border-white/[0.07] flex items-center justify-center flex-shrink-0`}>
+                <div className={`w-8 h-8 rounded-[9px] ${item.iconBg} border border-[var(--tf-border)] flex items-center justify-center flex-shrink-0`}>
                   <item.icon size={13} className={item.iconColor} />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -652,13 +652,13 @@ function NotificationsTab({ initialPrefs }: { initialPrefs: NotifPrefs }) {
                   <div className={`w-10 h-[22px] rounded-full border relative transition-colors duration-200
                     ${on
                       ? "bg-indigo-600 border-indigo-500/50"
-                      : "bg-slate-200 border-slate-300 dark:bg-white/[0.04] dark:border-white/[0.08]"
+                      : "bg-[var(--tf-bg-hover)] border-[var(--tf-border)]"
                     }`}
                   >
                     <div className={`absolute top-[3px] w-4 h-4 rounded-full transition-all duration-200
                       ${on
                         ? "left-[calc(100%-19px)] bg-white"
-                        : "left-[3px] bg-slate-400/50 dark:bg-white/20"
+                        : "left-[3px] bg-[var(--tf-text-tertiary)]/50"
                       }`}
                     />
                   </div>
@@ -668,7 +668,7 @@ function NotificationsTab({ initialPrefs }: { initialPrefs: NotifPrefs }) {
           })}
         </div>
 
-        <p className="text-[11px] text-[var(--tf-text-tertiary)] mt-5 pt-4 border-t border-slate-100 dark:border-white/[0.05] flex items-center gap-1.5">
+        <p className="text-[11px] text-[var(--tf-text-tertiary)] mt-5 pt-4 border-t border-[var(--tf-border-subtle)] flex items-center gap-1.5">
           <Mail size={10} />
           Email notifications will be available when team invitations are enabled.
         </p>
@@ -709,7 +709,7 @@ export function SettingsClient({ user, workspace, members, userRole, pendingInvi
 
         {/* Page header */}
         <div className="mb-8">
-          <h1 className="text-[30px] font-bold tracking-tight text-white">Settings</h1>
+          <h1 className="text-[30px] font-bold tracking-tight text-[var(--tf-text-primary)]">Settings</h1>
           <p className="text-[13.5px] text-[var(--tf-text-tertiary)] mt-1.5">
             Manage your account, workspace, and preferences
           </p>
@@ -729,7 +729,7 @@ export function SettingsClient({ user, workspace, members, userRole, pendingInvi
                   border whitespace-nowrap flex-shrink-0 transition-all duration-150
                   ${isActive
                     ? tc.active
-                    : "border-transparent text-[var(--tf-text-tertiary)] hover:text-slate-600 dark:hover:text-[#777] hover:bg-slate-50 dark:hover:bg-white/[0.03]"
+                    : "border-transparent text-[var(--tf-text-tertiary)] hover:text-[var(--tf-text-secondary)] hover:bg-[var(--tf-bg-hover)]"
                   }`}
               >
                 <div className={`w-5 h-5 rounded-[5px] flex items-center justify-center transition-colors ${isActive ? tc.icon : ""}`}>

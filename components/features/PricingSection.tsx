@@ -42,11 +42,11 @@ export function PricingSection({ userId }: { userId: string | null }) {
   const upgradeHref = userId ? "/upgrade" : "/register"
 
   return (
-    <section id="pricing" className="py-20 sm:py-28 px-5 sm:px-6 border-t border-slate-100 dark:border-white/[0.06]">
+    <section id="pricing" className="py-20 sm:py-28 px-5 sm:px-6 border-t border-[var(--tf-border-subtle)]">
       <div className="max-w-5xl mx-auto">
 
         <AnimateOnView className="text-center mb-12 sm:mb-16">
-          <div className="inline-flex items-center gap-2 border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-white/[0.02] rounded-full px-4 py-1.5 mb-5">
+          <div className="inline-flex items-center gap-2 border border-[var(--tf-border)] bg-[var(--tf-bg-panel)] rounded-full px-4 py-1.5 mb-5">
             <span className="text-[11.5px] font-medium text-[var(--tf-text-tertiary)]">Pricing</span>
           </div>
           <h2 className="text-[28px] sm:text-[44px] font-bold text-[var(--tf-text-primary)] mb-3 sm:mb-4">
@@ -63,8 +63,8 @@ export function PricingSection({ userId }: { userId: string | null }) {
               <div
                 className={`relative rounded-[16px] p-5 sm:p-6 border flex flex-col gap-5 ${
                   plan.popular
-                    ? "border-indigo-500/35 bg-indigo-950/[0.12] dark:bg-indigo-950/[0.12] ring-1 ring-indigo-500/15"
-                    : "border-slate-100 dark:border-white/[0.06] bg-[var(--tf-bg-card)]"
+                    ? "border-indigo-500/35 bg-indigo-950/[0.12] ring-1 ring-indigo-500/15"
+                    : "border-[var(--tf-border-subtle)] bg-[var(--tf-bg-card)]"
                 }`}
               >
                 {plan.popular && (
@@ -87,7 +87,7 @@ export function PricingSection({ userId }: { userId: string | null }) {
                   className={`w-full h-8 flex items-center justify-center text-[12.5px] font-semibold rounded-[8px] border transition-all duration-150 active:translate-y-[3px] active:shadow-none whitespace-nowrap ${
                     plan.popular
                       ? "bg-indigo-600 hover:bg-indigo-500 text-white border-indigo-700/80 shadow-[0_3px_0_0_#3730a3]"
-                      : "bg-[var(--tf-bg-card)] hover:bg-slate-50 dark:hover:bg-[#161616] text-[var(--tf-text-secondary)] hover:text-slate-900 dark:hover:text-white border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/18 shadow-[0_3px_0_0_rgba(0,0,0,0.12)] dark:shadow-[0_3px_0_0_rgba(0,0,0,0.55)]"
+                      : "bg-[var(--tf-bg-card)] hover:bg-[var(--tf-bg-hover)] text-[var(--tf-text-secondary)] hover:text-[var(--tf-text-primary)] border-[var(--tf-border)] hover:border-[var(--tf-border)] shadow-[0_3px_0_0_rgba(0,0,0,0.12)]"
                   }`}
                 >
                   {plan.cta}
