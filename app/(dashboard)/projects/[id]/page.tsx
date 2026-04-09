@@ -68,6 +68,7 @@ export default async function ProjectPage({
       allProjects={allProjects}
       currentUser={{ userId: session.user.id, name: session.user.name }}
       members={memberRows.map((m) => ({ id: m.id, name: m.name ?? "" }))}
+      workspaceId={membership.workspaceId}
     />
   )
 }

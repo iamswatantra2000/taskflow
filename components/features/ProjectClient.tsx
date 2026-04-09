@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils"
 import { NewTaskDialog } from "./NewTaskDialog"
 import { DeleteTaskButton } from "./DeleteTaskButton"
 import { PresenceAvatars } from "./PresenceAvatars"
+import { MeetingButton } from "./MeetingButton"
 import { getDecayLevel, getDecayDays, decayBorderClass, decayBadgeClass } from "@/lib/decay"
 import { AssigneeButton } from "./AssigneeButton"
 import { reassignTask } from "@/lib/actions"
@@ -39,6 +40,7 @@ type Props = {
   allProjects: { id: string; name: string; color: string }[]
   currentUser: { userId: string; name: string }
   members:     { id: string; name: string }[]
+  workspaceId: string
 }
 
 type ViewType = "board" | "calendar" | "timeline"
@@ -570,7 +572,7 @@ function TimelineView({ tasks }: { tasks: Task[] }) {
 const VIEW_ORDER: ViewType[] = ["board", "calendar", "timeline"]
 
 // ——— Main ProjectClient ———
-export function ProjectClient({ project, tasks, allProjects, currentUser, members }: Props) {
+export function ProjectClient({ project, tasks, allProjects, currentUser, members, workspaceId }: Props) {
   const [view, setView]           = useState<ViewType>("board")
   const [viewDir, setViewDir]     = useState<"right" | "left">("right")
   const [localTasks, setLocalTasks] = useState(tasks)
@@ -634,6 +636,8 @@ export function ProjectClient({ project, tasks, allProjects, currentUser, member
               </button>
             ))}
           </div>
+
+          <MeetingButton projectId={project.id} currentUser={currentUser} />
 
           <PresenceAvatars projectId={project.id} currentUser={currentUser} />
 

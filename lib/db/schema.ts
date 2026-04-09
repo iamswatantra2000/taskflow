@@ -166,6 +166,21 @@ export const subtasks = pgTable("subtasks", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 })
 
+// ——— Meetings (per-project video calls) ———
+export const meetingStatusEnum = pgEnum("meeting_status", ["active", "ended"])
+
+export const meetings = pgTable("meetings", {
+  id:          text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  projectId:   text("project_id").notNull().references(() => projects.id, { onDelete: "cascade" }),
+  workspaceId: text("workspace_id").notNull().references(() => workspaces.id, { onDelete: "cascade" }),
+  createdById: text("created_by_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  roomName:    text("room_name").notNull().unique(), // random slug used in Jitsi URL
+  status:      meetingStatusEnum("status").default("active").notNull(),
+  startedAt:   timestamp("started_at").defaultNow().notNull(),
+  endedAt:     timestamp("ended_at"),
+  createdAt:   timestamp("created_at").defaultNow().notNull(),
+})
+
 export const activities = pgTable("activities", {
   id:          text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   type:        activityTypeEnum("type").notNull(),
